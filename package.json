@@ -1,0 +1,11 @@
+{
+  "name": "flightscan-vercel",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": { "node": "24.x" },
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "test": "node --test tests/relay.test.mjs"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "buildCommand": "npm run build",
+  "outputDirectory": "public",
+  "functions": {
+    "api/relay.js": { "maxDuration": 60 }
+  },
+  "rewrites": [
+    { "source": "/health", "destination": "/api/relay?path=health" },
+    { "source": "/adsb/point/:lat/:lon/:nm", "destination": "/api/relay?path=adsb/point/:lat/:lon/:nm" },
+    { "source": "/adsbfi/point/:lat/:lon/:nm", "destination": "/api/relay?path=adsbfi/point/:lat/:lon/:nm" },
+    { "source": "/opensky/states", "destination": "/api/relay?path=opensky/states" }
+  ]
+}

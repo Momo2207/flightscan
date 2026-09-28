@@ -14,30 +14,45 @@
 <div class="table-head"><div><div class="eyebrow">Within your radius</div><h2><span id="count">0</span> aircraft <span id="countNote" style="font-size:12px;color:var(--muted)"></span></h2></div><div class="filters"><input id="filter" aria-label="Filter aircraft" placeholder="Callsign, registration, type…"><label class="check"><input id="ground" type="checkbox" checked>Include ground</label><select id="sort" aria-label="Sort aircraft"><option value="distance">Nearest first</option><option value="altitude">Highest first</option><option value="speed">Fastest first</option><option value="callsign">Callsign A–Z</option></select></div></div>
 <div class="table-scroll"><table><thead><tr><th>Callsign / ICAO</th><th>Registration</th><th>Type</th><th>Altitude</th><th>Groundspeed</th><th>Vertical rate</th><th>Distance / Bearing</th><th>Position age</th></tr></thead><tbody id="rows"><tr><td colspan="8" class="table-empty">Waiting for flight data…</td></tr></tbody></table></div>
 <footer><span>Flight data: <a href="https://adsb.fi" target="_blank" rel="noopener">adsb.fi</a> / <a href="https://www.adsb.lol/docs/open-data/api/" target="_blank" rel="noopener">ADSB.lol</a> (ODbL) / <a href="https://opensky-network.org/" target="_blank" rel="noopener">OpenSky Network</a>. Places: <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a> / GeoNames.</span><span>Reported positions, never simulated. Coverage varies. Not for navigation.</span></footer></main>
-<dialog id="connectionDialog" aria-labelledby="connectionTitle"><button class="dialog-close" id="closeConnection">Close</button><div class="eyebrow">Flight data connection</div><h2 id="connectionTitle">Connect to your sky.</h2><p>The app loads flight data through your Cloudflare Worker relay. Deploy the supplied <code>worker.mjs</code>, then paste its HTTPS address here.</p><form id="connectionForm"><label for="apiBaseInput">RELAY URL</label><input id="apiBaseInput" type="url" placeholder="https://flightscan-api.your-subdomain.workers.dev" autocomplete="off" required><div class="connection-actions"><button class="primary" id="saveConnection" type="submit">Test &amp; connect</button><button id="clearConnection" type="button">Clear saved URL</button></div></form><p id="connectionResult" role="status"></p><p>This setting is saved in this browser. To connect every visitor automatically, set <code>CONFIG.apiBase</code> to this URL in <code>index.html</code> before uploading it to GitHub.</p><p><a href="https://dash.cloudflare.com/" target="_blank" rel="noopener">Open Cloudflare dashboard ↗</a></p></dialog>
-<dialog id="about"><button class="dialog-close" id="closeHelp">Close</button><div class="eyebrow">Airspace / field notes</div><h2>A small window into your sky.</h2><h3>Read the traffic</h3><p>Search for a town, enter decimal coordinates, use your device location, or select “Set center” and click the map. Apply a radius from 1–450 km (up to 242.98 NM). Click an aircraft or its callsign to inspect it. Distance and bearing are measured from your chosen center.</p><p>Positions come from adsb.fi through your configured relay, with ADSB.lol and OpenSky as automatic fallbacks through the same relay. The active provider appears above the map. A callsign is the transmitted flight identifier, which may differ from the booking flight number. Registration and aircraft type are shown when supplied. Origin, destination and airline are not guessed. Follow the external research links for more information.</p><p>Altitude is barometric feet, not height above terrain. Groundspeed is knots. Vertical rate is feet per minute. Tracks are observed positions collected while this page is open, not full flight history. Dashed tracks have observation gaps over 45 seconds.</p><h3>Freshness and coverage</h3><p>adsb.fi and ADSB.lol refresh every 30 seconds while this tab is visible and a relay is configured. OpenSky is the last fallback and refreshes every 60 seconds. Each provider has its own retry delay. Rate limits are respected across reloads and area changes; the app waits until a provider is eligible before trying it again. OpenSky anonymous access has a limited daily allowance per IP, shared by requests leaving the relay; it does not supply registration or aircraft type. Older positions are faded after 30 seconds and removed after 90 seconds. Empty results mean no recent positions were reported, not that the sky is empty. Pausing or switching tabs stops polling. Errors trigger increasing retry delays; the app never substitutes sample aircraft.</p><h3>Publish on GitHub Pages</h3><ol><li>Deploy the supplied <code>worker.mjs</code> as a Cloudflare Worker. It permits your <code>https://momo2207.github.io</code> origin.</li><li>Paste its HTTPS URL into <code>CONFIG.apiBase</code> in this file, or use Connection to save it for this browser.</li><li>Upload this file as <code>index.html</code> to the root of your repository.</li><li>In repository Settings → Pages, choose “Deploy from a branch”, your branch, and the root folder.</li><li>Open the HTTPS Pages URL once deployment finishes.</li></ol><p>The interface remains a single HTML file with no build step or library CDN. A small relay makes the flight requests on the server and returns readable responses to this page. No flight API keys are stored in the HTML. Internet is needed for flight data, place searches and map tiles. Provider outages, quotas and access changes can still interrupt the feed; the relay does not override those limits.</p><h3>Connection diagnostics</h3><p id="diagnostics">Waiting for a connection.</p><h3>Service use & privacy</h3><p>For personal, non-commercial use. adsb.fi’s public API and Open-Meteo’s free geocoding API are non-commercial. ADSB.lol uses dynamic rate limits and may change access requirements. OpenSky anonymous access is limited per IP. Flight requests go through your relay, which allows the configured website origin; provider limits still apply. Successful responses may be cached for 25 seconds for adsb.fi and ADSB.lol or 55 seconds for OpenSky, with original observation timestamps preserved. OpenStreetMap tiles are best effort: normal interactive viewing only, with browser caching and attribution. Larger deployments should arrange appropriate provider capacity.</p><p>Your center is sent through your relay to the active flight provider (adsb.fi, ADSB.lol or OpenSky); a typed city query is sent to Open-Meteo. Map tile requests reveal the viewed area to OpenStreetMap. The last area, any saved relay URL and provider retry delays are stored only in this browser. Share area includes coordinates and radius in the URL. No analytics are installed.</p><p><a href="https://github.com/adsbfi/opendata" target="_blank" rel="noopener">adsb.fi API documentation</a> · <a href="https://github.com/adsblol/api" target="_blank" rel="noopener">ADSB.lol API documentation</a> · <a href="https://open-meteo.com/en/docs/geocoding-api" target="_blank" rel="noopener">Geocoding docs</a> · <a href="https://operations.osmfoundation.org/policies/tiles/" target="_blank" rel="noopener">Map tile policy</a></p></dialog><div id="toast" role="status"></div>
+<dialog id="connectionDialog" aria-labelledby="connectionTitle"><button class="dialog-close" id="closeConnection">Close</button><div class="eyebrow">Flight data connection</div><h2 id="connectionTitle">Connect to your sky.</h2><p>Deploy the supplied project on Vercel, then paste its production HTTPS address here. When you open the app on its Vercel address, it connects automatically.</p><form id="connectionForm"><label for="apiBaseInput">RELAY URL</label><input id="apiBaseInput" type="url" placeholder="https://your-flightscan-project.vercel.app" autocomplete="off" required><div class="connection-actions"><button class="primary" id="saveConnection" type="submit">Test &amp; connect</button><button id="clearConnection" type="button">Clear saved URL</button></div></form><p id="connectionResult" role="status"></p><p>This setting is saved in this browser. To connect every visitor automatically, set <code>CONFIG.apiBase</code> to this URL in <code>index.html</code> before uploading it to GitHub.</p><p><a href="https://vercel.com/dashboard" target="_blank" rel="noopener">Open Vercel dashboard ↗</a></p></dialog>
+<dialog id="about"><button class="dialog-close" id="closeHelp">Close</button><div class="eyebrow">Airspace / field notes</div><h2>A small window into your sky.</h2><h3>Read the traffic</h3><p>Search for a town, enter decimal coordinates, use your device location, or select “Set center” and click the map. Apply a radius from 1–450 km (up to 242.98 NM). Click an aircraft or its callsign to inspect it. Distance and bearing are measured from your chosen center.</p><p>Positions come from adsb.fi through your configured relay, with ADSB.lol and OpenSky as automatic fallbacks through the same relay. The active provider appears above the map. A callsign is the transmitted flight identifier, which may differ from the booking flight number. Registration and aircraft type are shown when supplied. Origin, destination and airline are not guessed. Follow the external research links for more information.</p><p>Altitude is barometric feet, not height above terrain. Groundspeed is knots. Vertical rate is feet per minute. Tracks are observed positions collected while this page is open, not full flight history. Dashed tracks have observation gaps over 45 seconds.</p><h3>Freshness and coverage</h3><p>adsb.fi and ADSB.lol refresh every 30 seconds while this tab is visible and a relay is configured. OpenSky is the last fallback and refreshes every 60 seconds. Each provider has its own retry delay. Rate limits are respected across reloads and area changes; the app waits until a provider is eligible before trying it again. OpenSky uses the API credentials configured on Vercel, or anonymous access with a limited daily allowance per IP; it does not supply registration or aircraft type. Older positions are faded after 30 seconds and removed after 90 seconds. Empty results mean no recent positions were reported, not that the sky is empty. Pausing or switching tabs stops polling. Errors trigger increasing retry delays; the app never substitutes sample aircraft.</p><h3>Publish with Vercel</h3><ol><li>Upload the supplied project files to GitHub, then import that repository into Vercel. Follow <code>SETUP.md</code> in the download.</li><li>Add your OpenSky API client credentials to the Vercel project’s environment variables and deploy.</li><li>Open the production Vercel address to use the app and relay together.</li><li>To keep GitHub Pages, replace its <code>index.html</code> with this file, then open Connection and enter the Vercel address.</li></ol><p>The interface remains a single HTML file with no build step or library CDN. A small relay makes the flight requests on the server and returns readable responses to this page. No flight API keys are stored in the HTML. Internet is needed for flight data, place searches and map tiles. Provider outages, quotas and access changes can still interrupt the feed; the relay does not override those limits.</p><h3>Connection diagnostics</h3><p id="diagnostics">Waiting for a connection.</p><h3>Service use & privacy</h3><p>For personal, non-commercial use. adsb.fi’s public API and Open-Meteo’s free geocoding API are non-commercial. ADSB.lol uses dynamic rate limits and may change access requirements. OpenSky anonymous access is limited per IP. Flight requests go through your relay, which allows the configured website origin; provider limits still apply. Successful responses may be cached for 25 seconds for adsb.fi and ADSB.lol or 55 seconds for OpenSky, with original observation timestamps preserved. OpenStreetMap tiles are best effort: normal interactive viewing only, with browser caching and attribution. Larger deployments should arrange appropriate provider capacity.</p><p>Your center is sent through your relay to the active flight provider (adsb.fi, ADSB.lol or OpenSky); a typed city query is sent to Open-Meteo. Map tile requests reveal the viewed area to OpenStreetMap. The last area, any saved relay URL and provider retry delays are stored only in this browser. Share area includes coordinates and radius in the URL. No analytics are installed.</p><p><a href="https://github.com/adsbfi/opendata" target="_blank" rel="noopener">adsb.fi API documentation</a> · <a href="https://github.com/adsblol/api" target="_blank" rel="noopener">ADSB.lol API documentation</a> · <a href="https://open-meteo.com/en/docs/geocoding-api" target="_blank" rel="noopener">Geocoding docs</a> · <a href="https://operations.osmfoundation.org/policies/tiles/" target="_blank" rel="noopener">Map tile policy</a></p></dialog><div id="toast" role="status"></div>
 <script>
 'use strict';
-/* Airspace: single-file GitHub Pages interface + your flightscan relay.
-   Deploy worker.mjs once. Put its public HTTPS base URL in apiBase below to
-   connect every visitor automatically. No trailing slash is needed.
+/* Airspace: Vercel relay + a standalone HTML interface.
+   Vercel *.vercel.app hosting connects to its own relay automatically.
+   For GitHub Pages, use Connection or put your Vercel base URL in apiBase.
    This is a public endpoint URL, never an API key or account credential. */
 const CONFIG={
-  apiBase: 'https://divine-voice-cea3.boehm-maurice.workers.dev', // Deployed relay
+  apiBase: '', // Optional: https://YOUR-PROJECT.vercel.app (for every GitHub Pages visitor)
   geocode:'https://geocoding-api.open-meteo.com/v1/search',
   tiles:'https://tile.openstreetmap.org/{z}/{x}/{y}.png',poll:30000,maxAge:90
 };
 function normalizeApiBase(value){
   if(!value || !String(value).trim())return '';
   const url=new URL(String(value).trim());
-  if(url.protocol!=='https:' || url.username || url.password || url.search || url.hash || url.pathname!=='/')throw new Error('Enter only the HTTPS base address of your deployed Worker, without a path or query.');
+  if(url.protocol!=='https:' || url.username || url.password || url.search || url.hash || url.pathname!=='/')throw new Error('Enter only your Vercel project’s HTTPS base address, without a path or query.');
+  if(url.hostname.endsWith('.workers.dev'))throw new Error('Enter the new Vercel address from your project dashboard.');
   return url.origin;
 }
+// A separate setting prevents the previous Cloudflare URL from being reused.
+const API_BASE_KEY='airspace-api-base-vercel';
+const HOSTED_BASE=location.protocol==='https:'&&location.hostname.endsWith('.vercel.app')?location.origin:'';
 let apiBase='',connectionIssue='';
 try{
-  let stored='';try{stored=localStorage.getItem('airspace-api-base')||''}catch{}
-  apiBase=normalizeApiBase(CONFIG.apiBase||stored);
+  let stored='';try{stored=localStorage.getItem(API_BASE_KEY)||''}catch{}
+  apiBase=normalizeApiBase(stored||CONFIG.apiBase||HOSTED_BASE);
 }catch{connectionIssue='The saved relay URL is invalid. Open Connection to correct it.';}
+// Direct function URLs avoid depending on rewrite behavior for app requests.
+function relayUrl(path,base=apiBase){
+  const target=new URL(path,'https://flightscan.invalid');
+  const url=new URL('/api/relay',base);
+  url.searchParams.set('path',target.pathname.slice(1));
+  for(const [key,value]of target.searchParams)url.searchParams.append(key,value);
+  return url.href;
+}
+// Server budgets: ADS-B 9 s, OpenSky 45 s, Vercel function 60 s.
+// Browser requests allow transfer overhead; two OpenSky boxes may cross the dateline.
+const TIMEOUTS={request:12000,opensky:50000,poll:130000};
 const $=id=>document.getElementById(id),esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const num=v=>typeof v==='number'&&Number.isFinite(v),fmt=(v,u='')=>num(v)?Math.round(v).toLocaleString('en-US')+u:'Unknown';
 const rad=d=>d*Math.PI/180,deg=r=>r*180/Math.PI,wrap=x=>((x+180)%360+360)%360-180;
@@ -50,7 +65,7 @@ function validArea(a){return a&&num(a.lat)&&Math.abs(a.lat)<=85&&num(a.lon)&&Mat
 let saved=readSaved();if(validArea(saved))area={...saved,name:String(saved.name||'Saved area').slice(0,100)};
 try{const p=new URLSearchParams(location.hash.slice(1));if(p.has('lat')){let a={lat:Number(p.get('lat')),lon:Number(p.get('lon')),km:Number(p.get('r')),name:p.get('name')||'Shared area'};if(validArea(a))area=a}}catch{}
 let aircraft=[],selected=null,trails=new Map(),receivedAt=0,paused=false,busy=false,controller=null,generation=0,timer=null,failures=0,nextPoll=0,lastAttempt=0,feedError='',gotSnapshot=false;
-const BUILD='2026-09-27.3';
+const BUILD='2026-09-28.vercel.1';
 const PROVIDERS=[{id:'adsbfi',name:'adsb.fi'},{id:'adsb',name:'ADSB.lol'},{id:'opensky',name:'OpenSky'}];
 let provider='adsb.fi',providerState={};
 function syncProviderState(){
@@ -98,7 +113,7 @@ function retryAfter(value){
   const n=Number(value);if(Number.isFinite(n))return Math.max(0,Math.ceil(n));
   const date=Date.parse(value);return Number.isFinite(date)?Math.max(0,Math.ceil((date-Date.now())/1000)):0;
 }
-async function jsonFetch(url,signal,timeoutMs=12000){
+async function jsonFetch(url,signal,timeoutMs=TIMEOUTS.request){
   const requestController=new AbortController();
   const cancel=()=>requestController.abort();
   if(signal?.aborted)cancel();else signal?.addEventListener('abort',cancel,{once:true});
@@ -129,7 +144,7 @@ function describeError(error){
   return error instanceof TypeError?'Relay unreachable. Check its URL, deployment and allowed origin.':error.message||'Unusable flight response';
 }
 async function openSkyData(signal){
-  // Anonymous OpenSky fallback through the relay. Never call OpenSky directly from the browser.
+  // OpenSky authentication stays on Vercel. Never send credentials from the browser.
   const delta=deg(area.km/6371),low=Math.max(-90,area.lat-delta),high=Math.min(90,area.lat+delta);
   const span=low<=-90||high>=90?180:deg(Math.asin(Math.min(1,Math.sin(rad(delta))/Math.cos(rad(area.lat)))));
   const west=area.lon-span,east=area.lon+span;
@@ -137,7 +152,7 @@ async function openSkyData(signal){
   let states=[],stamp=0;
   for(const [lo,hi] of ranges){
       const query=new URLSearchParams({lamin:low.toFixed(5),lamax:high.toFixed(5),lomin:lo.toFixed(5),lomax:hi.toFixed(5)});
-      const data=await jsonFetch(apiBase+'/opensky/states?'+query,signal,90000);
+      const data=await jsonFetch(relayUrl('/opensky/states?'+query),signal,TIMEOUTS.opensky);
       if(!num(data.time)||!(data.states===null||Array.isArray(data.states)))throw new Error('Unexpected OpenSky response');
       stamp=Math.max(stamp,data.time);
       // Preserve each response's own position timestamps, including across the dateline.
@@ -151,7 +166,7 @@ async function flightData(signal){
     if((providerState[source.id]?.until||0)>Date.now())continue;
     try{
       const data=source.id==='opensky'?await openSkyData(signal):await jsonFetch(
-        apiBase+`/${source.id}/point/${area.lat.toFixed(5)}/${area.lon.toFixed(5)}/${Math.ceil(area.km/1.852)}`,signal);
+        relayUrl(`/${source.id}/point/${area.lat.toFixed(5)}/${area.lon.toFixed(5)}/${Math.ceil(area.km/1.852)}`),signal);
       if(signal.aborted)throw new DOMException('Aborted','AbortError');
       if(!Array.isArray(data.ac??data.aircraft))throw new Error('Invalid '+source.name+' response');
       provider=source.name;providerState[source.id]={until:0,error:''};saveProviderState();return data;
@@ -180,7 +195,7 @@ async function poll(){
   const wait=remainingWait();if(wait>0){schedule(wait);return}
   busy=true;lastAttempt=Date.now();const token=generation;
   controller=new AbortController();const currentController=controller;
-  const timeout=setTimeout(()=>currentController.abort(),70000);
+  const timeout=setTimeout(()=>currentController.abort(),TIMEOUTS.poll);
   $('status').textContent='Requesting flight data…';let delay=CONFIG.poll;
   try{
     const data=await flightData(currentController.signal);
@@ -217,7 +232,7 @@ function updateStatus(){
   const errors=PROVIDERS.map(source=>{const state=providerState[source.id];return state?.error?
     source.name+': '+state.error+(state.until>now?' Retry in '+Math.ceil((state.until-now)/1000)+' s.':' Retry eligible.'):
     ''}).filter(Boolean).join(' | ');
-  $('diagnostics').textContent='App build '+BUILD+'. '+(needsConnection?(connectionIssue||'Deploy worker.mjs and enter its HTTPS URL in Connection. No flight requests are sent until connected.'):('Relay: '+apiBase+'. '+(errors||'')+' '+(receivedAt?'Last successful provider: '+provider+'.':feedError||'Waiting for the first flight response.')));
+  $('diagnostics').textContent='App build '+BUILD+'. '+(needsConnection?(connectionIssue||'Deploy the supplied Vercel project and enter its production HTTPS URL in Connection.'):('Relay: '+apiBase+'. '+(errors||'')+' '+(receivedAt?'Last successful provider: '+provider+'.':feedError||'Waiting for the first flight response.')));
   $('freshness').textContent=receivedAt?'Last response '+Math.floor((now-receivedAt)/1000)+' s ago · positions expire at 90 s':needsConnection?'Open Connection to configure the feed':'Waiting for first observation';
 }
 function reconnect(base){
@@ -240,23 +255,22 @@ $('connectionForm').onsubmit=async event=>{
   connectionController=new AbortController();$('saveConnection').disabled=true;
   $('connectionResult').textContent='Checking relay…';
   try{
-    const base=normalizeApiBase($('apiBaseInput').value);if(!base)throw new Error('Enter your Worker HTTPS address.');
-    const health=await jsonFetch(base+'/health',connectionController.signal);
+    const base=normalizeApiBase($('apiBaseInput').value);if(!base)throw new Error('Enter your Vercel project’s HTTPS address.');
+    const health=await jsonFetch(relayUrl('/health',base),connectionController.signal);
     if(seq!==connectionSequence)return;
-    if(health.service!=='flightscan-relay'||health.version!==1||health.ok!==true)throw new Error('That URL is not the supplied Flightscan relay. Deploy worker.mjs first.');
-    let saved=true;try{localStorage.setItem('airspace-api-base',base)}catch{saved=false}
+    if(health.service!=='flightscan-relay'||health.version!==1||health.ok!==true||health.platform!=='vercel-node')throw new Error('That URL is not the supplied Vercel relay. Deploy the complete project first.');
+    let saved=true;try{localStorage.setItem(API_BASE_KEY,base)}catch{saved=false}
     reconnect(base);
-    const overridesDefault=Boolean(CONFIG.apiBase)&&base!==normalizeApiBase(CONFIG.apiBase);
-    $('connectionResult').textContent=overridesDefault?'Relay connected for this session. Update CONFIG.apiBase in index.html to keep using this address after reloading.':saved?'Relay connected and saved for this browser. Loading aircraft…':'Relay connected for this session. Browser storage is unavailable; set CONFIG.apiBase to keep it after reloading.';
+    $('connectionResult').textContent=(saved?'Vercel relay connected and saved. ':'Relay connected for this session. Browser storage is unavailable. ')+(health.openskyAuthentication==='incomplete'?'Set both OpenSky environment variables in Vercel and redeploy. ':health.openskyAuthentication==='anonymous'?'OpenSky credentials are not configured. ':'')+'Checking flight feeds…';
   }catch(error){if(seq===connectionSequence)$('connectionResult').textContent=describeError(error)}
   finally{if(seq===connectionSequence)$('saveConnection').disabled=false}
 };
 $('clearConnection').onclick=()=>{
   connectionSequence++;connectionController?.abort();$('saveConnection').disabled=false;
-  try{localStorage.removeItem('airspace-api-base')}catch{}
-  let base='';try{base=normalizeApiBase(CONFIG.apiBase)}catch{}
+  try{localStorage.removeItem(API_BASE_KEY)}catch{}
+  let base='';try{base=normalizeApiBase(CONFIG.apiBase||HOSTED_BASE)}catch{}
   reconnect(base);$('apiBaseInput').value=base;
-  $('connectionResult').textContent=base?'Saved URL cleared. Using the URL configured in index.html.':'Saved URL cleared. Enter a relay URL to reconnect.';
+  $('connectionResult').textContent=base?'Saved URL cleared. Using the default relay for this app.':'Saved URL cleared. Enter a relay URL to reconnect.';
 };
 
 function changeArea(a){generation++;controller?.abort();busy=false;clearTimeout(timer);area=a;aircraft=[];selected=null;trails.clear();receivedAt=0;gotSnapshot=false;persist();updateAreaUI();fitArea();render();schedule(remainingWait());updateStatus();}
