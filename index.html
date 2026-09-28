@@ -137,7 +137,7 @@ async function openSkyData(signal){
   let states=[],stamp=0;
   for(const [lo,hi] of ranges){
       const query=new URLSearchParams({lamin:low.toFixed(5),lamax:high.toFixed(5),lomin:lo.toFixed(5),lomax:hi.toFixed(5)});
-      const data=await jsonFetch(apiBase+'/opensky/states?'+query,signal,17000);
+      const data=await jsonFetch(apiBase+'/opensky/states?'+query,signal,90000);
       if(!num(data.time)||!(data.states===null||Array.isArray(data.states)))throw new Error('Unexpected OpenSky response');
       stamp=Math.max(stamp,data.time);
       // Preserve each response's own position timestamps, including across the dateline.
