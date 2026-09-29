@@ -275,3 +275,38 @@ test('invalid JSON, invalid data and redirects cannot appear as successful empty
     assert.ok((await response.json()).code.startsWith('UPSTREAM_'));
   }
 });
+
+test('follow endpoints target one canonical ICAO identifier on each fixed provider', async () => {
+  const urls=[];
+  const relay=createRelay({fetchUpstream:async url=>{urls.push(url);return Response.json(url.includes('opensky')?snapshot():planes())}});
+  for(const [path,expected]of [
+    ['/adsbfi/hex/ABC123','https://opendata.adsb.fi/api/v2/hex/abc123'],
+    ['/adsb/hex/ABC123','https://api.adsb.lol/v2/hex/abc123'],
+    ['/opensky/states?icao24=ABC123','https://opensky-network.org/api/states/all?icao24=abc123'],
+  ]){
+    const response=await relay(request(path));assert.equal(response.status,200);assert.equal(urls.at(-1),expected);assert.equal(response.headers.get('Access-Control-Allow-Origin'),ORIGIN);
+  }
+  const health=await (await relay(request('/health'))).json();assert.equal(health.capabilities.aircraftLookup,true);
+});
+
+test('follow rejects wildcards, multiple identifiers and mixed area/identifier queries before fetching', async()=>{
+  const relay=createRelay({fetchUpstream:()=>{throw Error('Invalid input must not be fetched')}});
+  for(const path of ['/adsbfi/hex/*','/adsb/hex/abc12','/adsb/hex/abc123,def456','/adsb/hex/~abc123','/adsb/hex/abc123?url=https://example.com','/opensky/states?icao24=abc123&icao24=def456','/opensky/states?icao24=abc123&lamin=0','/opensky/states?icao24=*','/opensky/states']){
+    assert.equal((await relay(request(path))).status,400,path);
+  }
+});
+
+test('follow shares OAuth tokens, caching and cooldowns with area requests',async()=>{
+ let time=1700000000000,authCalls=0,dataCalls=0,quota=false;
+ const relay=createRelay({now:()=>time,fetchUpstream:async(url,options)=>{
+   if(url===TOKEN){authCalls++;return tokenResponse()}
+   dataCalls++;assert.equal(options.headers.Authorization,'Bearer private-token');
+   return quota?new Response('',{status:429,headers:{'Retry-After':'120'}}):Response.json(snapshot());
+ }});
+ assert.equal((await relay(request('/opensky/states?icao24=abc123'),ENV)).status,200);
+ assert.equal((await relay(request('/opensky/states?icao24=abc123'),ENV)).headers.get('X-Flightscan-Cache'),'HIT');
+ assert.equal((await relay(request(BOX),ENV)).status,200);assert.equal(authCalls,1);assert.equal(dataCalls,2);
+ quota=true;time+=56000;
+ assert.equal((await relay(request('/opensky/states?icao24=def456'),ENV)).status,429);
+ const response=await relay(request(BOX),ENV);assert.equal(response.status,429);assert.equal((await response.json()).cooldown,true);assert.equal(dataCalls,3);
+});

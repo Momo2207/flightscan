@@ -1,8 +1,67 @@
 # Flightscan on Vercel
 
-Build: **2026-09-28.vercel.1**
+App and relay build: **2026-09-29.vercel.3**.
 
-This project runs the flight relay as a Vercel Node.js function. It includes the updated standalone HTML app. You can use the Vercel website directly or keep your existing GitHub Pages address.
+## Updating your working installation
+
+Upload these two files to your existing GitHub repository, preserving their paths, and commit them together:
+
+| File | Purpose |
+| --- | --- |
+| `index.html` | Area, Follow aircraft and Explore fleet modes, filters and saved views |
+| `api/relay.js` | Adds individual-aircraft lookups for Follow mode |
+
+**Both files are required.** The full ZIP contains them in the correct folders. Upload the extracted files, not the ZIP itself. You can replace the full project with the ZIP contents if that is easier. No new service, account or environment variable is needed for this update; use your existing Vercel project and configured provider access.
+
+If you set `CONFIG.apiBase` directly in your previous HTML, copy that same Vercel address into the new `index.html` before uploading. A relay URL saved through Connection remains saved in the same browser. Opening the app on its Vercel address connects to that deployment automatically.
+
+With automatic Git deployments enabled, Vercel deploys the commit. Wait until it is ready, then refresh the app with Ctrl+Shift+R (Cmd+Shift+R on macOS). About → Connection diagnostics should show app build `2026-09-29.vercel.3`. The relay health response should show the same build and `capabilities.aircraftLookup: true`. If Follow says that the relay needs updating, deploy `api/relay.js` too.
+
+## Using the three modes
+
+**Area:** select a place and radius as before. Moving the map does not change the search. “Search this area” moves your chosen center to the map center and retains the radius. Airline and type filters are optional. Each mode remembers its own filters.
+
+**Follow aircraft:** select an aircraft and choose “Follow this aircraft”, or enter its six-character ICAO hex in Follow mode. Following queries that identifier directly, so the target can leave the original radius. The callsign can change without changing the target. Panning or using the arrow keys pauses automatic centring; “Resume centring” returns to the newest reported position. “Return to Area” restores your area and filters. Pause remains available in every mode.
+
+If an aircraft stops reporting, the map shows an amber, dashed **LAST KNOWN** marker with its observation age. The inspector retains the timestamp and metrics from that report, clearly labelled as old data. Current-result counts exclude missing/stale aircraft. The app never predicts movement, and it cannot guarantee continuous provider coverage. Non-ICAO identifiers prefixed with `~` cannot be followed as stable aircraft identifiers. Observed trails cover up to ten minutes of this open session.
+
+**Explore fleet:** combine airline and aircraft type independently:
+
+| Airline/operator | Aircraft type | Matches |
+| --- | --- | --- |
+| Lufthansa | Airbus A320 · A320 | Reported A320 type with a Lufthansa callsign prefix |
+| All airlines | Airbus A320 · A320 | That reported type from any operator |
+| Lufthansa | All aircraft types | Any type with a Lufthansa callsign prefix |
+| All airlines | All aircraft types | All current aircraft in the search coverage |
+
+“Exact type” matches the reported ICAO type code. “Type family” groups related codes. Airbus A320 family includes A318, A319, A320, A321, A319neo, A320neo and A321neo. The available family groups are listed in the selector. The app excludes aircraft without type metadata from specific type filters and displays how many were excluded. OpenSky does not include type or registration metadata, so a type-specific search may show no matches when it is the active fallback.
+
+Airline names remain **inferred from callsigns**. Lufthansa means prefix `DLH`; separately coded subsidiaries remain separate operators. This is not a verified fleet ownership list.
+
+Fleet coverage has two choices:
+
+- **Current area:** your selected location and radius.
+- **Map view:** pan/zoom, then click **Search this view**. The search uses those fixed geographic bounds until you explicitly search again. The boundary and scope label identify the searched region. Wide views are rejected before any request; zoom in until the corners fit within 450 km of the view center. Area providers return a covering circle, which the app clips to the searched rectangle. OpenSky uses a bounding box, split into two requests when crossing the date line. Repeated aircraft are deduplicated by identifier, retaining the newest report.
+
+These are regional searches, not a worldwide inventory. Provider coverage and quotas still apply.
+
+**Saved views:** expand Saved views, optionally give the view a name and press Save view. You can store up to 20 views including the mode, filters, area/searched bounds and camera. Reusing a name updates it. Load restores a view; Delete removes it. A followed identifier can also be saved. Last-known aircraft positions are not persisted across reloads. Mode settings, bookmarks and saved views stay in this browser. Share view includes the mode, area and airline/type selections, or the followed hex, in the URL.
+
+## Requests and verification
+
+Existing request deadlines, OAuth token handling and cooldowns remain in place. UI filtering adds no flight API calls. Searches and mode changes retain the normal request interval and existing provider retry delays; a countdown above the map shows when the next request will run. Polling pauses when this tab is hidden or Pause is active. A late response from an earlier mode is discarded.
+
+New frontend requests use the existing canonical relay URL:
+
+- `/api/relay?path=adsbfi/hex/abc123`
+- `/api/relay?path=adsb/hex/abc123`
+- `/api/relay?path=opensky/states&icao24=abc123`
+
+The relay validates one six-character ICAO identifier and fetches only a fixed provider URL. It does not expose a general proxy or global snapshot route. An empty individual lookup tries the next eligible provider before showing a missing signal.
+
+Reference names and logos remain bundled in the HTML. See `DATA-SOURCES.md` and `LICENSES/` for provenance.
+
+The remaining sections describe a new installation.
 
 ## 1. Upload the files to GitHub
 
@@ -19,6 +78,8 @@ Upload the extracted files, not the ZIP itself. Replace the existing `index.html
 | `scripts/build.mjs` | Copies only the HTML into the public output folder |
 | `tests/relay.test.mjs` | Offline relay regression checks |
 | `SETUP.md` | These instructions |
+| `DATA-SOURCES.md` | Sources and display rules for the bundled lookups and icons |
+| `LICENSES/` | Reference-data and icon licenses and upstream credits |
 | `.gitignore` | Excludes generated files and local credentials |
 
 `vercel.json` and `package.json` must be at the selected Vercel project root. The old `worker.mjs` is not used by this deployment. Do not paste `api/relay.js` into the Cloudflare editor.

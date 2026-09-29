@@ -4,7 +4,7 @@
  */
 import { createHash } from 'node:crypto';
 
-export const BUILD = '2026-09-28.vercel.1';
+export const BUILD = '2026-09-29.vercel.3';
 const USER_AGENT = 'Flightscan/2.0 (+https://momo2207.github.io/flightscan/)';
 const TOKEN_URL = 'https://auth.opensky-network.org/auth/realms/opensky-network/protocol/openid-connect/token';
 export const LIMITS = Object.freeze({ auth: 30000, opensky: 45000, adsb: 9000 });
@@ -68,6 +68,20 @@ function endpoint(requestUrl, limits) {
     return null;
   }
   if (url.pathname === '/health' && !url.search) return { health: true };
+  // Follow one stable ICAO identifier. Never accept arbitrary provider URLs,
+  // wildcards, lists of identifiers or unrestricted global snapshot queries.
+  const aircraft = url.pathname.match(/^\/(adsb|adsbfi)\/hex\/([a-fA-F0-9]{6})\/?$/);
+  if (aircraft && !url.search) {
+    const hex = aircraft[2].toLowerCase();
+    return {
+      provider: aircraft[1] === 'adsbfi' ? 'adsb.fi' : 'ADSB.lol',
+      url: aircraft[1] === 'adsbfi'
+        ? `https://opendata.adsb.fi/api/v2/hex/${hex}`
+        : `https://api.adsb.lol/v2/hex/${hex}`,
+      ttl: 25000, timeout: limits.adsb,
+      valid: data => data && Array.isArray(data.ac ?? data.aircraft),
+    };
+  }
   const point = url.pathname.match(/^\/(adsb|adsbfi)\/point\/([^/]+)\/([^/]+)\/([^/]+)\/?$/);
   if (point && !url.search) {
     const lat = coordinate(point[2], -85, 85), lon = coordinate(point[3], -180, 180), nm = coordinate(point[4], 1, 243);
@@ -82,6 +96,16 @@ function endpoint(requestUrl, limits) {
     };
   }
   if (url.pathname === '/opensky/states') {
+    if (url.searchParams.has('icao24')) {
+      const identifiers = url.searchParams.getAll('icao24');
+      if ([...url.searchParams.keys()].length !== 1 || identifiers.length !== 1 || !/^[a-fA-F0-9]{6}$/.test(identifiers[0])) return null;
+      return {
+        provider: 'OpenSky',
+        url: 'https://opensky-network.org/api/states/all?icao24=' + identifiers[0].toLowerCase(),
+        ttl: 55000, timeout: limits.opensky,
+        valid: data => data && Number.isFinite(data.time) && (data.states === null || Array.isArray(data.states)),
+      };
+    }
     const names = ['lamin', 'lamax', 'lomin', 'lomax'];
     if ([...url.searchParams.keys()].length !== 4 || names.some(name => url.searchParams.getAll(name).length !== 1)) return null;
     const values = names.map((name, i) => coordinate(url.searchParams.get(name), i < 2 ? -90 : -180, i < 2 ? 90 : 180));
@@ -273,7 +297,7 @@ export function createRelay({ fetchUpstream = (...args) => fetch(...args), now =
     if (target.health) return json({
       service: 'flightscan-relay', version: 1, build: BUILD, platform: 'vercel-node', ok: true,
       providers: ['adsb.fi', 'ADSB.lol', 'OpenSky'], openskyAuthentication: auth.mode,
-      upstreamChecked: false, timeoutsMs: limits,
+      upstreamChecked: false, timeoutsMs: limits, capabilities: { aircraftLookup: true, boundedMapSearch: true },
     });
     if (target.provider === 'OpenSky' && auth.mode === 'incomplete') return json({
       error: 'Set both OPENSKY_CLIENT_ID and OPENSKY_CLIENT_SECRET in Vercel environment variables, then redeploy.',
