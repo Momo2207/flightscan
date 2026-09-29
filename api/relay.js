@@ -4,7 +4,7 @@
  */
 import { createHash } from 'node:crypto';
 
-export const BUILD = '2026-09-29.vercel.3';
+export const BUILD = '2026-09-29.vercel.5';
 const USER_AGENT = 'Flightscan/2.0 (+https://momo2207.github.io/flightscan/)';
 const TOKEN_URL = 'https://auth.opensky-network.org/auth/realms/opensky-network/protocol/openid-connect/token';
 export const LIMITS = Object.freeze({ auth: 30000, opensky: 45000, adsb: 9000 });
@@ -68,6 +68,18 @@ function endpoint(requestUrl, limits) {
     return null;
   }
   if (url.pathname === '/health' && !url.search) return { health: true };
+  const registration = url.pathname.match(/^\/(adsb|adsbfi)\/reg\/([A-Za-z0-9][A-Za-z0-9-]{1,11})\/?$/);
+  if (registration && !url.search && !registration[2].endsWith('-') && !registration[2].includes('--')) {
+    const reg = registration[2].toUpperCase();
+    return {
+      provider: registration[1] === 'adsbfi' ? 'adsb.fi' : 'ADSB.lol',
+      url: registration[1] === 'adsbfi'
+        ? `https://opendata.adsb.fi/api/v2/registration/${reg}`
+        : `https://api.adsb.lol/v2/reg/${reg}`,
+      ttl: 60000, timeout: limits.adsb,
+      valid: data => data && Array.isArray(data.ac ?? data.aircraft),
+    };
+  }
   // Follow one stable ICAO identifier. Never accept arbitrary provider URLs,
   // wildcards, lists of identifiers or unrestricted global snapshot queries.
   const aircraft = url.pathname.match(/^\/(adsb|adsbfi)\/hex\/([a-fA-F0-9]{6})\/?$/);
@@ -297,7 +309,7 @@ export function createRelay({ fetchUpstream = (...args) => fetch(...args), now =
     if (target.health) return json({
       service: 'flightscan-relay', version: 1, build: BUILD, platform: 'vercel-node', ok: true,
       providers: ['adsb.fi', 'ADSB.lol', 'OpenSky'], openskyAuthentication: auth.mode,
-      upstreamChecked: false, timeoutsMs: limits, capabilities: { aircraftLookup: true, boundedMapSearch: true },
+      upstreamChecked: false, timeoutsMs: limits, capabilities: { aircraftLookup: true, registrationLookup: true, boundedMapSearch: true },
     });
     if (target.provider === 'OpenSky' && auth.mode === 'incomplete') return json({
       error: 'Set both OPENSKY_CLIENT_ID and OPENSKY_CLIENT_SECRET in Vercel environment variables, then redeploy.',
