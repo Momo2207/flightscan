@@ -1,0 +1,35 @@
+/* Keep the illustration readable when names wrap to multiple lines. */
+#wallDisplay .wall-plane-art{display:flex;align-items:center;justify-content:center;color:var(--w-accent);opacity:.9;flex:0 0 auto;height:clamp(76px,10vh,190px);min-height:76px}
+#wallDisplay .wall-plane-art svg{width:auto;height:100%;max-width:100%;max-height:100%;overflow:visible}
+#wallDisplay .wall-type{font-size:calc(clamp(18px,1.7vw,38px)*var(--w-scale));line-height:1.15}
+#wallDisplay .wall-type[data-long=true]{font-size:calc(clamp(17px,1.35vw,31px)*var(--w-scale))}
+#wallSymbolLegend{margin:18px 0;color:var(--muted);font-size:12px}
+#wallSymbolLegend summary{cursor:pointer;padding:8px 0;color:var(--text)}
+.aircraft-symbol-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin:14px 0}
+.aircraft-symbol-item{display:flex;align-items:center;gap:9px}.aircraft-symbol-item svg{flex:0 0 34px;width:34px;height:40px;color:var(--lime)}
+@media(orientation:portrait){#wallDisplay .wall-plane-art{height:clamp(85px,9vh,160px);min-height:85px;max-height:160px}#wallDisplay .wall-type{font-size:clamp(18px,2.6vw,30px)}#wallDisplay .wall-type[data-long=true]{font-size:clamp(16px,2.3vw,27px)}}
+@media(max-height:800px) and (orientation:landscape){#wallDisplay .wall-plane-art{height:64px;min-height:64px}#wallDisplay .wall-type{font-size:20px}#wallDisplay .wall-type[data-long=true]{font-size:18px}#wallCard{gap:8px}.wall-carrier{margin-top:10px}.wall-metrics{gap:10px;padding-top:10px}.wall-feature-foot{margin-top:10px;padding-top:10px}}
+@media(max-width:580px){#wallDisplay .wall-plane-art{height:94px;min-height:94px;max-height:100px}#wallDisplay .wall-type{font-size:17px}#wallDisplay .wall-type[data-long=true]{font-size:15px}}
+#wallCard[data-fit=compact],#wallCard[data-fit=tight]{gap:7px}
+#wallCard[data-fit=compact] .wall-carrier,#wallCard[data-fit=tight] .wall-carrier{margin-top:4px}
+#wallCard[data-fit=compact] .wall-plane-art{height:76px;min-height:76px}
+#wallCard[data-fit=compact] .wall-callsign{font-size:clamp(26px,2.8vw,58px)}
+#wallCard[data-fit=compact] .wall-type{font-size:clamp(17px,1.35vw,30px)}
+#wallCard[data-fit=compact] .wall-metrics{gap:10px;padding-top:10px}
+#wallCard[data-fit=tight] .wall-plane-art{height:64px;min-height:64px}
+#wallCard[data-fit=tight] .wall-callsign{font-size:clamp(24px,2.2vw,44px)}
+#wallCard[data-fit=tight] .wall-type{font-size:18px}
+#wallCard[data-fit=tight] .wall-carrier strong{font-size:20px}
+#wallCard[data-fit=tight] .wall-metrics{gap:8px;padding-top:8px}
+#wallCard[data-fit=tight] .wall-metrics strong{font-size:clamp(20px,1.7vw,32px)}
+#wallCard[data-fit=tight] .wall-observation{font-size:10px}
+@media(max-width:580px){
+ #wallCard .wall-plane-art{grid-row:1/3}
+ #wallCard .wall-identity{grid-column:1/-1}
+ #wallCard[data-fit=compact],#wallCard[data-fit=tight]{gap:6px}
+ #wallCard[data-fit=compact] .wall-type,#wallCard[data-fit=tight] .wall-type{font-size:15px}
+ #wallCard[data-fit=compact] .wall-carrier strong,#wallCard[data-fit=tight] .wall-carrier strong{font-size:16px}
+ #wallCard[data-fit=tight] .wall-callsign{font-size:24px}
+ #wallCard[data-fit=tight] .wall-metrics strong{font-size:18px}
+ #wallCard[data-fit=tight] .wall-observation{font-size:9px}
+}

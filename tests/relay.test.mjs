@@ -22,6 +22,26 @@ function request(path = POINT, init = {}, direct = true) {
   return new Request(target, { headers: { Origin: ORIGIN }, ...init });
 }
 
+test('registration lookup uses fixed provider routes, uppercase values and shared response caching', async () => {
+ const urls=[];
+ const relay=createRelay({fetchUpstream:async url=>{urls.push(url);return Response.json({ac:[{hex:'3d3349',r:'D-ERRD',t:'CH7B'}]})}});
+ const a=await relay(request('/adsbfi/reg/d-errd'));assert.equal(a.status,200);
+ assert.equal(urls[0],'https://opendata.adsb.fi/api/v2/registration/D-ERRD');
+ assert.equal((await relay(request('/adsbfi/reg/D-ERRD'))).headers.get('X-Flightscan-Cache'),'HIT');
+ assert.equal(urls.length,1);
+ assert.equal((await relay(request('/adsb/reg/N123AB'))).status,200);assert.equal(urls[1],'https://api.adsb.lol/v2/reg/N123AB');
+ assert.equal((await (await relay(request('/health'))).json()).capabilities.registrationLookup,true);
+});
+test('registration rejects wildcards, lists, unsafe paths and added parameters', async () => {
+ const relay=createRelay({fetchUpstream:()=>{throw Error('Unexpected upstream call')}});
+ for(const path of ['/adsb/reg/*','/adsb/reg/N123,N456','/adsbfi/reg/D-ERRD?url=https://evil.test','/adsb/reg/D--ERRD','/adsb/reg/D-','/adsb/reg/ABCDEFGHIJKLM','/adsb/reg/A','/adsb/reg/https://evil.test'])assert.equal((await relay(request(path))).status,400,path);
+});
+test('registration rate limits also cool down point and hex requests',async()=>{
+ let calls=0;const relay=createRelay({fetchUpstream:async()=>{calls++;return new Response('',{status:429,headers:{'Retry-After':'240'}})}});
+ assert.equal((await relay(request('/adsbfi/reg/D-ERRD'))).status,429);
+ assert.equal((await relay(request(POINT))).status,429);assert.equal(calls,1);
+});
+
 test('Vercel Web handler responds to health without claiming to check providers', async () => {
   const response = await handler.fetch(request('/health'));
   const body = await response.json();

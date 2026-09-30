@@ -1,21 +1,78 @@
 # Flightscan on Vercel
 
-App and relay build: **2026-09-29.vercel.3**.
+App build: **2026-09-30.vercel.17**. Relay build: **2026-09-30.vercel.11**.
 
 ## Updating your working installation
 
-Upload these two files to your existing GitHub repository, preserving their paths, and commit them together:
+For this update, replace **`index.html`** in your existing GitHub repository. Build 17 brings the Midnight and Sunset design system to the tracker, settings and every wall mode: glass panels, warm/cool gradients, embedded sans-serif fonts, larger route codes and calmer filters. Open the **Midnight / Sunset** button in the header for Appearance. Wall Settings has its own theme selector, glass effects and background settings. Existing Night/Paper choices migrate automatically because their stored IDs are retained. Routes, delayed playback, aircraft colours, visits and daily CSV/Excel exports remain included.
+
+The simplest update needs only the new HTML, including all fonts. To keep the editable design sources, upload all extracted files and folders. Vercel's build will assemble those styles automatically. Your relay remains build 11. If upgrading from app build 10 or earlier, also update `api/relay.js`. Keep existing environment variables and the public production relay URL.
 
 | File | Purpose |
 | --- | --- |
-| `index.html` | Area, Follow aircraft and Explore fleet modes, filters and saved views |
-| `api/relay.js` | Adds individual-aircraft lookups for Follow mode |
+| `index.html` | Route displays and independent lookup scheduling, plus the existing wall modes and buffered playback |
+| `api/relay.js` | Adds a bounded, validated route-batch endpoint alongside the existing flight and registration endpoints |
 
-**Both files are required.** The full ZIP contains them in the correct folders. Upload the extracted files, not the ZIP itself. You can replace the full project with the ZIP contents if that is easier. No new service, account or environment variable is needed for this update; use your existing Vercel project and configured provider access.
+Upload the extracted files, not the ZIP itself, and preserve folder paths. If GitHub Pages and Vercel use separate repositories, update the frontend in the Pages repository and the relay in the Vercel repository. Keep your existing environment variables and credentials on Vercel.
 
-If you set `CONFIG.apiBase` directly in your previous HTML, copy that same Vercel address into the new `index.html` before uploading. A relay URL saved through Connection remains saved in the same browser. Opening the app on its Vercel address connects to that deployment automatically.
+If you set `CONFIG.apiBase` directly in your previous HTML, copy your **public Vercel production base URL** into the new `index.html` before uploading. A relay URL saved through Connection remains saved in the same browser and overrides that default. Opening the app on its public Vercel `.vercel.app` production address connects to that origin automatically.
 
-With automatic Git deployments enabled, Vercel deploys the commit. Wait until it is ready, then refresh the app with Ctrl+Shift+R (Cmd+Shift+R on macOS). About → Connection diagnostics should show app build `2026-09-29.vercel.3`. The relay health response should show the same build and `capabilities.aircraftLookup: true`. If Follow says that the relay needs updating, deploy `api/relay.js` too.
+With automatic Git deployments enabled, Vercel deploys the commit. Wait until it is ready, then refresh the app with Ctrl+Shift+R (Cmd+Shift+R on macOS). About → Connection diagnostics should show app build `2026-09-30.vercel.17`. Open your public Vercel domain followed by `/api/relay?path=health`: the relay should show build `2026-09-30.vercel.11`, `routeLookupMethod: "individual-get"`, `capabilities.routeLookup: true` and `capabilities.registrationLookup: true`. Different app and relay build numbers are expected for this frontend-only update. Existing retry delays remain in effect until they expire. An OpenSky authentication error is separate from route lookup; routes use ADSB.lol and require no OpenSky credentials.
+
+## Flight spectrum colours
+
+Choose **Wall display → Settings → Aircraft colours → Flight spectrum**, then apply the display settings. The preview shows blue ground, cyan climb, green level flight, yellow/orange/red descent and blue on ground again. Colours use the same delayed, interpolated telemetry as the moving aircraft, with an eight-second transition between states. The setting survives reloads and is included in display setup links. Midnight and Sunset themes have separate contrast-adjusted palettes. Aircraft labels and selection rings keep their existing styling; the normal interactive map keeps its discrete altitude categories, now with theme-specific contrast. No relay or environment changes are needed.
+
+## Flight routes
+
+Routes appear as airport codes, for example **FRA → LIS**, under the label **Route** or **Flight route**. Airport city/name details appear in the normal inspector and wall card where space permits. About explains that these are callsign-based inferences from ADSB.lol rather than confirmed flight plans. Tracker views and tooltips carry no uncertainty labels or approximation symbols. Missing, ambiguous, multi-leg or geographically implausible results stay hidden. No ETA, flight progress or destination arrival claim is added.
+
+| View | Route display |
+| --- | --- |
+| Normal aircraft details | Below the selected callsign, with airport names and source |
+| Desktop aircraft table | Optional **Show route column** checkbox; off initially |
+| Wall featured card / Follow | Compact codes and secondary airport names |
+| 24-hour sightings | Compact route saved with the observed callsign, when available |
+| Aircraft-only wall layout | Third label line with available routes; **Show routes in aircraft-only labels** is on by default and can be turned off |
+
+Route lookups are on by default. **About → Look up likely routes** disables them; the optional table column is remembered separately. A route lookup sends the aircraft's public callsign and reported coordinates through the existing Vercel relay. See `DATA-SOURCES.md` for attribution and limitations. No additional credentials are needed for the currently public route endpoint.
+
+Lookups run separately from position polling and delayed playback. The app submits up to four distinct callsigns per batch, at least 15 seconds apart. The relay makes individual GET requests with at most two in progress; the whole batch has a 20-second deadline and the browser allows 23 seconds. These limits include reading responses and account for more than one upstream request. A valid route is reused for ten minutes, an unknown result for five minutes. Route errors have their own retry delay and diagnostics, so a route failure does not cool down the aircraft-position provider. The relay still accepts older eight-plane requests, with the same concurrency and total deadline.
+
+If some callsigns fail or time out, successful routes still appear. Failed callsigns wait before retrying; provider-wide access restrictions and quotas pause all route requests. A completely failed batch cannot keep unqueried aircraft at the back of the queue indefinitely. Live verification of build 11 retained a valid Gatwick → Thessaloniki route while three other callsigns returned HTTP 500 errors.
+
+Routes are tied to ICAO ID, callsign and the observed flight episode. A callsign change or reception gap over 30 minutes starts a new episode. Delayed wall playback retains the identity of its own observation, and a late response cannot decorate a newer flight or replaced connection. Already saved sightings retain their observed route while in the 24-hour history; changing the sighting's flight clears that route. No historical routes are requested.
+
+When entering wall mode, recorded playback points can recover the start of an existing route episode. This uses only the in-memory buffer, stops at unknown or different callsigns and respects already closed episodes. It performs no historical network lookup. The bounded route cache preserves valid route answers ahead of unresolved entries when a wider collection area supplies more aircraft.
+
+## Wall display quick start
+
+1. Select **Wall display** in the header, or **Settings** on an active display.
+2. Choose **Area** or **Airline & aircraft**, keep **Fit map rectangle**, choose a centre and set **Coverage width** in km or NM. The height follows the actual map panel. Airline and aircraft selections can be combined here.
+3. To follow an aircraft, choose **Follow aircraft**, enter a registration such as **D-ERRD**, a callsign currently received in the app such as **EZY83LT**, or its six-character ICAO ID, and select **Find aircraft**. Check the returned identity. Select the correct result if more than one is returned, then choose **Follow aircraft** at the bottom of the form. Callsigns are searched in current received observations; an offscreen aircraft can be found by registration or ICAO ID.
+4. Keep **90 seconds** of playback delay initially. Set appearance, time zone, keep-awake and active hours as desired. These remain browser-local wall settings.
+5. Allow observations to accumulate. A fresh start can take the chosen delay plus a feed interval; no synthetic planes are used during startup.
+6. Move the pointer, tap or press a key to reveal controls. Choose **Exit display** or press Escape to restore the normal app's previous mode, area and camera.
+
+For the scrolling log, choose **24-hour log · map & sightings** under **Display mode**. It shows one card per ICAO aircraft with its latest flight's route, type, airline, callsign, first/last observed times within the past 24 hours and sighting count. Entering this mode fixes an exact monitoring footprint. To change it, open **Recording & daily exports → Use current map area for recording**. Zooming or resizing changes the camera, not the monitoring footprint. Follow does not provide a full regional feed. See `SIGHTINGS-EXPORTS.md` for visit/session rules, migration and exports.
+
+To receive daily files, open **Recording & daily exports**, choose **CSV** or **Excel workbook**, then enable **Automatically export every 24 hours**. The first period starts at that moment. Allow automatic downloads for the frontend's domain. A supported browser can instead use **Choose / reconnect export folder**. Completed reports remain in Settings for recovery; **Download current 24 hours** works immediately. Reports finalize within two minutes of the period boundary and process on resume if the browser was inactive. The app cannot collect flights while closed, hidden or resting.
+
+**Zoom:** under **Area / 24-hour zoom**, choose **Automatic · fit coverage width** or a zoom from 4 to 15. Follow has its own **Follow zoom** setting. Higher numbers show a closer view. While displaying, use **+ / −**, **Fit area** or **Reset zoom** in the controls. Regional zoom adjusts the camera; the 24-hour recording area remains fixed, and its collection scope is maintained; very wide views are limited to the feed’s supported coverage. Zoom changes preserve the existing sightings log and interpolation buffer. Newly exposed areas need fresh observations.
+
+**Aircraft only:** set **Wall layout → Aircraft only**, then apply. It works with Area, Airline & aircraft, Follow and the 24-hour log. It removes tiles, headers, panels, trails and the clock, leaving category icons with a callsign/altitude box and a short reported-direction arrow. Both Midnight and Sunset themes work. Controls hide after five seconds; touch, move the pointer or press a key to return them. Regional sightings keep recording in the background. Switch back to **Map & panels** to see the list or details again.
+
+The list loops upward automatically in Smooth mode. Hover or keyboard focus pauses it temporarily; the controls include **Pause scrolling** and up/down paging. Reduced motion uses manual paging. Portrait screens put the list below the map.
+
+See **WALL-DISPLAY.md** for playback behavior, rest hours, privacy, device setup, tests and limitations. The normal interface continues to show the most recent received positions; delayed interpolation is confined to Wall Display.
+
+## If Vercel redirects to its login page
+
+A `307` redirect to `vercel.com/sso-api` means Vercel Deployment Protection is intercepting the request before the relay. Adding CORS headers to the app cannot solve that platform login gate.
+
+In your Vercel project's Domains/Production deployment, copy the **stable production domain**, not a per-deployment address containing a generated hash. In Flightscan → Connection, replace the saved relay URL and choose **Test & connect**. Check Project → Settings → Deployment Protection: **Standard Protection** keeps preview/generated deployment URLs protected while production domains are public. Do not put a Vercel protection-bypass secret in this public HTML.
+
+In a private browser window, open your production domain followed by `/api/relay?path=health`. It should return relay JSON, not a login page. Health checks the relay configuration, not whether every provider currently supplies flights. See [Vercel Deployment Protection](https://vercel.com/docs/deployment-protection).
 
 ## Using the three modes
 
@@ -56,6 +113,8 @@ New frontend requests use the existing canonical relay URL:
 - `/api/relay?path=adsbfi/hex/abc123`
 - `/api/relay?path=adsb/hex/abc123`
 - `/api/relay?path=opensky/states&icao24=abc123`
+- `/api/relay?path=adsbfi/reg/D-ERRD`
+- `/api/relay?path=adsb/reg/D-ERRD`
 
 The relay validates one six-character ICAO identifier and fetches only a fixed provider URL. It does not expose a general proxy or global snapshot route. An empty individual lookup tries the next eligible provider before showing a missing signal.
 
@@ -77,6 +136,15 @@ Upload the extracted files, not the ZIP itself. Replace the existing `index.html
 | `package.json` | Node.js 24 and build command; no npm dependencies |
 | `scripts/build.mjs` | Copies only the HTML into the public output folder |
 | `tests/relay.test.mjs` | Offline relay regression checks |
+| `tests/wall-playback.test.mjs` | Offline interpolation, buffering, gap and bounded-history checks |
+| `tests/wall-coverage.test.mjs` | Map-proportioned coverage and collection-margin checks |
+| `tests/aircraft-symbols.test.mjs` | Type classification, conservative fallbacks and shared-symbol checks |
+| `tests/sighting-log.test.mjs` | Rolling 24-hour expiry, deduplication, geographic separation and serialization checks |
+| `tests/sighting-visits.test.mjs` | Multiple passages, flight segments, routes, precise areas, coverage gaps, CSV/XLSX and daily report rollover |
+| `SIGHTINGS-EXPORTS.md` | Recording, migration, downloads, folder permissions and report schema |
+| `tests/routes.test.mjs` | Flight-episode identity, delayed observations, route plausibility and expiry checks |
+| `tests/routes-relay.test.mjs` | Fixed route endpoint, validated batches, independent quotas and deadline checks |
+| `WALL-DISPLAY.md` | Wall-display setup and playback behavior |
 | `SETUP.md` | These instructions |
 | `DATA-SOURCES.md` | Sources and display rules for the bundled lookups and icons |
 | `LICENSES/` | Reference-data and icon licenses and upstream credits |
@@ -129,7 +197,7 @@ Expected fields include:
 {
   "service": "flightscan-relay",
   "version": 1,
-  "build": "2026-09-28.vercel.1",
+  "build": "2026-09-30.vercel.11",
   "platform": "vercel-node",
   "ok": true,
   "openskyAuthentication": "oauth",
@@ -170,6 +238,8 @@ Leave the rest of `CONFIG` intact. A URL saved through Connection takes preceden
 | Browser waiting for each OpenSky request | 50 seconds |
 | Each ADS-B provider request on the relay | 9 seconds |
 | Browser waiting for each ADS-B request | 12 seconds |
+| Complete route-batch relay request | 20 seconds, at most two upstream lookups in progress |
+| Browser waiting for a route batch | 23 seconds |
 | Vercel function execution | 60 seconds |
 | Entire browser polling round | 130 seconds, allowing both providers and two OpenSky boxes across the dateline |
 
@@ -185,6 +255,8 @@ Open **About → Connection diagnostics** to verify the app build and relay URL.
 | `OPENSKY_AUTH_NETWORK` with `UND_ERR_CONNECT_TIMEOUT` | Node could not establish the authentication connection within its transport timeout. |
 | `UPSTREAM_TIMEOUT` | Authentication completed or was unnecessary, but the flight-data request did not finish. |
 | HTTP 403 or 429 from a provider | Provider access restriction or quota. The relay and app respect the retry delay. |
+| `UPSTREAM_EMPTY` in Flight routes | The route endpoint returned no body. Build 11 includes the upstream HTTP status in the message. |
+| `UPSTREAM_NON_JSON` in Flight routes | The route endpoint returned unusable content. Ensure the relay is build 11 and health says `individual-get`. |
 
 The JSON response identifies `provider`, `stage`, `code`, `retryAfter` and, when available, a safe `networkCode`. It never returns the authentication response body or access token. `/health` remains available during a provider cooldown.
 

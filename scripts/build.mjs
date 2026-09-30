@@ -1,4 +1,7 @@
+import {refreshDesign} from './build-design.mjs';
 import { copyFile, mkdir, rm } from 'node:fs/promises';
+
+await refreshDesign();
 
 // Only the HTML is public. Credentials stay in server environment variables.
 const output = new URL('../public/', import.meta.url);

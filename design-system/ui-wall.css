@@ -1,0 +1,44 @@
+/* Wall materials share the tracker tokens; aircraft rendering stays independent. */
+#wallDisplay{font-family:var(--font-ui);background-attachment:fixed;--w-scale:1}
+.wall-top h1{font-weight:900;letter-spacing:-.055em;line-height:1.02;margin:10px 0 12px}
+.wall-eyebrow{font-weight:600;letter-spacing:.12em}.wall-top .wall-eyebrow{color:var(--w-accent)}
+.wall-time time{font-family:var(--font-ui);font-weight:100;letter-spacing:-.055em;font-variant-numeric:tabular-nums}
+.wall-time>span,.wall-time small{font-family:var(--font-ui)}
+.wall-map{border-color:var(--glass-edge);box-shadow:var(--shadow),var(--inner-edge)}
+.wall-feature,#wallLog{background:var(--glass);border:1px solid var(--glass-edge);border-radius:var(--radius-panel);padding:clamp(18px,1.8vw,36px);box-shadow:var(--shadow),var(--inner-edge);position:relative;overflow:hidden}
+.wall-feature:before,#wallLog:before{content:'';position:absolute;inset:0;border-radius:inherit;background:radial-gradient(ellipse at 85% 105%,color-mix(in srgb,var(--glow) 18%,transparent),transparent 60%);pointer-events:none}
+.wall-feature>* ,#wallLog>*{position:relative}.wall-feature-heading{padding-bottom:16px;flex-shrink:0}
+.wall-callsign{font-family:var(--font-ui);font-weight:700;letter-spacing:-.045em}
+.wall-carrier strong{font-weight:700}.wall-carrier .airline-badge{border-radius:16px;background:var(--elevated)}.wall-carrier .airline-badge img{opacity:1}
+.wall-type{font-family:var(--font-ui);font-weight:400}.wall-registration{font-family:var(--font-ui);font-variant-numeric:tabular-nums}
+.wall-plane-art{color:var(--w-plane)!important}.wall-metrics strong{font-weight:300;font-family:var(--font-ui)}
+.wall-metrics .wall-unit,.wall-observation,.wall-bottom,.wall-feature-foot{font-family:var(--font-ui)}
+.wall-feature-foot{flex-shrink:0}.wall-compass{font-family:var(--font-ui);color:var(--map-muted)}
+#wallControls{border-radius:22px;box-shadow:var(--shadow),var(--inner-edge);backdrop-filter:blur(var(--blur));-webkit-backdrop-filter:blur(var(--blur));background:var(--glass-control)}
+#wallControls button{border-radius:12px;min-height:44px}#wallWakeStatus,#wallControlMeta,#wallZoomValue{font-family:var(--font-ui)}
+#wallLog{display:none}#wallDisplay[data-mode=log] #wallLog{display:flex;background:var(--glass);border:1px solid var(--glass-edge)}
+.wall-log-heading h2{font-family:var(--font-ui);font-weight:900;letter-spacing:-.045em}
+.wall-log-flight strong{font-family:var(--font-ui);font-weight:700;letter-spacing:-.025em}
+.wall-log-type b{font-family:var(--font-ui);font-weight:700}.wall-log-symbol{color:var(--w-plane)}
+.wall-log-foot,.wall-log-times,#wallLogCount{font-family:var(--font-ui);font-variant-numeric:tabular-nums}
+.wall-log-heading{padding-bottom:18px}.wall-log-foot{font-size:clamp(10px,.7vw,15px)}
+#wallDisplay[data-mode=log] .wall-body{grid-template-columns:minmax(0,1fr) clamp(320px,30vw,680px);gap:clamp(20px,2.4vw,46px)}
+#wallDisplay[data-layout=minimalist]{background:var(--w-bg)}
+#wallDisplay[data-layout=minimalist] .wall-map{box-shadow:none}
+#wallDisplay[data-layout=minimalist] .wall-feature:before,#wallDisplay[data-layout=minimalist] #wallLog:before{display:none}
+#wallMinimalNotice{font-family:var(--font-ui)!important}
+#wallSetup .wall-form-grid{gap:18px;margin:20px 0}#wallSetup .wall-form-grid>div{min-width:0}
+#wallSetup .wall-width{display:grid;grid-template-columns:minmax(0,1fr) 85px;gap:8px;align-items:center}
+#wallSetup .wall-form-grid label{margin-top:0}#wallSetup .check{margin:16px 0;white-space:normal}
+.wall-lookup{display:flex;gap:8px}.wall-lookup input{min-width:0;flex:1}.wall-lookup button{flex-shrink:0}
+.wall-match{display:flex!important;gap:10px;align-items:center;padding:12px;border:1px solid var(--line);border-radius:12px}.wall-match input{width:auto!important;min-height:17px}
+#wallLookupStatus{font-size:13px;line-height:1.5;margin:10px 0}.wall-divider{border:0;border-top:1px solid var(--line);margin:24px 0}
+#wallSetup .wall-form-note{font-size:12px}.wall-share-options{padding-top:12px}
+#wallDisplay[data-ambient=flow]:not([data-layout=minimalist]){background-size:150% 150%;animation:ambientFlow 36s ease-in-out infinite alternate}
+:root[data-effects=reduced] #wallDisplay{--glass:var(--panel);--glass-control:var(--panel);--blur:0px}
+:root[data-effects=reduced] .wall-feature:before,:root[data-effects=reduced] #wallLog:before{display:none}
+@media(orientation:portrait){.wall-feature,#wallLog{padding:20px}#wallDisplay[data-mode=log] .wall-body{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(160px,1fr) minmax(300px,1fr);gap:24px}.wall-feature-heading{padding-bottom:10px}.wall-log-heading h2{font-size:clamp(23px,3.5vw,42px)}}
+@media(max-height:800px) and (orientation:landscape){.wall-feature,#wallLog{padding:18px}.wall-feature-heading{padding-bottom:10px}.wall-top h1{font-size:36px}.wall-time time{font-size:42px}#wallRoute .aircraft-route strong{font-size:26px}.wall-carrier .airline-badge{width:40px;height:40px;flex-basis:40px}}
+@media(max-width:580px){#wallDisplay{padding:16px;gap:14px}.wall-top h1{font-size:28px;max-width:57vw}.wall-top p{font-size:11px;line-height:1.45}.wall-time time{font-size:32px}.wall-feature,#wallLog{padding:14px;border-radius:20px}.wall-feature-heading{padding-bottom:9px}.wall-log-heading{padding-bottom:10px}.wall-log-heading h2{font-size:23px}.wall-log-times{font-size:10px}.wall-log-foot{font-size:9px;padding-top:8px}.wall-feature-foot{font-size:9px;margin-top:8px;padding-top:8px}#wallControls{padding:10px;border-radius:18px;gap:6px}#wallControls button{padding:8px 10px;min-height:44px}#wallSetup .wall-form-grid{gap:16px}.wall-log-flight strong{font-size:18px}.wall-top h1{overflow-wrap:anywhere}}
+@media(prefers-reduced-motion:reduce){#wallDisplay[data-ambient=flow]{animation:none}}
+.wall-feature:after,#wallLog:after{content:'';position:absolute;bottom:0;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent,var(--glow-soft),transparent);opacity:.6;pointer-events:none}

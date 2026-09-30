@@ -1,0 +1,37 @@
+/* A dedicated map-and-log composition, with only a small identity header in the list. */
+#wallDisplay[data-mode=log]{grid-template-rows:minmax(0,1fr);padding:clamp(16px,2.5vw,48px)}
+#wallDisplay[data-mode=log] .wall-top,#wallDisplay[data-mode=log] .wall-bottom,#wallDisplay[data-mode=log] .wall-feature{display:none}
+#wallDisplay[data-mode=log] .wall-body{grid-template-columns:minmax(0,1fr) clamp(310px,29vw,670px);grid-template-rows:minmax(0,1fr);gap:clamp(20px,2.5vw,48px)}
+#wallLog{display:none;min-height:0;min-width:0;flex-direction:column;color:var(--w-text);padding:0;background:none;border:0}
+#wallDisplay[data-mode=log] #wallLog{display:flex}
+.wall-log-heading{flex:0 0 auto;border-bottom:1px solid var(--w-line);padding-bottom:22px}
+.wall-log-heading .wall-eyebrow{display:flex;justify-content:space-between;gap:12px}
+.wall-log-heading .wall-eyebrow span{margin:0;opacity:1}
+.wall-log-heading h2{font:900 clamp(24px,2.15vw,56px)/1.1 var(--font-ui);letter-spacing:-.03em;margin:17px 0 10px;overflow-wrap:anywhere}
+#wallLogCount{font:clamp(12px,1.05vw,24px)/1.5 var(--font-ui);color:var(--w-accent)}
+#wallLogViewport{--log-row-height:154px;position:relative;flex:1;min-height:0;overflow:hidden;outline-offset:3px;margin:10px 0;mask-image:linear-gradient(to bottom,transparent,#000 14px,#000 calc(100% - 16px),transparent)}
+#wallLogTrack{position:absolute;left:0;right:0;top:0;will-change:transform}
+.wall-log-row{height:var(--log-row-height);box-sizing:border-box;display:flex;align-items:center;gap:18px;border-bottom:1px solid var(--w-line)}
+.wall-log-symbol{flex:0 0 48px;height:62px;color:var(--w-accent)}
+.wall-log-symbol svg{width:100%;height:100%}
+.wall-log-info{min-width:0;flex:1;display:flex;flex-direction:column;gap:7px}
+.wall-log-flight{display:flex;align-items:baseline;justify-content:space-between;gap:10px;min-width:0}
+.wall-log-flight strong{font:700 clamp(18px,1.4vw,34px)/1.15 var(--font-ui);letter-spacing:-.03em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.wall-log-flight>span{font:clamp(10px,.8vw,17px)/1.3 var(--font-ui);color:var(--w-muted);white-space:nowrap}
+.wall-log-type{display:flex;gap:8px;align-items:baseline;min-width:0;font-size:clamp(12px,.95vw,23px)}
+.wall-log-type b{font-family:var(--font-ui);font-weight:400;flex-shrink:0;color:var(--w-accent)}
+.wall-log-type>span,.wall-log-airline{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.wall-log-type>span{color:var(--w-muted)}
+.wall-log-airline{font-size:clamp(13px,1.1vw,25px)}
+.wall-log-foot{flex:0 0 auto;border-top:1px solid var(--w-line);padding-top:15px;font:clamp(10px,.8vw,17px)/1.55 var(--font-ui);color:var(--w-muted)}
+.wall-log-foot p{margin:4px 0;color:var(--w-muted)}.wall-log-foot a{color:inherit}
+#wallLogEmpty{padding:30px 4px;font:clamp(16px,1.4vw,25px)/1.5 var(--font-ui);color:var(--w-muted)}
+#wallLogEmpty[hidden]{display:none}
+#wallDisplay:not([data-mode=log]) .wall-log-control{display:none}
+#wallDisplay[data-mode=log] #wallPrevious,#wallDisplay[data-mode=log] #wallNext,#wallDisplay[data-mode=log] #wallPin{display:none}
+#wallDisplay[data-distance=far] #wallLogViewport{--log-row-height:180px}
+@media(min-width:2500px){#wallLogViewport{--log-row-height:230px}#wallDisplay[data-distance=far] #wallLogViewport{--log-row-height:250px}.wall-log-symbol{flex-basis:70px;height:92px}.wall-log-info{gap:12px}}
+@media(orientation:portrait){#wallDisplay[data-mode=log] .wall-body{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(160px,1fr) minmax(300px,1fr);gap:24px}.wall-log-heading{display:grid;grid-template-columns:1fr auto;align-items:baseline;padding-bottom:10px}.wall-log-heading .wall-eyebrow{grid-column:1/-1}.wall-log-heading h2{margin:10px 0 0}.wall-log-foot{font-size:11px;padding-top:8px}#wallLogViewport{--log-row-height:142px}.wall-log-type,.wall-log-airline{font-size:15px}.wall-log-flight strong{font-size:22px}}
+@media(max-width:580px){#wallDisplay[data-mode=log]{padding:14px}#wallDisplay[data-mode=log] .wall-body{gap:16px;grid-template-rows:minmax(130px,.75fr) minmax(310px,1fr)}#wallLogViewport,#wallDisplay[data-distance=far] #wallLogViewport{--log-row-height:128px}.wall-log-heading h2{font-size:21px}.wall-log-heading .wall-eyebrow{font-size:10px}.wall-log-heading{column-gap:10px}.wall-log-symbol{flex-basis:37px;height:54px}.wall-log-row{gap:12px}.wall-log-type,.wall-log-airline{font-size:12px}.wall-log-flight strong{font-size:17px}.wall-log-info{gap:6px}.wall-log-foot{font-size:9px}}
+
+.wall-log-times{font:clamp(10px,.72vw,17px)/1.45 var(--font-ui);color:var(--w-muted);white-space:normal;overflow-wrap:anywhere}.wall-log-row.has-route .wall-log-info{gap:5px}#sightingSettings{margin:20px 0;border-top:1px solid var(--line);padding-top:18px}#sightingSettings>summary{cursor:pointer;font-weight:650;font-size:15px}#monitorAreaDetails{overflow-wrap:anywhere}.sighting-report-row{display:flex;gap:14px;align-items:center;justify-content:space-between;border-top:1px solid var(--line);padding:10px 0;font-size:12px}.sighting-report-row span{min-width:0;overflow-wrap:anywhere}.sighting-report-row button{flex-shrink:0}@media(max-width:580px){.wall-log-times{font-size:10px}.wall-log-info{gap:4px}.wall-log-row.has-route .wall-log-info{gap:3px}.sighting-report-row{align-items:flex-start}}

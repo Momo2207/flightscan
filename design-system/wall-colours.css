@@ -1,0 +1,3 @@
+#wallColourPreview{margin:10px 0 18px}
+#wallColourRamp{height:12px;border-radius:6px;box-shadow:inset 0 0 0 1px #ffffff18}
+.wall-colour-labels{display:flex;justify-content:space-between;gap:8px;margin-top:7px;font-size:11px;color:var(--muted)}

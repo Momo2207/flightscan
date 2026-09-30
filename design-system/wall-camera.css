@@ -1,0 +1,13 @@
+.wall-camera-form{margin:18px 0 0}.wall-camera-form select{width:100%}
+#wallZoomValue{font:12px var(--font-ui);min-width:76px;text-align:center;color:var(--w-text)}
+#wallControlMeta{display:none;width:100%;text-align:center;color:var(--w-muted);font:11px/1.5 var(--font-ui)}
+#wallControlMeta a{color:inherit}
+#wallMinimalNotice{display:none}
+#wallDisplay[data-layout=minimalist]{padding:0;gap:0;grid-template-rows:minmax(0,1fr)}
+#wallDisplay[data-layout=minimalist] .wall-body{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr);gap:0}
+#wallDisplay[data-layout=minimalist] .wall-top,#wallDisplay[data-layout=minimalist] .wall-bottom,#wallDisplay[data-layout=minimalist] #wallFeature,#wallDisplay[data-layout=minimalist] #wallLog{display:none}
+#wallDisplay[data-layout=minimalist] .wall-map{border:0;border-radius:0;background:var(--w-bg)}
+#wallDisplay[data-layout=minimalist] .wall-map:after,#wallDisplay[data-layout=minimalist] .wall-compass,#wallDisplay[data-layout=minimalist] .wall-map-credit,#wallDisplay[data-layout=minimalist] #wallMapFailure{display:none}
+#wallDisplay[data-layout=minimalist] #wallPrevious,#wallDisplay[data-layout=minimalist] #wallNext,#wallDisplay[data-layout=minimalist] #wallPin,#wallDisplay[data-layout=minimalist] .wall-log-control{display:none}
+#wallDisplay[data-layout=minimalist] #wallControlMeta{display:block}
+#wallDisplay[data-layout=minimalist] #wallMinimalNotice:not([hidden]){display:block;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);max-width:min(560px,85%);text-align:center;font:clamp(16px,1.5vw,30px)/1.6 var(--font-ui);color:var(--w-muted)}
