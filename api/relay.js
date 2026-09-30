@@ -4,10 +4,10 @@
  */
 import { createHash } from 'node:crypto';
 
-export const BUILD = '2026-09-30.vercel.10';
+export const BUILD = '2026-09-30.vercel.11';
 const USER_AGENT = 'Flightscan/2.0 (+https://momo2207.github.io/flightscan/)';
 const TOKEN_URL = 'https://auth.opensky-network.org/auth/realms/opensky-network/protocol/openid-connect/token';
-export const LIMITS = Object.freeze({ auth: 30000, opensky: 45000, adsb: 9000, routes: 6500 });
+export const LIMITS = Object.freeze({ auth: 30000, opensky: 45000, adsb: 9000, routes: 20000 });
 
 function routeAirport(value) {
   if (!value || !/^[A-Z0-9]{4}$/.test(value.icao || '') || !Number.isFinite(value.lat) || !Number.isFinite(value.lon) ||
@@ -111,9 +111,8 @@ function endpoint(requestUrl, limits, timestamp) {
           !Number.isSafeInteger(plane.time) || plane.time > timestamp + 5000 || plane.time < timestamp - 240000 || seen.has(plane.callsign)) return null;
       seen.add(plane.callsign);
     }
-    return { provider: 'ADSB.lol routes', url: 'https://api.adsb.lol/api/0/routeset', method: 'POST',
-      body: JSON.stringify({ planes: planes.map(p => ({ callsign: p.callsign, lat: p.lat, lng: p.lon })) }),
-      identity: JSON.stringify(planes), ttl: 60000, timeout: limits.routes ?? 6500,
+    return { provider: 'ADSB.lol routes', kind: 'routes', url: 'https://api.adsb.lol/api/0/route/', planes,
+      identity: JSON.stringify(planes), ttl: 60000, timeout: limits.routes ?? 20000,
       valid: data => routeRows(data) !== null, transform: data => cleanRoutes(data, planes, timestamp) };
   }
   const registration = url.pathname.match(/^\/(adsb|adsbfi)\/reg\/([A-Za-z0-9][A-Za-z0-9-]{1,11})\/?$/);
@@ -267,9 +266,9 @@ export function createRelay({ fetchUpstream = (...args) => fetch(...args), now =
 
   async function load(target, auth, providerKey, cacheKey) {
     const started = now();
-    let stage = target.method === 'POST' ? 'routes' : 'flight-data';
+    let stage = target.kind === 'routes' ? 'routes' : 'flight-data';
     try {
-      const data = await deadline(async signal => {
+      const data = target.kind === 'routes' ? await lookupRoutes(target, providerKey) : await deadline(async signal => {
         let bearer = '';
         if (target.provider === 'OpenSky' && auth.mode === 'oauth') {
           stage = 'authentication';
@@ -317,7 +316,7 @@ export function createRelay({ fetchUpstream = (...args) => fetch(...args), now =
         stage === 'authentication' ? 'OPENSKY_AUTH_TIMEOUT' : 'UPSTREAM_TIMEOUT', { status: 504, stage }));
       // Keep upstream observation times intact. Never relabel old positions as live.
       const text = JSON.stringify(data);
-      remember(cacheKey, text, target.ttl);
+      if (target.kind !== 'routes' || !data.partial) remember(cacheKey, text, target.ttl);
       return { text, status: 200, headers: { 'X-Flightscan-Cache': 'MISS' } };
     } catch (error) {
       const problem = error.relayFailure ? error : failure(`${target.provider} could not be reached.`, 'UPSTREAM_FETCH_FAILED', { stage, networkCode: networkCode(error) });
@@ -326,6 +325,82 @@ export function createRelay({ fetchUpstream = (...args) => fetch(...args), now =
       cooldowns.set(providerKey, { until: now() + problem.retry * 1000, body, status: problem.status });
       return { text: JSON.stringify(body), status: problem.status, headers: { 'Retry-After': String(problem.retry) } };
     }
+  }
+
+  async function lookupRoutes(target, providerKey) {
+    // The public routeset POST has returned HTTP 201 with an empty body.
+    // Use the provider's individual route endpoint, verified against its source
+    // and live responses. Keep the browser's batch contract and quota separate.
+    const controller = new AbortController(), rows = new Array(target.planes.length), errors = new Array(target.planes.length);
+    let next = 0, stopped = false, finished = false, timer, globalProblem = null;
+    const stage = 'routes';
+    const timeoutProblem = failure(`${target.provider} exceeded the request time limit.`, 'UPSTREAM_TIMEOUT', { status: 504, stage });
+    const details = problem => ({ error: problem.message, code: problem.code, provider: target.provider, stage,
+      status: problem.status, retryAfter: problem.retry, ...(problem.networkCode ? { networkCode: problem.networkCode } : {}) });
+    async function worker() {
+      while (!stopped && next < target.planes.length) {
+        const index = next++, plane = target.planes[index];
+        try {
+          controller.signal.throwIfAborted();
+          const url = target.url + plane.callsign + '/' + plane.lat.toFixed(5) + '/' + plane.lon.toFixed(5);
+          const response = await fetchUpstream(url, {
+            method: 'GET', redirect: 'manual', signal: controller.signal,
+            headers: { Accept: 'application/json', 'User-Agent': USER_AGENT },
+          });
+          controller.signal.throwIfAborted();
+          if (!response.ok) {
+            void response.body?.cancel().catch(() => {});
+            if (response.status >= 300 && response.status < 400) {
+              throw failure(`${target.provider} returned an unexpected redirect (HTTP ${response.status}).`, 'UPSTREAM_REDIRECT', { stage });
+            }
+            const retry = retrySeconds(response.headers.get('Retry-After'), now);
+            const fallback = response.status === 429 ? 900 : [400, 401, 403, 404].includes(response.status) ? 3600 : 120;
+            throw failure(`${target.provider} returned HTTP ${response.status}.`, 'UPSTREAM_HTTP', { status: response.status, retry: retry || fallback, stage });
+          }
+          const text = await response.text();
+          controller.signal.throwIfAborted();
+          if (!text.trim()) throw failure(`${target.provider} returned an empty response (HTTP ${response.status}).`, 'UPSTREAM_EMPTY', { stage });
+          let row;
+          try { row = JSON.parse(text); if (typeof row === 'string') row = JSON.parse(row); }
+          catch { throw failure(`${target.provider} returned a non-JSON response (HTTP ${response.status}).`, 'UPSTREAM_NON_JSON', { stage }); }
+          if (!row || Array.isArray(row) || typeof row !== 'object' || typeof row.callsign !== 'string') {
+            throw failure(`${target.provider} returned an unexpected route response.`, 'UPSTREAM_INVALID_DATA', { stage });
+          }
+          if (!finished) rows[index] = row;
+        } catch (error) {
+          if (finished) return;
+          const problem = error.relayFailure ? error : controller.signal.aborted ? globalProblem || timeoutProblem
+            : failure(`${target.provider} could not be reached.`, 'UPSTREAM_FETCH_FAILED', { stage, networkCode: networkCode(error) });
+          errors[index] = problem;
+          // Quotas and access restrictions apply to the provider. A single
+          // missing/broken lookup must not discard other valid flight routes.
+          if ([401, 403, 429].includes(problem.status)) {
+            globalProblem = problem;stopped = true;controller.abort(problem);
+          }
+        }
+      }
+    }
+    try {
+      // At most two sockets, even for an older frontend sending eight planes.
+      await Promise.race([
+        Promise.all(Array.from({ length: Math.min(2, target.planes.length) }, worker)),
+        new Promise(resolve => { timer = setTimeout(() => { stopped = true;controller.abort(timeoutProblem);resolve(); }, target.timeout); }),
+      ]);
+    } finally {
+      finished = true;stopped = true;clearTimeout(timer);
+      controller.abort();
+    }
+    const valid = rows.filter(Boolean);
+    if (!valid.length) throw globalProblem || errors.find(Boolean) || timeoutProblem;
+    const data = target.transform(valid);
+    data.partial = valid.length !== target.planes.length;
+    for (let i = 0; i < data.routes.length; i++) if (!rows[i]) data.routes[i].error = details(errors[i] || globalProblem || timeoutProblem);
+    if (globalProblem) {
+      const body = details(globalProblem);
+      cooldowns.set(providerKey, { until: now() + globalProblem.retry * 1000, body, status: globalProblem.status });
+      data.retryAfter = globalProblem.retry;
+    }
+    return data;
   }
 
   return async function relay(request, env = {}) {
@@ -358,7 +433,7 @@ export function createRelay({ fetchUpstream = (...args) => fetch(...args), now =
     if (target.health) return json({
       service: 'flightscan-relay', version: 1, build: BUILD, platform: 'vercel-node', ok: true,
       providers: ['adsb.fi', 'ADSB.lol', 'OpenSky'], openskyAuthentication: auth.mode,
-      upstreamChecked: false, timeoutsMs: limits, capabilities: { aircraftLookup: true, registrationLookup: true, boundedMapSearch: true, routeLookup: true },
+      upstreamChecked: false, timeoutsMs: limits, routeLookupMethod: 'individual-get', capabilities: { aircraftLookup: true, registrationLookup: true, boundedMapSearch: true, routeLookup: true, routePartialResults: true },
     });
     if (target.provider === 'OpenSky' && auth.mode === 'incomplete') return json({
       error: 'Set both OPENSKY_CLIENT_ID and OPENSKY_CLIENT_SECRET in Vercel environment variables, then redeploy.',
@@ -381,6 +456,9 @@ export function createRelay({ fetchUpstream = (...args) => fetch(...args), now =
       return respond(result.text, result.status, result.headers);
     }
     if (pending.size >= 64) return json({ error: 'Relay busy; try again shortly.', code: 'RELAY_BUSY', retryAfter: 2 }, 503, { 'Retry-After': '2' });
+    if (target.kind === 'routes' && [...pending.keys()].some(key => key.startsWith(providerKey + ':'))) {
+      return json({ error: 'A route batch is still in progress.', code: 'RELAY_PACING', provider: target.provider, retryAfter: 3 }, 429, { 'Retry-After': '3' });
+    }
     // A dateline crossing uses two adjacent OpenSky boxes. Others are paced.
     const pacing = target.provider === 'ADSB.lol routes' ? 15000 : 1100;
     if (target.provider !== 'OpenSky' && lastRequest.has(providerKey) && now() - lastRequest.get(providerKey) < pacing) {
