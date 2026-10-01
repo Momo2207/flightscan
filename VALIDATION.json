@@ -1,8 +1,8 @@
 {
-  "build": "2026-10-01.vercel.25",
+  "build": "2026-10-01.vercel.26",
   "relayBuild": "2026-09-30.vercel.11",
   "unitTests": {
-    "passed": 236,
+    "passed": 240,
     "failed": 0
   },
   "frontendIntegrationTests": {
@@ -12,7 +12,7 @@
   "browserChecks": {
     "storageSchemaUpgrade": "Existing schema 1 to schema 2; visits, reports and explicit settings retained",
     "flightProgress": "Full and partial records, 90-second delayed scene, optional canvas pages, duplicate reader-tab forwarding, reload and area-reset independence",
-    "wallRoutes": "Code/name rotation, long locations, both themes and 24-hour rows",
+    "wallRoutes": "This release: rotating codes/full locations and long aliases in Follow, both themes. Previous release: dedicated 24-hour row cycling browser validation; current frontend integration and route presentation unit tests pass.",
     "layouts": [
       [
         1920,
@@ -39,7 +39,8 @@
         2160
       ]
     ],
-    "runtimeErrors": 0
+    "runtimeErrors": 0,
+    "followRouteMetrics": "Destination distance uses the delayed displayed position; estimated total flight time appears alongside observed progress and altitude/speed at all six sizes, in Midnight and Sunset. Long rotating location names fit without overlaps."
   },
   "relaySha256": "95ecd4cf05bbdfe39d60ae8c77dbd1b76510a1d798b7b9d43614b95960027018",
   "productionDeployment": "Not performed; updated files supplied for redeployment."

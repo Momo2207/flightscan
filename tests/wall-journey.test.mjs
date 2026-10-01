@@ -38,3 +38,36 @@ test('distance respects aviation and metric units without excessive precision',(
 test('duration labels use readable hours and minutes without clock-time or ETA formatting',()=>{
  assert.equal(Journey.duration({durationMinutes:155}),'2 h 35 m');assert.equal(Journey.duration({durationMinutes:120}),'2 h');assert.equal(Journey.duration({durationMinutes:35}),'35 min');assert.equal(Journey.duration(null),'');
 });
+test('destination distance uses the supplied displayed position and works without departure coordinates',()=>{
+ const early=Journey.remaining({lat:50.033,lon:8.57},route),near=Journey.remaining({lat:38.8,lon:-9.1},{to:route.to});
+ assert.equal(early.distanceKm,Journey.estimate({},route,'narrow').distanceKm);
+ assert.ok(near.distanceKm<5&&near.distanceKm>0);
+ assert.equal(Journey.remaining(route.to,route).distanceKm,0);assert.equal(Journey.distance({distanceKm:0},true),'0');
+ assert.equal(Journey.distance(near,false),String(Math.round(near.distanceKm/1.852)));
+});
+test('missing and malformed destination or aircraft positions never fabricate remaining distance',()=>{
+ for(const aircraft of [null,{}, {lat:null,lon:0}, {lat:'50',lon:8}, {lat:91,lon:8}, {lat:50,lon:Infinity}])assert.equal(Journey.remaining(aircraft,route),null);
+ for(const to of [null,{}, {lat:50,lon:181}, {lat:50,lon:NaN}])assert.equal(Journey.remaining(route.from,{to}),null);
+ assert.equal(Journey.remaining(route.from,null),null);
+ assert.equal(Journey.distance({distanceKm:null},true),'');
+ assert.ok(Journey.remaining({lat:0,lon:179},{to:{lat:0,lon:-179}}).distanceKm<223);
+});
+test('Follow restores both route metrics by default, retains full-flight estimates and clears old routes',()=>{
+ const nodes=new Map(),node=id=>{if(!nodes.has(id))nodes.set(id,{textContent:'',hidden:false,dataset:{}});return nodes.get(id)};
+ const env={$:node,wallSettings:{units:'metric',journeyDisplay:'auto'},wallMode:()=> 'follow',aircraftSymbolFor:()=>({key:'narrow'})};
+ const update=vm.runInNewContext(source+'\nwallJourneyUpdate',env);
+ const a={t:'A320',lat:38.8,lon:-9.1,gs:0};update(a,route);
+ assert.equal(node('wallJourney').hidden,false);assert.equal(node('wallJourneyTime').hidden,false);assert.equal(node('wallJourneyDistance').hidden,false);
+ assert.equal(node('wallRouteDistanceLabel').textContent,'Distance to destination');assert.equal(node('wallRouteDistance').textContent,Journey.distance(Journey.remaining(a,route),true));assert.equal(node('wallEstimatedTime').textContent,'2 h 35 m');
+ env.wallSettings.units='aviation';update(a,route);assert.equal(node('wallRouteDistanceUnit').textContent,'NM');
+ update(a,null);assert.equal(node('wallJourney').hidden,true);assert.equal(node('wallRouteDistance').textContent,'');assert.equal(node('wallEstimatedTime').textContent,'');assert.equal(node('wallRouteDistanceUnit').textContent,'');
+ update(a,route);env.wallSettings.journeyDisplay='off';update(a,route);assert.equal(node('wallJourney').hidden,true);
+});
+test('Follow independently hides unavailable destination distance or an unmodelled duration',()=>{
+ const nodes=new Map(),node=id=>{if(!nodes.has(id))nodes.set(id,{textContent:'',hidden:false,dataset:{}});return nodes.get(id)};
+ const env={$:node,wallSettings:{units:'metric',journeyDisplay:'auto'},wallMode:()=> 'follow',aircraftSymbolFor:()=>({key:'helicopter'})};
+ const update=vm.runInNewContext(source+'\nwallJourneyUpdate',env);
+ update({lat:38.8,lon:-9.1},route);assert.equal(node('wallJourney').hidden,false);assert.equal(node('wallJourneyTime').hidden,true);assert.equal(node('wallJourneyDistance').hidden,false);assert.equal(node('wallJourney').dataset.single,'true');
+ env.aircraftSymbolFor=()=>({key:'narrow'});update({},route);assert.equal(node('wallJourney').hidden,false);assert.equal(node('wallJourneyTime').hidden,false);assert.equal(node('wallJourneyDistance').hidden,true);
+ env.wallMode=()=> 'area';update({lat:38.8,lon:-9.1},route);assert.equal(node('wallRouteDistanceLabel').textContent,'Route distance');assert.equal(node('wallRouteDistance').textContent,'1,870');
+});

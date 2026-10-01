@@ -24,6 +24,8 @@ body[data-app-mode=follow] .table-head,body[data-app-mode=follow] .result-prefer
 #wallDisplay .wall-progress .wall-unit{font-size:clamp(11px,.8vw,20px)}
 #wallDisplay .wall-progress[hidden],#wallDisplay .wall-journey[hidden],#wallDisplay .wall-secondary[hidden]{display:none!important}
 #wallDisplay[data-mode=follow] .wall-journey{grid-row:6}#wallDisplay[data-mode=follow] .wall-metrics{grid-row:5}
+#wallDisplay[data-mode=follow] #wallCard{grid-template-rows:auto minmax(104px,1.2fr) minmax(60px,.6fr) minmax(80px,.7fr) minmax(65px,.55fr) minmax(75px,.65fr)}
+#wallDisplay #wallJourneyDistance[hidden]{display:none!important}
 #wallDisplay:not([data-mode=follow]) .wall-metrics{grid-row:5}
 #wallDisplay .wall-registration{font-weight:300}#wallDisplay .wall-type{font-weight:400}
 #wallDisplay .wall-metrics strong.metric-unknown{font-size:clamp(16px,1.15vw,26px);letter-spacing:0}
@@ -33,12 +35,21 @@ body[data-app-mode=follow] .table-head,body[data-app-mode=follow] .result-prefer
  #wallDisplay .wall-carrier{grid-column:1;grid-row:1}#wallDisplay .wall-flight-heading{grid-column:1;grid-row:2}#wallDisplay .wall-identity{grid-column:1;grid-row:3}
  #wallDisplay .wall-progress,#wallDisplay .wall-journey{grid-column:2;grid-row:2;grid-template-columns:1fr;border:0;padding:0;gap:14px}
  #wallDisplay .wall-metrics{grid-column:2;grid-row:3!important}#wallDisplay[data-mode=follow] .wall-journey{grid-column:1/-1;grid-row:4;grid-template-columns:1fr 1fr}
+ #wallDisplay[data-mode=follow] #wallCard{grid-template-rows:auto minmax(85px,1fr) auto auto}
 }
-@media(max-height:800px) and (orientation:landscape){#wallDisplay #wallCard{grid-template-rows:auto minmax(90px,1fr) auto auto auto;gap:10px}#wallDisplay .wall-progress{padding-top:10px}#wallDisplay .wall-journey{display:none!important}}
+@media(max-height:800px) and (orientation:landscape){
+ #wallDisplay #wallCard{grid-template-rows:auto minmax(90px,1fr) auto auto auto;gap:10px}#wallDisplay .wall-progress{padding-top:10px}#wallDisplay:not([data-mode=follow]) .wall-journey{display:none!important}
+ #wallDisplay[data-mode=follow] #wallCard{grid-template-rows:auto minmax(90px,1fr) auto auto auto auto}
+ #wallDisplay[data-mode=follow] .wall-journey{padding-top:10px}
+}
 @media(max-width:580px){
  #wallDisplay #wallCard{grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(82px,1fr) auto auto auto;gap:9px}
  #wallDisplay .wall-progress{grid-column:1;grid-row:4;gap:12px;padding-top:8px}#wallDisplay .wall-progress small{font-size:10px;margin-bottom:4px}#wallDisplay .wall-progress strong{font-size:24px}#wallDisplay .wall-progress strong.metric-unknown{font-size:15px}
- #wallDisplay .wall-metrics{grid-column:1;grid-row:5!important}#wallDisplay .wall-journey{display:none!important}
+ #wallDisplay .wall-metrics{grid-column:1;grid-row:5!important}#wallDisplay:not([data-mode=follow]) .wall-journey{display:none!important}
+ #wallDisplay[data-mode=follow] .wall-body{grid-template-rows:minmax(100px,1fr) minmax(440px,1.65fr)}
+ #wallDisplay[data-mode=follow] #wallCard{grid-template-rows:auto minmax(82px,1fr) auto auto auto auto;gap:8px}
+ #wallDisplay[data-mode=follow] .wall-journey{grid-column:1;grid-row:6;padding-top:8px;gap:12px}
+ #wallDisplay[data-mode=follow] .wall-journey small{font-size:10px}
  #details .hero-metrics,#details .info-progress{gap:18px}.info-progress strong{font-size:26px}.info-progress{margin:18px 0;padding:15px 0}
 }
 @media(max-height:520px) and (orientation:landscape){#wallDisplay .wall-feature{overflow:auto}#wallDisplay #wallCard{overflow:visible;flex:0 0 auto}}

@@ -1,6 +1,6 @@
 # Flightscan design system
 
-Implemented in app build `2026-10-01.vercel.25`. The flight relay remains build 11.
+Implemented in app build `2026-10-01.vercel.26`. The flight relay remains build 11.
 
 ## Themes
 
@@ -37,7 +37,7 @@ Control glass uses restrained blur, soft shadows and a fine illuminated edge. Co
 
 Midnight uses blue light on near-black surfaces. Sunset uses cream and peach glass over a warm beige background. The normal inspector uses thin orange route codes with a static full-location line. Wall route codes and full locations use lighter orange typography, secondary to the callsign. The normal tracker collapses secondary filters; Explore fleet opens them automatically. Mobile retains the aircraft bottom sheet.
 
-Area, Fleet and Follow wall layouts use the same materials. A single compact location/clock line sits above a borderless rounded map and a slim, separately reserved glass sidebar. Coverage, filters, timezone and rotation descriptions stay in Settings. The card has stable regions for airline, callsign, orange route, model/registration, flight progress in Follow, optional whole-route estimates in Area/Fleet, and altitude/speed. Hex IDs, repeated type codes and the extra card metrics are removed from the wall composition; normal tracker technical details remain in the collapsed inspector.
+Area, Fleet and Follow wall layouts use the same materials. A single compact location/clock line sits above a borderless rounded map and a slim, separately reserved glass sidebar. Coverage, filters, timezone and rotation descriptions stay in Settings. The card has stable regions for airline, callsign, orange route, model/registration, flight progress in Follow, altitude/speed, and route figures. Follow adds distance to destination and estimated flight time; Area/Fleet retain whole-route distance. Both Follow metric pairs remain visible on compact screens alongside altitude/speed. Hex IDs, repeated type codes and the extra card metrics are removed from the wall composition; normal tracker technical details remain in the collapsed inspector.
 
 The 24-hour layout keeps its map and upward-scrolling sightings list. Rows group airline, callsign, route and model, with compact first/last seen and repeat-sighting counts. There are no row dividers. The loop moves at 12 CSS pixels per second with broad edge fades; pause and manual-scroll controls remain available. Aircraft-only mode retains a plain background, silhouettes and heading vectors. Cards keep fixed callsigns and cycle available altitude, speed, type, route codes and full locations every eight seconds. Each card reserves the largest wrapped detail dimensions; only details crossfade, while Reduced motion swaps them directly. Route pages remain configurable and use thin orange text. Vectors stay outside all padded card rectangles, including overlaps. Labels stay beside their aircraft even in dense traffic. Each label and icon paint as one group, sorted by observed altitude: higher aircraft appear above lower aircraft, with stable identifier ties. Previous adjacent placements are retained while the screen allows them.
 
@@ -75,7 +75,7 @@ Device reduced-motion preferences and the wall's explicit Reduced motion setting
 - `design-system/ui-theme.js`: saved preferences, theme synchronization, shared canvas palettes and cached tile styling.
 - `design-system/wall-routes.js`: route alias timing, stable DOM presentation and wrapped canvas route labels.
 - `design-system/wall-minimal.js`: aircraft-only cards, fixed callsigns, eight-second detail cycles, stable wrapping and direction-vector clearance.
-- `design-system/wall-journey.js`: whole-route distance, rounded cruise-duration estimates and clean missing-data behavior.
+- `design-system/wall-journey.js`: whole-route distance, displayed-position distance to destination in Follow, rounded whole-flight estimates and clean missing-data behavior.
 - `assets/fonts/`: the source WOFF2 files and their license.
 
 `npm run build` assembles those sources into the existing `index.html`, then copies that self-contained HTML to `public/index.html`. It preserves the existing flight logic, relay configuration and inline datasets. If you maintain only a single GitHub Pages HTML file, use the compiled `index.html` directly. Changing only CSS colours does not automatically change canvas colours: edit the corresponding `UI_PALETTES` role in `ui-theme.js` too.

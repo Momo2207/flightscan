@@ -1,6 +1,6 @@
 # Flight progress and shared aircraft information
 
-App release **2026-10-01.vercel.25**. Relay build 11 remains unchanged. Upload the full extracted project, including `design-system/` and `scripts/`, then redeploy. Close old Flightscan tabs once during the storage upgrade and refresh the production page.
+App release **2026-10-01.vercel.26**. Relay build 11 remains unchanged. Upload the full extracted project, including `design-system/` and `scripts/`, then redeploy. Close old Flightscan tabs once during the storage upgrade and refresh the production page.
 
 ## Display contract
 
@@ -10,7 +10,7 @@ App release **2026-10-01.vercel.25**. Relay build 11 remains unchanged. Upload t
 | Web results | Callsign + airline, route, type, registration, altitude, groundspeed | Optional vertical rate and position age; Callsign A–Z default |
 | Web Follow | Compact Follow controls, map and common inspector | No redundant one-row results table |
 | Wall Area / Fleet | Airline, callsign, rotating route, model/registration, optional route estimates, altitude/groundspeed | Estimates may be disabled; compact screens hide them first |
-| Wall Follow | Airline, callsign, rotating route, model/registration, distance covered/time airborne, altitude/groundspeed | Whole-route estimates off by default; optional on roomy displays |
+| Wall Follow | Airline, callsign, rotating route, model/registration, distance covered/time airborne, altitude/groundspeed, distance to destination/estimated flight time | All six metrics shown by default, including compact layouts; route estimates can be disabled in Settings |
 | Wall 24-hour journal | Airline, callsign and latest saved route, model/registration, First / Last / Sightings | One row per physical ICAO aircraft, repeated visits counted; no live metrics for departed aircraft |
 | Aircraft only | Category silhouette, static identity, rotating altitude/speed/model/route | Optional followed-target progress pages; no map, large details panel or clock |
 
@@ -36,7 +36,7 @@ Position gaps beyond 120 seconds break the distance sum without bridging missing
 
 Web metrics use the accepted observation timestamp. Wall metrics use the displayed interpolation timestamp; held icons use their last real observation. Counters never advance from the computer clock while a signal is held. The same flight and scene time produce the same figures in DOM and canvas.
 
-The existing live relay cannot supply full past flight history. This release adds no history account or credentials. Airport-to-airport distance and estimated total time remain separate geographic estimates and are never relabelled as travelled distance or actual airborne time. Technical coverage explanations remain in About.
+The existing live relay cannot supply full past flight history. This release adds no history account or credentials. Area/Fleet retain airport-to-airport distance. Follow adds great-circle distance from the displayed position to the destination airport and estimated total flight time using the existing nominal cruise model. These remain separate from travelled distance and actual airborne time. Missing inputs hide only the affected route figure; losing/changing a route clears the old figures. Explicit Off preferences remain respected; legacy All aircraft cards preferences migrate to On. Technical coverage explanations remain in About.
 
 ## Persistence
 
@@ -54,7 +54,7 @@ Flight storage is bounded to a 48-hour observation horizon, 10,000 retained poin
 | `design-system/aircraft-info.js` | Field registry, view profiles, shared identity/metric snapshots, unit/time-zone preferences |
 | `design-system/aircraft-info.css` | Unified hierarchy, Follow progress band, responsive layouts and optional result columns |
 | `design-system/wall-minimal.js` | Adjacent labels, stable cycling, optional progress pages and vector clipping |
-| `design-system/wall-journey.js` | Separate whole-route estimates and visibility preference |
+| `design-system/wall-journey.js` | Route geography, Follow destination distance, whole-flight estimates and visibility preference |
 | `index.html` | Existing poll, storage writer, selection/actions and view integration |
 | `scripts/build-design.mjs` | Embeds editable CSS/JS and fonts into the standalone HTML |
 
