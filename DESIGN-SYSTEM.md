@@ -1,6 +1,6 @@
 # Flightscan design system
 
-Implemented in app build `2026-10-01.vercel.22`. The flight relay remains build 11.
+Implemented in app build `2026-10-01.vercel.23`. The flight relay remains build 11.
 
 ## Themes
 
@@ -39,7 +39,7 @@ Midnight uses blue light on near-black surfaces. Sunset uses cream and peach gla
 
 Area, Fleet and Follow wall layouts use the same materials. A single compact location/clock line sits above a borderless rounded map and a slim, separately reserved glass sidebar. Coverage, filters, timezone and rotation descriptions stay in Settings. The card has stable regions for airline, callsign, orange route, model/registration, route distance and estimated flight time, and altitude/speed. Hex IDs, repeated type codes and the extra card metrics are removed from the wall composition; normal tracker details remain available.
 
-The 24-hour layout keeps its map and upward-scrolling sightings list. Rows group airline, callsign, route and model, with compact first/last seen and repeat-sighting counts. There are no row dividers. The loop moves at 12 CSS pixels per second with broad edge fades; pause and manual-scroll controls remain available. Aircraft-only mode retains a plain background, silhouettes, altitude/callsign labels and heading vectors. Optional route labels remain configurable. Labels stay beside their aircraft even in dense traffic. Each label and icon paint as one group, sorted by observed altitude: higher aircraft appear above lower aircraft, with stable identifier ties. Previous adjacent placements are retained while the screen allows them.
+The 24-hour layout keeps its map and upward-scrolling sightings list. Rows group airline, callsign, route and model, with compact first/last seen and repeat-sighting counts. There are no row dividers. The loop moves at 12 CSS pixels per second with broad edge fades; pause and manual-scroll controls remain available. Aircraft-only mode retains a plain background, silhouettes and heading vectors. Cards keep fixed callsigns and cycle available altitude, speed, type, route codes and full locations every eight seconds. Each card reserves the largest wrapped detail dimensions; only details crossfade, while Reduced motion swaps them directly. Route pages remain configurable and use thin orange text. Vectors stay outside all padded card rectangles, including overlaps. Labels stay beside their aircraft even in dense traffic. Each label and icon paint as one group, sorted by observed altitude: higher aircraft appear above lower aircraft, with stable identifier ties. Previous adjacent placements are retained while the screen allows them.
 
 The Flight spectrum stays independent of UI accent colours. Its altitude/vertical-rate mapping, delayed timeline, smoothing and reception holds are unchanged. Wall aircraft noses and short direction vectors follow the tangent of the displayed movement path. Stopped positions use the reported heading or the last usable orientation; reception holds freeze the nose with the position. The featured map aircraft uses a soft radial halo instead of a hard selection ring. Incoming/outgoing focus weights share the card's 900 ms fade interval. Only the featured aircraft has a thin fading trail, made from recorded observations ending at the delayed playback clock. Its label changes with the selected aircraft and is removed on the next repaint. Log mode has no featured halo or label.
 
@@ -74,6 +74,7 @@ Device reduced-motion preferences and the wall's explicit Reduced motion setting
 - `design-system/wall-gallery.css`, `wall-gallery.js`: gallery composition, quiet map rendering, focus timing and offline daylight atmosphere.
 - `design-system/ui-theme.js`: saved preferences, theme synchronization, shared canvas palettes and cached tile styling.
 - `design-system/wall-routes.js`: route alias timing, stable DOM presentation and wrapped canvas route labels.
+- `design-system/wall-minimal.js`: aircraft-only cards, fixed callsigns, eight-second detail cycles, stable wrapping and direction-vector clearance.
 - `design-system/wall-journey.js`: whole-route distance, rounded cruise-duration estimates and clean missing-data behavior.
 - `assets/fonts/`: the source WOFF2 files and their license.
 
@@ -81,6 +82,6 @@ Device reduced-motion preferences and the wall's explicit Reduced motion setting
 
 ## Verification
 
-Verification passes 171 included unit tests (141 existing data/relay, eight appearance, eleven route presentation and eleven gallery tests) and 73 frontend integration checks. Chromium checks cover 320×740, 390×844, 1366×768, 1920×1080, 1080×1920 and 3840×2160 in both themes. They check font loading, settings widths, no page overflow, unclipped wall cards and sightings rows, aircraft-only labels, Follow zoom and preference persistence. Focused checks cover route cycling, typography, reduced motion, steady card geometry, saved gallery/daylight options, map failure fallback, journal pacing and unchanged route/aircraft colours through twilight. The renderer was also verified against 20 real current OpenFreeMap tiles around Offenburg in both themes.
+Verification passes 202 included unit tests and 73 frontend integration checks. Chromium checks cover 320×740, 390×844, 1366×768, 1920×1080, 1080×1920 and 3840×2160 in both themes. They check font loading, settings widths, no page overflow, unclipped wall cards and sightings rows, aircraft-only labels, Follow zoom and preference persistence. Focused checks cover route cycling, typography, reduced motion, steady card geometry, saved gallery/daylight options, map failure fallback, journal pacing and unchanged route/aircraft colours through twilight. The renderer was also verified against 20 real current OpenFreeMap tiles around Offenburg in both themes.
 
 Browser checks use controlled feed and map fixtures. They do not certify availability of live third-party flight providers or performance on a physical display. The relay, API limits and authentication settings are unchanged.

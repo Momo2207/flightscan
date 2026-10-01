@@ -58,3 +58,10 @@ Implemented in app build `2026-10-01.vercel.20`. Verification passed 180 unit te
 - Use the display heading in both wall map renderers and the aircraft-only direction vector. Handle missing reports, taxiing, turns, date-line crossings and endpoints without reversing the nose.
 - Ignore sub-five-metre jitter when choosing a movement angle; use reported heading for stopped positions and preserve the last display orientation during reception holds.
 - Verification: 192 unit tests and 73 frontend integration checks pass. Browser checks confirm all four travel directions, missing-heading movement, stopped positions, held orientation and vector alignment in both layouts and themes. No relay changes or additional network requests.
+
+## Build 23: cycling aircraft-only cards and clear vectors
+
+- Keep callsigns fixed above one cycling detail: altitude, groundspeed, type, route codes or full locations. Advance every eight seconds, skip absent fields, respect route preferences and use a 500 ms detail crossfade unless motion is reduced.
+- Reserve the largest wrapped detail dimensions throughout the cycle; retain compact text, thin orange routes and adjacent placements. Telemetry changes do not restart the reading cycle.
+- Prefer label positions outside their own direction vector. Clip vectors outside the union of every card's padded rectangle, protecting overlapping cards without moving labels farther away. Preserve altitude stacking and movement-derived orientation.
+- Verification: 202 unit tests and 73 frontend integration checks pass. Browser checks cover all five pages in Midnight/Sunset at 320×740, 1624×900, 1080×1920 and 3840×2160, including dense overlap, edge cards, missing data, unchanged card geometry, static callsigns and no added requests.

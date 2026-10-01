@@ -26,6 +26,10 @@ export async function refreshDesign(){
  const galleryMarker=/\/\* WALL_GALLERY_START \*\/[\s\S]*?\/\* WALL_GALLERY_END \*\//;
  if(galleryMarker.test(html))html=html.replace(galleryMarker,()=>galleryScript);
  else html=html.replace('/* UI_APPEARANCE_START */',()=>galleryScript+'\n/* UI_APPEARANCE_START */');
+ const minimalScript=(await readFile(new URL('design-system/wall-minimal.js',root),'utf8')).trim();
+ const minimalMarker=/\/\* WALL_MINIMALIST_START:[\s\S]*?\/\* WALL_MINIMALIST_END \*\//;
+ if(!minimalMarker.test(html))throw Error('Missing wall aircraft-only presentation marker.');
+ html=html.replace(minimalMarker,()=>minimalScript);
  // Keep a single self-contained HTML for GitHub Pages and Vercel.
  await writeFile(index,html);
 }

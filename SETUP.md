@@ -1,8 +1,8 @@
 # Flightscan on Vercel
 
-App build: **2026-10-01.vercel.22**. Relay build: **2026-09-30.vercel.11**.
+App build: **2026-10-01.vercel.23**. Relay build: **2026-09-30.vercel.11**.
 
-This update makes wall aircraft noses and direction arrows follow the interpolated movement between observations, including taxiway turns. Stopped aircraft fall back to the reported heading; held positions retain their last displayed orientation. Gallery runway/taxiway paths, compact labels and journey figures remain included. Update the complete extracted project and redeploy; no credentials or environment-variable changes are needed.
+Aircraft-only cards now keep a fixed callsign and cycle available altitude, groundspeed, aircraft type, route codes and full locations every eight seconds. Missing details are skipped. Cards reserve space for the complete cycle; arrows stay clear of every card, including overlapping ones. Noses and arrows still follow interpolated movement. Gallery runway/taxiway paths and journey figures remain included. Update the complete extracted project and redeploy; no credentials or environment-variable changes are needed.
 
 ## Updating your working installation
 
@@ -21,7 +21,7 @@ Upload the extracted files, not the ZIP itself, and preserve folder paths. If Gi
 
 If you set `CONFIG.apiBase` directly in your previous HTML, copy your **public Vercel production base URL** into the new `index.html` before uploading. A relay URL saved through Connection remains saved in the same browser and overrides that default. Opening the app on its public Vercel `.vercel.app` production address connects to that origin automatically.
 
-With automatic Git deployments enabled, Vercel deploys the commit. Wait until it is ready, then refresh the app with Ctrl+Shift+R (Cmd+Shift+R on macOS). About → Connection diagnostics should show app build `2026-10-01.vercel.22`. Open your public Vercel domain followed by `/api/relay?path=health`: the relay should show build `2026-09-30.vercel.11`, `routeLookupMethod: "individual-get"`, `capabilities.routeLookup: true` and `capabilities.registrationLookup: true`. Different app and relay build numbers are expected for this frontend-only update. Existing retry delays remain in effect until they expire. An OpenSky authentication error is separate from route lookup; routes use ADSB.lol and require no OpenSky credentials.
+With automatic Git deployments enabled, Vercel deploys the commit. Wait until it is ready, then refresh the app with Ctrl+Shift+R (Cmd+Shift+R on macOS). About → Connection diagnostics should show app build `2026-10-01.vercel.23`. Open your public Vercel domain followed by `/api/relay?path=health`: the relay should show build `2026-09-30.vercel.11`, `routeLookupMethod: "individual-get"`, `capabilities.routeLookup: true` and `capabilities.registrationLookup: true`. Different app and relay build numbers are expected for this frontend-only update. Existing retry delays remain in effect until they expire. An OpenSky authentication error is separate from route lookup; routes use ADSB.lol and require no OpenSky credentials.
 
 ## Flight spectrum colours
 
@@ -37,7 +37,7 @@ Routes appear as airport codes, for example **FRA → LIS**, under the label **R
 | Desktop aircraft table | Optional **Show route column** checkbox; off initially |
 | Wall featured card / Follow | Thin orange route alternates codes and full locations every eight seconds |
 | 24-hour sightings | Same alternating orange presentation, using the route saved with the observed callsign |
-| Aircraft-only wall layout | Thin orange route below altitude, alternates codes/full locations and wraps without clipping; **Show routes in aircraft-only labels** can be turned off |
+| Aircraft-only wall layout | Fixed callsign above cycling altitude, speed, type and thin orange route codes/full locations; **Show routes in aircraft-only labels** excludes the route pages when turned off |
 
 Route lookups are on by default. **About → Look up likely routes** disables them; the optional table column is remembered separately. A route lookup sends the aircraft's public callsign and reported coordinates through the existing Vercel relay. See `DATA-SOURCES.md` for attribution and limitations. No additional credentials are needed for the currently public route endpoint.
 
@@ -64,7 +64,7 @@ To receive daily files, open **Recording & daily exports**, choose **CSV** or **
 
 **Zoom:** under **Area / 24-hour zoom**, choose **Automatic · fit coverage width** or a zoom from 4 to 15. Follow has its own **Follow zoom** setting. Higher numbers show a closer view. While displaying, use **+ / −**, **Fit area** or **Reset zoom** in the controls. Regional zoom adjusts the camera; the 24-hour recording area remains fixed, and its collection scope is maintained; very wide views are limited to the feed’s supported coverage. Zoom changes preserve the existing sightings log and interpolation buffer. Newly exposed areas need fresh observations.
 
-**Aircraft only:** set **Wall layout → Aircraft only**, then apply. It works with Area, Airline & aircraft, Follow and the 24-hour log. It removes tiles, headers, panels, trails and the clock, leaving category icons with a callsign/altitude box and a short movement-direction arrow. Both Midnight and Sunset themes work. Controls hide after five seconds; touch, move the pointer or press a key to return them. Regional sightings keep recording in the background. Switch back to **Map & panels** to see the list or details again.
+**Aircraft only:** set **Wall layout → Aircraft only**, then apply. It works with Area, Airline & aircraft, Follow and the 24-hour log. It removes tiles, headers, panels, trails and the clock, leaving category icons, a fixed callsign above cycling altitude/speed/type/route details, and a short movement-direction arrow that stays clear of cards. Both Midnight and Sunset themes work. Controls hide after five seconds; touch, move the pointer or press a key to return them. Regional sightings keep recording in the background. Switch back to **Map & panels** to see the list or details again.
 
 The list loops upward automatically in Smooth mode. Hover or keyboard focus pauses it temporarily; the controls include **Pause scrolling** and up/down paging. Reduced motion uses manual paging. Portrait screens put the list below the map.
 
