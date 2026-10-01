@@ -35,3 +35,39 @@ test('XLSX writes a real ZIP with three OOXML sheets and string identifiers',()=
 test('report trimming retains seven delivered reports and every pending report',()=>{const c=new Coordinator(new Log());c.reports=Array.from({length:12},(_,i)=>({id:String(i),areaKey:key,to:T+i,delivery:i<10?'download_requested':'pending'}));c.trim();assert.equal(c.reports.length,9);assert.equal(c.reports.filter(r=>r.delivery==='pending').length,2)});
 
 test('a saved gap threshold starts a new session after the chosen interval',()=>{const l=new Log();l.record(key,'Home',[row()],a=>Log.inside(a,geom),T,{geometry:geom,gapMs:60000});l.record(key,'Home',[row(T+90000)],a=>Log.inside(a,geom),T+90000,{geometry:geom,gapMs:60000});assert.equal(l.list(key,T+90000)[0].visitCount,2);const restored=new Log(JSON.parse(JSON.stringify(l.export())),T+90000);assert.equal(restored.areas.get(key).gapMs,60000)});
+
+test('reset clears only the chosen area, its visits and legacy rows, retaining geometry and gap settings',()=>{
+ const l=new Log();ingest(l,[row()]);l.record('other','Away',[row(T,{hex:'abcdef'})],()=>true,T);const a=l.areas.get(key);a.gapMs=60000;a.legacy.set('123456',row());l.markCoverageGap(key,'hidden_tab',T+500);
+ const ids=[...a.visits.keys()];assert.equal(l.reset(key,T+1000),true);assert.equal(l.list(key,T+1000).length,0);assert.equal(a.visits.size,0);assert.equal(a.tracks.size,0);assert.equal(a.legacy.size,0);assert.equal(a.gaps.length,0);assert.equal(a.openGap,null);assert.equal(a.resetAt,T+1000);assert.equal(a.gapMs,60000);assert.equal(a.geometry.bounds.north,50.1);assert.equal(l.list('other',T+1000).length,1);
+ assert.ok(ids.every(id=>l.deletedVisits.has(key+'\n'+id)));assert.equal(l.reset('missing',T),false);
+});
+test('reset timestamp blocks cached pre-reset positions and accepts only fresh observations',()=>{
+ const l=new Log();ingest(l,[row()]);l.reset(key,T+1000);ingest(l,[row(T),row(T+1000)],T+2000);assert.equal(l.list(key,T+2000).length,0);
+ ingest(l,[row(T+1500)],T+2000);const a=l.list(key,T+2000)[0];assert.equal(a.firstSeen,T+1500);assert.equal(a.visitCount,1);assert.equal(a.confirmedReentries,0);
+});
+test('reset persists across serialization and stale tabs cannot merge deleted sightings back',()=>{
+ const l=new Log();ingest(l,[row()]);const stale=JSON.parse(JSON.stringify(l.export()));l.reset(key,T+1000);const clean=JSON.parse(JSON.stringify(l.export())),restored=new Log(clean,T+2000);restored.merge(stale,T+2000);assert.equal(restored.list(key,T+2000).length,0);assert.equal(restored.areas.get(key).resetAt,T+1000);
+ const oldTab=new Log(stale,T+2000);oldTab.merge(clean,T+2000);assert.equal(oldTab.list(key,T+2000).length,0);oldTab.merge(stale,T+2000);assert.equal(oldTab.list(key,T+2000).length,0);
+});
+test('reset restarts an enabled daily period while preserving completed reports and other cycles',()=>{
+ const l=new Log();ingest(l,[row()]);l.area('other','Other',null,T);const c=new Coordinator(l);c.configure(key,true,{format:'xlsx',zone:'Europe/Berlin'},T);c.configure('other',true,{},T);const completed=c.checkDue(T+DAY+120000).map(r=>r.id);const oldOther=c.cycles.find(x=>x.key==='other').nextFrom;c.resetArea(key,T+DAY+180000);
+ const active=c.cycles.find(x=>x.key===key);assert.equal(active.nextFrom,T+DAY+180000);assert.equal(active.anchor,active.nextFrom);assert.equal(active.format,'xlsx');assert.equal(active.enabled,true);assert.equal(c.cycles.find(x=>x.key==='other').nextFrom,oldOther);assert.deepEqual(c.reports.map(r=>r.id),completed);assert.equal(c.checkDue(T+2*DAY+119999).filter(r=>r.areaKey===key).length,0);
+});
+test('a reader reloads reset export anchors before becoming the recording owner',()=>{
+ const l=new Log();ingest(l,[row()]);const owner=new Coordinator(l);owner.configure(key,true,{format:'xlsx'},T);const reader=new Coordinator(l);reader.load([],JSON.parse(JSON.stringify(owner.cycles)));
+ owner.resetArea(key,T+1000);reader.load([],JSON.parse(JSON.stringify(owner.cycles)));assert.equal(reader.cycles[0].anchor,T+1000);assert.equal(reader.cycles[0].nextFrom,T+1000);assert.equal(reader.cycles[0].format,'xlsx');assert.equal(l.keepSince,T+1000);
+});
+test('new viewport histories reuse only recorded in-frame coordinates with original times and saved routes',()=>{
+ const l=new Log(),now=T+3600000;ingest(l,[row(T,{lat:50,route:route()})]);ingest(l,[row(T+30000,{hex:'abcdef',lat:50.09})]);
+ const small={...geom,bounds:{south:49.95,north:50.05,west:7.95,east:8.05}},next=Log.key(small);l.seedArea(next,'Closer view',small,now);const rows=l.list(next,now);assert.equal(rows.length,1);assert.equal(rows[0].hex,'3c4b31');assert.equal(rows[0].firstSeen,T);assert.equal(rows[0].route.to.code,'LIS');assert.equal(l.list(key,now).length,2);assert.equal(l.areas.get(next).lastSnapshotAt,0);
+ l.reset(next,now+1000);l.seedArea(next,'Closer view',small,now+2000);assert.equal(l.list(next,now+2000).length,0);
+});
+test('viewport history reconstruction deduplicates overlapping areas and retains observed reentries',()=>{
+ const l=new Log(),now=T+180000,small={...geom,bounds:{south:49.95,north:50.05,west:7.95,east:8.05}};
+ for(const [i,lat]of [50,50.08,50.09,50].entries())ingest(l,[row(T+i*30000,{lat})]);
+ l.record('overlap','Overlap',[row(T),row(T+90000)],()=>true,T+90000,{geometry:geom});const next=Log.key(small);l.seedArea(next,'Closer',small,now);
+ const result=l.list(next,now)[0];assert.equal(result.observationCount,2);assert.equal(result.visitCount,2);assert.equal(result.confirmedReentries,1);assert.equal(result.firstSeen,T);assert.equal(result.lastSeen,T+90000);
+});
+test('position-free imported aggregates are not assigned fabricated coordinates to new viewports',()=>{
+ const l=new Log({version:1,areas:[{key:'old',label:'Home',startedAt:T-10000,updatedAt:T,rows:[{...row(),firstSeen:T-10000,lastSeen:T}]}]},T);l.seedArea(key,'Map',geom,T+1000);assert.equal(l.list(key,T+1000).length,0);assert.equal(l.list('old',T+1000).length,1);
+});

@@ -65,3 +65,11 @@ Implemented in app build `2026-10-01.vercel.20`. Verification passed 180 unit te
 - Reserve the largest wrapped detail dimensions throughout the cycle; retain compact text, thin orange routes and adjacent placements. Telemetry changes do not restart the reading cycle.
 - Prefer label positions outside their own direction vector. Clip vectors outside the union of every card's padded rectangle, protecting overlapping cards without moving labels farther away. Preserve altitude stacking and movement-derived orientation.
 - Verification: 202 unit tests and 73 frontend integration checks pass. Browser checks cover all five pages in Midnight/Sunset at 320×740, 1624×900, 1080×1920 and 3840×2160, including dense overlap, edge cards, missing data, unchanged card geometry, static callsigns and no added requests.
+
+## Build 24: observation area and reset
+
+- Match the 24-hour observation rectangle to the actual visible Mercator map by default; sync zoom immediately and debounce resize/layout changes. Keep a saved opt-out for fixed-area recording.
+- Preserve earlier area histories and reuse only actual recorded coordinates, timestamps and saved routes for a new footprint. Imported aggregates without coordinates stay separate.
+- Add **Reset sightings for this area** in Recording & daily exports. Clear the selected area's visits and imported rows, persist a reset cutoff, leave other areas and completed reports available, and restart its enabled daily reporting period.
+- Let the recorded-area selector review/reset/export history without changing current recording. Synchronize resets and daily-period anchors across tabs.
+- Verification: 211 unit tests and 75 frontend integration checks pass. A Chromium check uses real IndexedDB to verify matching canvas bounds, zoom/resize, fixed opt-out, reset persistence, stale snapshots, fresh observations, preserved reports and read-only tabs. No relay or additional network service changes.

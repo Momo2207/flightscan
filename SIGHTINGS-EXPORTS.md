@@ -1,14 +1,20 @@
 # Sightings and daily exports
 
-App build `2026-09-30.vercel.15`. This update changes the frontend only; relay build 11 remains compatible.
+App build `2026-10-01.vercel.24`. This update changes the frontend only; relay build 11 remains compatible.
 
 ## Start recording
 
-Choose **Wall display → 24-hour log · map & sightings**. The first use fixes a monitoring footprint from the current map. Open **Settings → Recording & daily exports** to inspect that area or choose **Use current map area for recording**.
+Choose **Wall display → 24-hour log · map & sightings**. By default, the observation rectangle matches the actual map canvas and updates when you zoom, resize the display or change layout. Open **Settings → Recording & daily exports** to inspect the area. Turn off **Match the visible map in 24-hour mode** to keep it fixed; **Use current map area for recording** then changes it explicitly.
 
-The monitoring footprint stays fixed when you zoom, resize the display or change its appearance. Changing it explicitly creates a separate recording stream and preserves the old area's records and reports. **Recorded areas** selects which retained history the wall list and immediate download show.
+Each footprint has its own history. Earlier records and reports are preserved. New footprints reuse actual saved positions within their bounds, with original observation times, identities and saved routes. They do not copy position-free imported aggregates, claim continuous historical coverage or request old flights. **Recorded areas** selects which history the wall list, reset and immediate download use; recording continues in the current observation area.
 
 The wall log uses the regional feed around the monitoring area. In other modes, full-area recording requires the actual feed request to cover that area. Follow mode cannot collect a complete regional history. Filters change the presentation; they do not filter the aircraft recorded from a covering feed.
+
+## Reset an area
+
+In **Settings → Recording & daily exports**, select **Current observation area** or an earlier area under **Recorded areas**, then choose **Reset sightings for this area**. Only that area's observations, visits, flight segments, coverage gaps and imported rows are cleared. Its geometry and sighting-gap setting remain. Other areas and already completed reports stay available.
+
+An enabled daily export period for the reset area starts again at the reset time. New position observations after that time begin new visits; cached earlier positions and stale tab snapshots cannot restore cleared records. The reset is persisted in IndexedDB and synchronized to read-only tabs. Only the tab currently recording can reset an area. A storage failure is reported in Settings and retains the reset in memory for retry. If persistent storage is unavailable, the reset applies to this session.
 
 ## Read the wall list
 

@@ -5,7 +5,7 @@ import vm from 'node:vm';
 const html=readFileSync(new URL('../index.html',import.meta.url),'utf8');
 const block=name=>'/* '+name+'_START:'+html.split('/* '+name+'_START:')[1].split('/* '+name+'_END */')[0];
 const helpers=html.split('\n').filter(l=>/^(const rad=|function (distance|project|unproject|containsBounds)\()/.test(l)).join('\n');
-const f=vm.runInNewContext('const num=v=>typeof v==="number"&&Number.isFinite(v);\n'+helpers+'\n'+['WALL_COVERAGE','WALL_CAMERA','WALL_MINIMALIST'].map(block).join('\n')+'\n({width:wallWidthAtZoom,coverage:wallCoverageFor,clean:wallCleanZoom,label:wallAircraftLabel,place:wallLabelBox,stack:wallAltitudeOrder,contains:containsBounds})');
+const f=vm.runInNewContext('const num=v=>typeof v==="number"&&Number.isFinite(v);\n'+helpers+'\n'+['WALL_COVERAGE','WALL_CAMERA','WALL_MINIMALIST'].map(block).join('\n')+'\n({width:wallWidthAtZoom,coverage:wallCoverageFor,viewport:wallViewportGeometry,project,unproject,clean:wallCleanZoom,label:wallAircraftLabel,place:wallLabelBox,stack:wallAltitudeOrder,contains:containsBounds})');
 for(const [lat,lon,w,h] of [[48.47,7.94,1920,1080],[50,8,3840,2160],[50,8,1080,1920],[0,179.9,1400,900],[75,20,1200,800]])test(`custom zoom preserves projected viewport at ${lat},${lon} ${w}x${h}`,()=>{
  for(const z of [9,10.5,13,15]){
   const r=f.coverage({lat,lon},f.width(lat,z,w),w,h,90);
@@ -24,6 +24,14 @@ test('extreme zoom-out respects feed limits while keeping viewport corners',()=>
 test('corrupt zoom settings cannot reach the renderer',()=>{
  for(const v of [null,undefined,'9',NaN,Infinity,-1,0,3.5,15.5,99]){assert.equal(f.clean(v),null);assert.equal(f.clean(v,9),9)}
  for(const v of [4,8.5,15])assert.equal(f.clean(v),v);
+});
+test('observation rectangle uses the exact current Mercator camera and map dimensions',()=>{
+ for(const [center,z,w,h]of [[{lat:50.05,lon:8.57},10.5,1400,900],[{lat:50,lon:8},12,1080,1920],[{lat:0,lon:179.9},9,1920,1080],[{lat:75,lon:20},11,1200,800]]){
+  const g=f.viewport(center,z,w,h),p=f.project(center,z),nw=f.unproject({x:p.x-w/2,y:p.y-h/2},z),se=f.unproject({x:p.x+w/2,y:p.y+h/2},z);
+  assert.equal(g.kind,'view');assert.ok(Math.abs(g.bounds.north-nw.lat)<1e-9);assert.ok(Math.abs(g.bounds.south-se.lat)<1e-9);assert.equal(g.bounds.west,nw.lon);assert.equal(g.bounds.east,se.lon);
+  assert.equal(f.contains(center,g.bounds),true);
+ }
+ assert.equal(f.viewport(null,10,100,100),null);assert.equal(f.viewport({lat:50,lon:8},10,0,100),null);
 });
 test('labels format reported callsign and barometric altitude with honest unknown states',()=>{
  const a={flight:' DLH123 ',alt_baro:35160,track:90,gs:400};

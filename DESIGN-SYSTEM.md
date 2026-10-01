@@ -1,6 +1,6 @@
 # Flightscan design system
 
-Implemented in app build `2026-10-01.vercel.23`. The flight relay remains build 11.
+Implemented in app build `2026-10-01.vercel.24`. The flight relay remains build 11.
 
 ## Themes
 
@@ -82,6 +82,6 @@ Device reduced-motion preferences and the wall's explicit Reduced motion setting
 
 ## Verification
 
-Verification passes 202 included unit tests and 73 frontend integration checks. Chromium checks cover 320×740, 390×844, 1366×768, 1920×1080, 1080×1920 and 3840×2160 in both themes. They check font loading, settings widths, no page overflow, unclipped wall cards and sightings rows, aircraft-only labels, Follow zoom and preference persistence. Focused checks cover route cycling, typography, reduced motion, steady card geometry, saved gallery/daylight options, map failure fallback, journal pacing and unchanged route/aircraft colours through twilight. The renderer was also verified against 20 real current OpenFreeMap tiles around Offenburg in both themes.
+Verification passes 211 included unit tests and 75 frontend integration checks. The new real-IndexedDB browser check covers automatic map matching, zoom and portrait resize, fixed-area opt-out, overlapping recorded-position history, per-area reset, read-only tab synchronization, persisted reset cutoffs, fresh post-reset visits, report preservation and reload recovery. Chromium checks cover 320×740, 390×844, 1366×768, 1920×1080, 1080×1920 and 3840×2160 in both themes. They check font loading, settings widths, no page overflow, unclipped wall cards and sightings rows, aircraft-only labels, Follow zoom and preference persistence. Focused checks cover route cycling, typography, reduced motion, steady card geometry, saved gallery/daylight options, map failure fallback, journal pacing and unchanged route/aircraft colours through twilight. The renderer was also verified against 20 real current OpenFreeMap tiles around Offenburg in both themes.
 
 Browser checks use controlled feed and map fixtures. They do not certify availability of live third-party flight providers or performance on a physical display. The relay, API limits and authentication settings are unchanged.
