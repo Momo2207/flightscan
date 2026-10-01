@@ -1,10 +1,18 @@
 # Airspace Wall Display
 
-App release `2026-10-01.vercel.20`, with relay `2026-09-30.vercel.11`. Upload all extracted files and folders for this update, including `design-system/` and `scripts/`, then redeploy. The complete six-part wall-art roadmap is in `WALL-ART-PLAN.md`. Midnight and Sunset retain their glass materials, gradients and embedded fonts. Thin orange routes still alternate airport codes and full locations every eight seconds. The aircraft-only layout stays plain and uncluttered.
+App release `2026-10-01.vercel.21`, with relay `2026-09-30.vercel.11`. Upload all extracted files and folders for this update, including `design-system/` and `scripts/`, then redeploy. The complete six-part wall-art roadmap is in `WALL-ART-PLAN.md`. Midnight and Sunset retain their glass materials, gradients and embedded fonts. Thin orange routes still alternate airport codes and full locations every eight seconds. The aircraft-only layout stays plain and uncluttered.
 
 The new Gallery map style gives water and land cover more presence, with faint roads and a small set of town names. It uses actual OpenFreeMap/OpenMapTiles geographic data and retains map attribution and a raster fallback. Choose **Map style → Street map** to restore the previous map treatment. **Atmosphere → Follow daylight** gently warms surfaces near sunset and lowers their luminance at night; **Fixed appearance** keeps your chosen theme constant and is the default. The calculation is local to your chosen display location. It does not change aircraft spectrum colours, orange routes, normal tracker preferences or the screen's hardware brightness.
 
 Flight spectrum colours remain optional and use the existing delayed playback. The log records separate visits and flight segments in IndexedDB, displays available routes plus first/last seen and repeat sightings, and offers daily CSV/XLSX exports. The fixed recording area stays independent of camera zoom. See `SIGHTINGS-EXPORTS.md`. If upgrading from build 10 or earlier, also update `api/relay.js`; preserve Vercel credentials and the public production URL.
+
+## Airport infrastructure
+
+Gallery maps now render the existing OpenFreeMap/OpenMapTiles `aeroway` geometry. Runways appear from tile zoom 10; taxiways appear from zoom 12. Runways have a stronger solid stroke, taxiways a finer quieter stroke, in muted blue-grey for Midnight and warm brown-grey for Sunset. Aircraft and their labels remain above the map geometry. This applies to every mapped airport in the visible tiles, including Follow and 24-hour maps.
+
+The airport overlay filters to `runway` and `taxiway` only. It does not add airport-wide shading, apron/gate shapes, terminal buildings, gradients or glows. Supplied polygons retain their geometry; supplied centre-lines use a decorative screen-width stroke, not a fabricated physical width or pavement edge. Source detail and positional accuracy depend on the map data and zoom. Street map retains its existing raster appearance; Aircraft only remains map-free. No new map endpoint, key, relay operation or flight request is added.
+
+The source was checked against 28 actual Frankfurt tiles: all four runway references (18, 07L/25R, 07C/25C and 07R/25L) and hundreds of taxiway path fragments were present. Both themes were visually checked with the mapped geometry.
 
 ## Journey figures
 

@@ -1,6 +1,6 @@
 # Flightscan design system
 
-Implemented in app build `2026-10-01.vercel.20`. The flight relay remains build 11.
+Implemented in app build `2026-10-01.vercel.21`. The flight relay remains build 11.
 
 ## Themes
 
@@ -45,7 +45,7 @@ The Flight spectrum stays independent of UI accent colours. Its altitude/vertica
 
 ## Gallery map and daylight
 
-Gallery cartography uses actual OpenFreeMap vector tiles with the OpenMapTiles schema. Water and woodland form the main geographic texture. Roads stay faint and a maximum of eight city/town names are placed with collision avoidance, including aircraft clearance. Buildings, POIs and road-name labels are omitted. This is land-cover styling, not invented elevation or hill shading. A small canvas renderer avoids adding a second map engine. Vector geometry is decoded once per tile and rendered into cached canvases; only visible tiles are requested, at most four at a time and 160 retained. Source metadata resolves versioned tile URLs so HTTP caching cannot keep a `latest` alias indefinitely. Requests include response-body reading in their deadline and failures cool down before retrying. OpenStreetMap raster tiles are the independent fallback; Street map remains a selectable option. Required map credits stay visible.
+Gallery cartography uses actual OpenFreeMap vector tiles with the OpenMapTiles schema. Runways and taxiways use the existing aeroway layer: solid mapped paths, with stronger runway strokes and finer taxiway strokes, drawn above the terrain and roads. Runways begin at tile zoom 10, taxiways at 12. No airport boundary, apron, gate or terminal decoration is added. Line widths are cartographic styling; only supplied polygons describe mapped pavement outlines. Water and woodland form the main geographic texture. Roads stay faint and a maximum of eight city/town names are placed with collision avoidance, including aircraft clearance. Buildings, POIs and road-name labels are omitted. This is land-cover styling, not invented elevation or hill shading. A small canvas renderer avoids adding a second map engine. Vector geometry is decoded once per tile and rendered into cached canvases; only visible tiles are requested, at most four at a time and 160 retained. Source metadata resolves versioned tile URLs so HTTP caching cannot keep a `latest` alias indefinitely. Requests include response-body reading in their deadline and failures cool down before retrying. OpenStreetMap raster tiles are the independent fallback; Street map remains a selectable option. Required map credits stay visible.
 
 Follow daylight is optional and uses NOAA's solar-position equations offline at the display's chosen location. A continuous twilight blend gently warms surfaces near sunset and reduces surface luminance at night. It uses the existing wall heartbeat, checks at most every 20 seconds, and adds no weather or geolocation request. Fixed appearance is the default and overrides the adjustment. Both themes and all wall layouts are supported; the minimalist canvas retains a plain background. Text, aircraft spectrum and orange route accents are not recoloured. This changes app surfaces, not device backlight brightness.
 

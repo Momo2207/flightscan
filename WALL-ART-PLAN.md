@@ -43,3 +43,11 @@ Implemented in app build `2026-10-01.vercel.20`. Verification passed 180 unit te
 - Reduce the single featured map label to match the smaller typography.
 - Replace the oversized wall card silhouette with route distance and an estimated whole-flight duration when cached route coordinates support it. Preserve clean spacing when information is absent.
 - Retain orange rotating routes, both themes, delayed movement, aircraft category silhouettes on the map and the complete 24-hour journal/export behavior.
+
+
+## Build 21: mapped airport surfaces
+
+- Decode the existing `aeroway` vector layer.
+- Render actual runway and taxiway paths with restrained solid strokes and supplied polygon outlines. Keep all other airport classes hidden.
+- Preserve Midnight/Sunset materials, aircraft prominence, existing requests/cache limits and map-free mode.
+- Verify runway references and path geometry using live Frankfurt map tiles, with decoding/style unit tests and browser checks.

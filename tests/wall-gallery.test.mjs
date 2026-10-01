@@ -53,6 +53,32 @@ test('vector decoder preserves polygon closure, line deltas, point metadata and 
 test('malformed or oversized vector data fails safely instead of producing fake geography',()=>{
  const {Pbf}=boot();for(const bytes of [new Uint8Array([26,200]),new Uint8Array([26,128]),new Uint8Array(8*1024*1024+1),new Uint8Array(layer('water',[feature(3,[],[9,2])],[],[]))])assert.throws(()=>Pbf.decode(bytes));
 });
+test('airport tiles retain the supplied runway and taxiway paths and reference tags',()=>{
+ const {Pbf}=boot(),bytes=new Uint8Array(layer('aeroway',[
+  feature(2,[0,0,1,1],[9,200,400,10,2000,500]),
+  feature(2,[0,2],[9,300,600,18,200,100,200,99]),
+  feature(3,[0,3],[9,0,0,26,8192,0,0,8192,8191,0,15])
+ ],['class','ref'],['runway','07C/25C','taxiway','aerodrome']));
+ const [airport]=Pbf.decode(bytes);assert.equal(airport.name,'aeroway');assert.equal(airport.features[0].properties.ref,'07C/25C');
+ assert.deepEqual(Array.from(airport.features[0].paths[0],p=>Array.from(p)),[[100,200],[1100,450]]);
+ assert.deepEqual(Array.from(airport.features[1].paths[0],p=>Array.from(p)),[[150,300],[250,350],[350,300]]);
+});
+test('airport styling is limited to runway and taxiway geometry at appropriate zooms',()=>{
+ const {MapModel}=boot(),colours=MapModel.colours('night'),f=(kind,type=2)=>({type,properties:{class:kind}});
+ for(const kind of ['apron','aerodrome','gate','helipad','heliport','toString','unknown'])assert.equal(MapModel.airfieldStyle(f(kind),14,colours),null);
+ assert.equal(MapModel.airfieldStyle(f('runway'),9,colours),null);assert.equal(MapModel.airfieldStyle(f('taxiway'),11,colours),null);
+ assert.equal(MapModel.airfieldStyle(f('runway',1),14,colours),null);
+ const runway=MapModel.airfieldStyle(f('runway'),12,colours),taxiway=MapModel.airfieldStyle(f('taxiway'),12,colours);
+ assert.ok(runway.width>taxiway.width);assert.equal(runway.fill,false);assert.equal(MapModel.airfieldStyle(f('runway',3),14,colours).fill,true);
+ assert.notEqual(colours.runway,MapModel.colours('paper').runway);
+});
+test('airport overlay draws only mapped paths, with runways above taxiways and no glow',()=>{
+ const {MapModel}=boot(),model=new MapModel(),events=[],c={beginPath(){events.push(['begin'])},moveTo(x,y){events.push(['move',x,y])},lineTo(x,y){events.push(['line',x,y])},closePath(){events.push(['close'])},fill(){events.push(['fill',this.fillStyle])},stroke(){events.push(['stroke',this.strokeStyle,this.lineWidth])}};
+ const path=[[10,20],[20,30],[25,40]],feature=(kind,type=2)=>({type,properties:{class:kind},paths:[path]}),layers=[{name:'aeroway',extent:512,features:[feature('runway'),feature('gate',1),feature('taxiway'),feature('apron',3),feature('aerodrome',3)]}];
+ model.drawAirfield(c,layers,MapModel.colours('night'),13);
+ assert.deepEqual(events.filter(e=>e[0]==='stroke').map(e=>e[1]),[MapModel.colours('night').taxiway,MapModel.colours('night').runway]);
+ assert.deepEqual(events.filter(e=>e[0]==='move'),[['move',10,20],['move',10,20]]);assert.equal(events.filter(e=>e[0]==='line').length,4);assert.equal(events.filter(e=>e[0]==='fill').length,0);assert.equal(c.globalAlpha,1);
+});
 test('map metadata resolves the versioned public source and rejects unrelated hosts',async()=>{
  for(const [url,expected]of [['https://tiles.openfreemap.org/planet/20260913_164504_pt/{z}/{x}/{y}.pbf','20260913_164504_pt'],['https://evil.example/{z}/{x}/{y}.pbf','latest']]){
   const {MapModel}=boot(),m=new MapModel(async()=>({ok:true,json:async()=>({tiles:[url]})}));await m.resolveSource();assert.ok(m.template.includes('/'+expected+'/'));

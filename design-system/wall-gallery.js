@@ -56,7 +56,7 @@ class GalleryPbf {
   }
   static decode(buffer){
     const bytes=buffer instanceof Uint8Array?buffer:new Uint8Array(buffer);if(bytes.byteLength>8*1024*1024)throw Error('Vector tile too large');
-    const p=new GalleryPbf(bytes),layers=[],budget={points:0,features:0},wanted=new Set(['landcover','landuse','water','waterway','transportation','place']);
+    const p=new GalleryPbf(bytes),layers=[],budget={points:0,features:0},wanted=new Set(['landcover','landuse','water','waterway','transportation','aeroway','place']);
     while(p.p<p.end){const tag=p.uint();if(tag!==26){p.skip(tag&7);continue}const layer=new GalleryPbf(p.block()),features=[],keys=[],values=[];let name='',extent=4096;
       while(layer.p<layer.end){const t=layer.uint(),f=Math.floor(t/8),w=t&7;if(f===1&&w===2)name=layer.string();else if(f===2&&w===2)features.push(layer.block());else if(f===3&&w===2)keys.push(layer.string());else if(f===4&&w===2)values.push(GalleryPbf.value(layer.block()));else if(f===5&&w===0)extent=layer.uint();else layer.skip(w)}
       if(!wanted.has(name))continue;if(!extent||extent>65536)throw Error('Invalid vector extent');const decoded=[];
@@ -97,7 +97,27 @@ class GalleryMap {
   begin(){this.visible.clear()}
   end(){this.queue=this.queue.filter(a=>{if(this.visible.has(a.key))return true;this.tiles.delete(a.key);return false});this.prune()}
   clear(){this.epoch++;for(const a of this.tiles.values())a.controller?.abort();this.queue=[];this.tiles.clear();this.visible.clear();this.revision++}
-  static colours(theme){return theme==='paper'?{ground:'#ece1d1',forest:'#d6d3bd',urban:'#e4d4c2',water:'#c0d2c9',river:'#9bbfb8',road:'#b7a18b',text:'#716354',halo:'#ece1d1'}:{ground:'#0b1721',forest:'#102526',urban:'#152332',water:'#173b4b',river:'#235364',road:'#344553',text:'#7c929e',halo:'#0b1721'}}
+  static colours(theme){return theme==='paper'?{ground:'#ece1d1',forest:'#d6d3bd',urban:'#e4d4c2',water:'#c0d2c9',river:'#9bbfb8',road:'#b7a18b',runway:'#8f7864',taxiway:'#aa9782',text:'#716354',halo:'#ece1d1'}:{ground:'#0b1721',forest:'#102526',urban:'#152332',water:'#173b4b',river:'#235364',road:'#344553',runway:'#789aa9',taxiway:'#486775',text:'#7c929e',halo:'#0b1721'}}
+  static airfieldStyle(feature,z,colours){
+    const kind=feature.properties.class;
+    if((feature.type!==2&&feature.type!==3)||kind!=='runway'&&kind!=='taxiway'||z<(kind==='runway'?10:12))return null;
+    // A screen-width stroke expresses the actual mapped centre-line, not an
+    // invented runway width. Polygon features retain their supplied outline.
+    return {colour:colours[kind],width:feature.type===3?1:kind==='runway'?(z>=14?3.6:2.8):(z>=14?1.35:1.1),alpha:kind==='runway'?.9:.78,fill:feature.type===3};
+  }
+  drawAirfield(c,layers,colours,z){
+    for(const kind of ['taxiway','runway'])for(const layer of layers.filter(l=>l.name==='aeroway')){
+      const scale=512/layer.extent;
+      for(const feature of layer.features){
+        if(feature.properties.class!==kind)continue;const style=GalleryMap.airfieldStyle(feature,z,colours);if(!style)continue;
+        c.globalAlpha=style.alpha;c.lineCap='butt';c.lineJoin='round';c.beginPath();
+        for(const path of feature.paths){path.forEach((p,i)=>i?c.lineTo(p[0]*scale,p[1]*scale):c.moveTo(p[0]*scale,p[1]*scale));if(feature.type===3)c.closePath()}
+        if(style.fill){c.globalAlpha=style.alpha*.3;c.fillStyle=style.colour;c.fill('nonzero');c.globalAlpha=style.alpha}
+        c.strokeStyle=style.colour;c.lineWidth=style.width;c.stroke();
+      }
+    }
+    c.globalAlpha=1;
+  }
   tileCanvas(item,theme,z){
     if(!item.layers)return null;const style=theme+':'+z;if(item.canvas&&item.style===style)return item.canvas;
     const canvas=document.createElement('canvas');canvas.width=canvas.height=512;const c=canvas.getContext('2d'),colours=GalleryMap.colours(theme);
@@ -112,7 +132,9 @@ class GalleryMap {
         c.globalAlpha=alpha;c.beginPath();for(const path of f.paths){path.forEach((p,i)=>i?c.lineTo(p[0]*scale,p[1]*scale):c.moveTo(p[0]*scale,p[1]*scale));if(f.type===3)c.closePath()}
         if(fill&&f.type===3){c.fillStyle=fill;c.fill('nonzero')}if(stroke){c.strokeStyle=stroke;c.lineWidth=width;c.stroke()}
       }
-    }c.globalAlpha=1;item.canvas=canvas;item.style=style;return canvas;
+    }
+    this.drawAirfield(c,item.layers,colours,z);
+    c.globalAlpha=1;item.canvas=canvas;item.style=style;return canvas;
   }
 }
 const wallGalleryMap=new GalleryMap(),wallGalleryFocus=new GalleryFocus();
