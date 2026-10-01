@@ -33,3 +33,13 @@ The sunrise calculation adjusts app surfaces, not hardware brightness. The terra
 - [OpenMapTiles schema](https://openmaptiles.org/docs/schema/)
 - [Mapbox vector tile specification](https://github.com/mapbox/vector-tile-spec)
 - [NOAA solar-position equations](https://gml.noaa.gov/grad/solcalc/solareqns.PDF)
+
+
+## Build 20 refinements
+
+Implemented in app build `2026-10-01.vercel.20`. Verification passed 180 unit tests and 73 frontend integration checks. Browser checks covered dense aircraft overlap, complete route-name rotation, clean journey clearing, both themes and 320px–4K layouts. The relay remains build 11.
+
+- Keep aircraft-only labels compact, adjacent and stable. Allow overlap, with higher observed altitude drawn above lower aircraft.
+- Reduce the single featured map label to match the smaller typography.
+- Replace the oversized wall card silhouette with route distance and an estimated whole-flight duration when cached route coordinates support it. Preserve clean spacing when information is absent.
+- Retain orange rotating routes, both themes, delayed movement, aircraft category silhouettes on the map and the complete 24-hour journal/export behavior.

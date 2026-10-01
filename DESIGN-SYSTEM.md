@@ -1,6 +1,6 @@
 # Flightscan design system
 
-Implemented in app build `2026-10-01.vercel.19`. The flight relay remains build 11.
+Implemented in app build `2026-10-01.vercel.20`. The flight relay remains build 11.
 
 ## Themes
 
@@ -33,13 +33,13 @@ Small labels never use Thin. Numeric metrics use tabular figures. Map canvas lab
 
 ## Materials and layout
 
-Control glass uses restrained blur, soft shadows and a fine illuminated edge. Content glass is more opaque so text remains legible. Map labels use compact, high-opacity surfaces with nine-pixel corners. Large panels use 26-pixel corners and controls use 12-pixel corners. Touch controls are at least 44 pixels high. The shared spacing rhythm uses 4, 8, 12, 16, 24, 32, 48 and 64 pixels.
+Control glass uses restrained blur, soft shadows and a fine illuminated edge. Content glass is more opaque so text remains legible. Aircraft-only labels use compact, high-opacity surfaces with six-pixel corners and 11–16px text. Map labels use nine-pixel corners. Large panels use 26-pixel corners and controls use 12-pixel corners. Touch controls are at least 44 pixels high. The shared spacing rhythm uses 4, 8, 12, 16, 24, 32, 48 and 64 pixels.
 
 Midnight uses blue light on near-black surfaces. Sunset uses cream and peach glass over a warm beige background. The normal inspector retains bold route codes. Wall route codes and full locations use lighter orange typography, secondary to the callsign. The normal tracker collapses secondary filters; Explore fleet opens them automatically. Mobile retains the aircraft bottom sheet.
 
-Area, Fleet and Follow wall layouts use the same materials. A single compact location/clock line sits above a borderless rounded map and a slim, separately reserved glass sidebar. Coverage, filters, timezone and rotation descriptions stay in Settings. The card has stable regions for airline, callsign, orange route, large silhouette, model/registration and altitude/speed. Hex IDs, repeated type codes and the extra card metrics are removed from the wall composition; normal tracker details remain available.
+Area, Fleet and Follow wall layouts use the same materials. A single compact location/clock line sits above a borderless rounded map and a slim, separately reserved glass sidebar. Coverage, filters, timezone and rotation descriptions stay in Settings. The card has stable regions for airline, callsign, orange route, model/registration, route distance and estimated flight time, and altitude/speed. Hex IDs, repeated type codes and the extra card metrics are removed from the wall composition; normal tracker details remain available.
 
-The 24-hour layout keeps its map and upward-scrolling sightings list. Rows group airline, callsign, route and model, with compact first/last seen and repeat-sighting counts. There are no row dividers. The loop moves at 12 CSS pixels per second with broad edge fades; pause and manual-scroll controls remain available. Aircraft-only mode retains a plain background, silhouettes, altitude/callsign labels and heading vectors. Optional route labels remain configurable.
+The 24-hour layout keeps its map and upward-scrolling sightings list. Rows group airline, callsign, route and model, with compact first/last seen and repeat-sighting counts. There are no row dividers. The loop moves at 12 CSS pixels per second with broad edge fades; pause and manual-scroll controls remain available. Aircraft-only mode retains a plain background, silhouettes, altitude/callsign labels and heading vectors. Optional route labels remain configurable. Labels stay beside their aircraft even in dense traffic. Each label and icon paint as one group, sorted by observed altitude: higher aircraft appear above lower aircraft, with stable identifier ties. Previous adjacent placements are retained while the screen allows them.
 
 The Flight spectrum stays independent of UI accent colours. Its altitude/vertical-rate mapping, delayed timeline, smoothing and reception holds are unchanged. The featured map aircraft uses a soft radial halo instead of a hard selection ring. Incoming/outgoing focus weights share the card's 900 ms fade interval. Only the featured aircraft has a thin fading trail, made from recorded observations ending at the delayed playback clock. Its label changes with the selected aircraft and is removed on the next repaint. Log mode has no featured halo or label.
 
@@ -53,7 +53,7 @@ Follow daylight is optional and uses NOAA's solar-position equations offline at 
 
 Airport abbreviations show first, then full locations, with eight seconds per view and a 500 ms crossfade. City names are preferred over airport names; unknown locations retain their airport code. The feature card, 24-hour list and optional aircraft-only route labels share this treatment. Reduced motion swaps text without a fade. The normal tracker and exported sightings retain their original route data and presentation.
 
-Both versions reserve the same geometry. Card/list text wraps and fits where possible without ellipsis. Very narrow cards give the heading the full width, moving the small silhouette to the airline row. Canvas labels measure both versions and reserve the larger wrapped layout, so alias changes do not move labels. There are no new timers, network calls or changes to position playback. A changed aircraft, callsign or endpoint starts a new reading cycle; metadata refreshes do not reset it. Per-aircraft presentation state is bounded to 512 entries and clears on wall exit.
+Both versions reserve the same geometry. Card/list text wraps and fits where possible without ellipsis. Very narrow cards give the heading and aircraft identity the full width. The wall card uses journey figures instead of an illustration. Canvas labels measure both versions and reserve the larger wrapped layout, so alias changes do not move labels. There are no new timers, network calls or changes to position playback. A changed aircraft, callsign or endpoint starts a new reading cycle; metadata refreshes do not reset it. Per-aircraft presentation state is bounded to 512 entries and clears on wall exit.
 
 Each DOM route exposes one stable accessible description containing codes and full locations. Its two visual strings are hidden from assistive technology to avoid duplicate or repeated announcements. No live region is added.
 
@@ -74,6 +74,7 @@ Device reduced-motion preferences and the wall's explicit Reduced motion setting
 - `design-system/wall-gallery.css`, `wall-gallery.js`: gallery composition, quiet map rendering, focus timing and offline daylight atmosphere.
 - `design-system/ui-theme.js`: saved preferences, theme synchronization, shared canvas palettes and cached tile styling.
 - `design-system/wall-routes.js`: route alias timing, stable DOM presentation and wrapped canvas route labels.
+- `design-system/wall-journey.js`: whole-route distance, rounded cruise-duration estimates and clean missing-data behavior.
 - `assets/fonts/`: the source WOFF2 files and their license.
 
 `npm run build` assembles those sources into the existing `index.html`, then copies that self-contained HTML to `public/index.html`. It preserves the existing flight logic, relay configuration and inline datasets. If you maintain only a single GitHub Pages HTML file, use the compiled `index.html` directly. Changing only CSS colours does not automatically change canvas colours: edit the corresponding `UI_PALETTES` role in `ui-theme.js` too.

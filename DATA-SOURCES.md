@@ -58,3 +58,12 @@ The recorder/exporter uses an exclusive browser Web Lock or an IndexedDB lease f
 ## Build 17 appearance
 
 The Midnight and Sunset design system adds no provider requests. WOFF2 Roboto Latin fonts are embedded directly into the HTML at weights 100, 300, 400, 500, 700 and 900. The font name table identifies Copyright 2011 Google Inc. and Apache License 2.0. See `assets/fonts/LICENSE.txt` and `assets/fonts/README.md`. UI tokens and shared canvas palettes are separate from the existing aircraft Flight spectrum telemetry and OKLab engine.
+
+
+## Wall journey estimates (app build 20)
+
+The distance is the great-circle airport-to-airport distance from validated cached route coordinates, not tracked mileage or remaining distance. It uses a mean Earth radius of 6371.0088 km. Aviation units use the exact 1.852 km/NM conversion. Displayed distances above 100 units round to tens.
+
+Estimated flight time is an app heuristic, not a schedule or ETA. It uses nominal cruise assumptions of 490 kt for wide-body jets, 450 kt for narrow-body/business/generic jets and 440 kt for regional jets, with a 460 kt override for reported B738. A fixed 20-minute climb/descent allowance is added and the result rounds to five minutes. Representative cruise values were checked against EUROCONTROL’s indicative [A320](https://contentzone.eurocontrol.int/aircraftperformance/details.aspx?ICAO=A320), [B738](https://contentzone.eurocontrol.int/aircraftperformance/default.aspx?ICAOFilter=738), [A350](https://contentzone.eurocontrol.int/aircraftperformance/default.aspx?NameFilter=A350) and [E195](https://contentzone.eurocontrol.int/aircraftperformance/details.aspx?ICAO=E195&ICAOFilter=e195) records. Category assumptions and the allowance are our simplified presentation model, not model-specific performance calculations. Wind, routing, taxi, holding and airline schedules are excluded. Current groundspeed is deliberately ignored, including on the ground.
+
+No duration is generated for propeller aircraft, helicopters, gliders, military categories or unknown types. Missing or invalid airport coordinates hide both figures. Figures use the route already bound to the displayed aircraft/callsign episode and clear when that route disappears. No new provider lookup, key or relay feature is required.

@@ -5,7 +5,7 @@ import vm from 'node:vm';
 const html=readFileSync(new URL('../index.html',import.meta.url),'utf8');
 const block=name=>'/* '+name+'_START:'+html.split('/* '+name+'_START:')[1].split('/* '+name+'_END */')[0];
 const helpers=html.split('\n').filter(l=>/^(const rad=|function (distance|project|unproject|containsBounds)\()/.test(l)).join('\n');
-const f=vm.runInNewContext('const num=v=>typeof v==="number"&&Number.isFinite(v);\n'+helpers+'\n'+['WALL_COVERAGE','WALL_CAMERA','WALL_MINIMALIST'].map(block).join('\n')+'\n({width:wallWidthAtZoom,coverage:wallCoverageFor,clean:wallCleanZoom,label:wallAircraftLabel,place:wallLabelBox,contains:containsBounds})');
+const f=vm.runInNewContext('const num=v=>typeof v==="number"&&Number.isFinite(v);\n'+helpers+'\n'+['WALL_COVERAGE','WALL_CAMERA','WALL_MINIMALIST'].map(block).join('\n')+'\n({width:wallWidthAtZoom,coverage:wallCoverageFor,clean:wallCleanZoom,label:wallAircraftLabel,place:wallLabelBox,stack:wallAltitudeOrder,contains:containsBounds})');
 for(const [lat,lon,w,h] of [[48.47,7.94,1920,1080],[50,8,3840,2160],[50,8,1080,1920],[0,179.9,1400,900],[75,20,1200,800]])test(`custom zoom preserves projected viewport at ${lat},${lon} ${w}x${h}`,()=>{
  for(const z of [9,10.5,13,15]){
   const r=f.coverage({lat,lon},f.width(lat,z,w),w,h,90);
@@ -47,17 +47,24 @@ test('label boxes stay within portrait and landscape edges and find free alterna
  assert.ok(first.x!==second.x||first.y!==second.y);
  assert.ok(first.x+first.w<=second.x||second.x+second.w<=first.x||first.y+first.h<=second.y||second.y+second.h<=first.y);
 });
-test('taller route labels use available space around a dense aircraft cluster',()=>{
+test('dense route labels remain adjacent and allow overlap instead of distant rings',()=>{
  const overlaps=(a,b)=>Math.max(0,Math.min(a.x+a.w,b.x+b.w)-Math.max(a.x,b.x))*Math.max(0,Math.min(a.y+a.h,b.y+b.h)-Math.max(a.y,b.y));
  for(const [width,height]of [[1920,1080],[1080,1920]]){
   const points=Array.from({length:12},(_,i)=>({x:width/2+(Math.floor(i/4)-1)*80,y:height/2+(i%4-1.5)*38}));
   const icons=points.map(p=>({x:p.x-21,y:p.y-24,w:42,h:48})),occupied=[];
   for(const point of points){
    const box=f.place(point,160,90,width,height,occupied,icons);
-   assert.ok(occupied.every(other=>overlaps(box,other)===0),'route callsigns must not cover one another when space is available');
-   assert.ok(icons.every(icon=>overlaps(box,icon)===0));occupied.push(box);
+   const dx=Math.max(box.x-point.x,0,point.x-box.x-box.w),dy=Math.max(box.y-point.y,0,point.y-box.y-box.h);
+   assert.ok(Math.hypot(dx,dy)<=21,'labels stay within the adjacent slots');
+   assert.ok(box.slot<8);occupied.push(box);
   }
-  const moved=f.place(points[0],160,90,width,height,occupied.slice(1),icons,28,occupied[0].slot);
-  assert.equal(moved.slot,occupied[0].slot,'a free previous placement stays stable');
+  assert.ok(occupied.some((a,i)=>occupied.slice(i+1).some(b=>overlaps(a,b)>0)),'crowded labels may overlap');
+  const moved=f.place(points[0],160,90,width,height,occupied.slice(1),icons,18,occupied[0].slot);
+  assert.equal(moved.slot,occupied[0].slot,'the previous adjacent placement stays stable through overlapping traffic');
  }
+});
+test('higher-altitude aircraft and their labels paint above lower groups with stable ties',()=>{
+ const rows=[{hex:'eee',alt_baro:35000},{hex:'bbb',alt_baro:'ground'},{hex:'ddd',alt_geom:20000},{hex:'ccc',alt_baro:0},{hex:'aaa',alt_baro:null},{hex:'fff',alt_baro:-100}];
+ assert.deepEqual(rows.sort(f.stack).map(a=>a.hex),['aaa','fff','bbb','ccc','ddd','eee']);
+ assert.equal(f.stack({hex:'a'},{hex:'a'}),0);
 });

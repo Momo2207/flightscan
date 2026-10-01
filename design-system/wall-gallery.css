@@ -25,8 +25,8 @@
 #wallRotationLabel{display:none}#wallDisplay #wallCardProgress{top:0;background:var(--w-route);opacity:.45;max-width:100%}
 #wallDisplay .wall-bottom{font-size:clamp(10px,.67vw,15px);line-height:1.3;opacity:.75;align-items:center}
 #wallDisplay #wallCount{font-weight:300;color:var(--w-muted)}
-/* Fixed card regions prevent typography and route rotation moving the silhouette. */
-#wallDisplay #wallCard{display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:clamp(38px,5vh,94px) clamp(112px,15vh,288px) minmax(60px,1fr) clamp(72px,10vh,165px) clamp(74px,10vh,155px);gap:clamp(10px,1.4vh,24px);align-content:stretch;justify-content:initial}
+/* Fixed regions keep the route, aircraft identity and journey figures steady. */
+#wallDisplay #wallCard{display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:clamp(38px,5vh,94px) clamp(112px,15vh,288px) clamp(72px,10vh,165px) minmax(60px,1fr) clamp(74px,10vh,155px);gap:clamp(10px,1.4vh,24px);align-content:stretch;justify-content:initial}
 #wallDisplay #wallCard>*{min-width:0;min-height:0}
 #wallDisplay .wall-carrier{grid-column:1;grid-row:1;margin:0;gap:12px;align-self:center}
 #wallDisplay .wall-carrier .airline-badge{width:clamp(34px,3vw,62px);height:clamp(34px,3vw,62px);flex-basis:clamp(34px,3vw,62px);border-radius:50%;background:transparent;border-color:var(--w-line)}
@@ -37,10 +37,16 @@
 #wallDisplay #wallRoute{margin:10px 0 0;min-height:2.4em;line-height:1.2}
 #wallDisplay #wallRoute .wall-route-codes{font-size:clamp(25px,2.2vw,52px)}
 #wallDisplay #wallRoute .wall-route-names{font-size:clamp(18px,1.5vw,34px);font-weight:300}
-#wallDisplay .wall-plane-art{grid-column:1;grid-row:3;height:100%;max-height:none;min-height:0;opacity:.94;padding:clamp(5px,1vh,18px) 0;box-sizing:border-box;align-self:stretch}
-#wallDisplay .wall-identity{grid-column:1;grid-row:4;align-self:center}
+#wallDisplay .wall-identity{grid-column:1;grid-row:3;align-self:center}
 #wallDisplay .wall-type{font-size:calc(clamp(20px,1.65vw,38px)*var(--w-scale));font-weight:400;line-height:1.2}
 #wallDisplay .wall-registration{font-size:clamp(12px,.96vw,23px);font-weight:300;letter-spacing:.04em;margin-top:8px}
+#wallDisplay .wall-journey{grid-column:1;grid-row:4;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;align-self:center;border-top:1px solid var(--w-line);padding-top:clamp(16px,2vh,34px)}
+#wallDisplay .wall-journey small{display:block;font-size:clamp(10px,.75vw,17px);font-weight:400;color:var(--w-muted);line-height:1.4;margin-bottom:8px}
+#wallDisplay .wall-journey strong{font-size:clamp(24px,1.85vw,43px);font-weight:300;line-height:1.15;letter-spacing:-.035em;white-space:nowrap}
+#wallDisplay .wall-journey .wall-unit{font-size:clamp(10px,.8vw,18px);font-weight:300;color:var(--w-muted);margin-left:5px}
+#wallDisplay .wall-journey-value{white-space:nowrap}
+#wallDisplay .wall-journey[data-single=true]{grid-template-columns:minmax(0,1fr)}
+#wallDisplay #wallJourney[hidden],#wallDisplay #wallJourneyTime[hidden]{display:none!important}
 #wallDisplay .wall-metrics{grid-column:1;grid-row:5;align-self:center;grid-template-columns:repeat(2,minmax(0,1fr));border:0;gap:14px;padding:0}
 #wallDisplay .wall-metrics small{font-size:calc(clamp(10px,.8vw,19px)*var(--w-scale));margin:0 0 5px;min-height:0}
 #wallDisplay .wall-metrics strong{font-size:calc(clamp(25px,2vw,46px)*var(--w-scale));font-weight:300;line-height:1.1}
@@ -76,28 +82,29 @@
  #wallDisplay .wall-body{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(140px,1fr) minmax(280px,.52fr);gap:clamp(16px,2vw,30px)}
  #wallDisplay #wallCard{grid-template-columns:minmax(0,1fr) minmax(0,.85fr);grid-template-rows:clamp(36px,4vh,65px) minmax(90px,1fr) minmax(65px,.65fr);gap:12px 28px}
  #wallDisplay .wall-carrier{grid-column:1;grid-row:1}#wallDisplay .wall-flight-heading{grid-column:1;grid-row:2}
- #wallDisplay .wall-plane-art{grid-column:2;grid-row:1/3;padding:12px 8px;max-height:none}
+ #wallDisplay .wall-journey{grid-column:2;grid-row:2;align-self:center;grid-template-columns:minmax(0,1fr);gap:20px;border-top:0;padding:0}
  #wallDisplay .wall-identity{grid-column:1;grid-row:3}#wallDisplay .wall-metrics{grid-column:2;grid-row:3}
  #wallDisplay[data-mode=log] .wall-body{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(140px,1.1fr) minmax(330px,1fr)}
  #wallDisplay .wall-log-heading h2{font-size:26px}#wallDisplay #wallLogViewport{--log-row-height:170px}
 }
 @media(max-height:800px) and (orientation:landscape){
- #wallDisplay #wallCard{grid-template-rows:40px 108px minmax(48px,1fr) 72px 78px;gap:10px}
+ #wallDisplay #wallCard{grid-template-rows:40px 108px 72px minmax(65px,1fr) 78px;gap:10px}
  #wallDisplay .wall-feature-heading{padding-bottom:10px}#wallDisplay .wall-callsign{font-size:34px}#wallDisplay #wallRoute .wall-route-codes{font-size:28px}#wallDisplay #wallRoute .wall-route-names{font-size:20px}#wallDisplay .wall-type{font-size:23px}
 }
 @media(max-width:580px){
  #wallDisplay:not([data-layout=minimalist]){padding:14px;gap:12px;overflow:hidden}
  #wallDisplay .wall-top h1,#wallDisplay .wall-time time{font-size:20px}#wallDisplay .wall-top h1{max-width:calc(100vw - 115px)}
  #wallDisplay .wall-time{margin-left:9px}#wallDisplay .wall-time:before{margin-right:9px}
- #wallDisplay .wall-body{grid-template-rows:minmax(125px,1fr) minmax(280px,1.1fr);gap:12px}
+ #wallDisplay .wall-body{grid-template-rows:minmax(100px,1fr) minmax(360px,1.1fr);gap:12px}
  #wallDisplay .wall-feature,#wallDisplay #wallLog{padding:16px;border-radius:24px}
- #wallDisplay .wall-feature-heading{padding-bottom:8px}#wallDisplay #wallCard{grid-template-columns:minmax(0,1fr) minmax(55px,.38fr);grid-template-rows:30px 98px minmax(52px,1fr) 52px;gap:7px 12px}
+ #wallDisplay .wall-feature-heading{padding-bottom:8px}#wallDisplay #wallCard{grid-template-columns:minmax(0,1fr);grid-template-rows:24px 90px minmax(60px,1fr) 50px 48px;gap:5px}
  #wallDisplay .wall-carrier{grid-column:1/-1;grid-row:1}#wallDisplay .wall-carrier strong{font-size:17px}#wallDisplay .wall-carrier .airline-badge{display:none}
  #wallDisplay .wall-flight-heading{grid-column:1/-1;grid-row:2}#wallDisplay .wall-callsign{font-size:32px}
  #wallDisplay #wallRoute{margin-top:7px}#wallDisplay #wallRoute .wall-route-codes{font-size:25px}#wallDisplay #wallRoute .wall-route-names{font-size:18px}
- #wallDisplay .wall-plane-art{grid-column:2;grid-row:3;min-height:0;height:100%;max-height:none;padding:3px}
  #wallDisplay .wall-identity{grid-column:1;grid-row:3}#wallDisplay .wall-type{font-size:18px}#wallDisplay .wall-registration{font-size:11px;margin-top:5px}
- #wallDisplay .wall-metrics{grid-column:1/-1;grid-row:4;grid-template-columns:1fr 1fr}#wallDisplay .wall-metrics strong{font-size:24px}#wallDisplay .wall-metrics small{font-size:10px}
+ #wallDisplay .wall-journey{grid-column:1;grid-row:4;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;border-top:1px solid var(--w-line);padding-top:8px;align-self:stretch}
+ #wallDisplay .wall-journey small{font-size:9px;margin-bottom:3px}#wallDisplay .wall-journey strong{font-size:22px}#wallDisplay .wall-journey .wall-unit{font-size:10px}
+ #wallDisplay .wall-metrics{grid-column:1/-1;grid-row:5;grid-template-columns:1fr 1fr}#wallDisplay .wall-metrics strong{font-size:24px}#wallDisplay .wall-metrics small{font-size:10px}
  #wallDisplay .wall-bottom{font-size:10px;gap:6px}#wallDisplay .wall-bottom-status{gap:6px}
  #wallDisplay[data-mode=log] .wall-body{grid-template-rows:minmax(130px,.75fr) minmax(330px,1fr);gap:14px}
  #wallDisplay .wall-log-heading{padding-bottom:10px}#wallDisplay .wall-log-heading h2{font-size:22px;margin-top:10px}#wallDisplay #wallLogCount{font-size:11px}

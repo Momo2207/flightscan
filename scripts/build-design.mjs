@@ -17,7 +17,11 @@ export async function refreshDesign(){
  const routeScript=(await readFile(new URL('design-system/wall-routes.js',root),'utf8')).trim();
  const routeMarker=/\/\* WALL_ROUTE_PRESENTATION_START \*\/[\s\S]*?\/\* WALL_ROUTE_PRESENTATION_END \*\//;
  if(routeMarker.test(html))html=html.replace(routeMarker,()=>routeScript);
- else html=html.replace('/* UI_APPEARANCE_START */',()=>routeScript+'\n/* UI_APPEARANCE_START */');
+  else html=html.replace('/* UI_APPEARANCE_START */',()=>routeScript+'\n/* UI_APPEARANCE_START */');
+ const journeyScript=(await readFile(new URL('design-system/wall-journey.js',root),'utf8')).trim();
+ const journeyMarker=/\/\* WALL_JOURNEY_START \*\/[\s\S]*?\/\* WALL_JOURNEY_END \*\//;
+ if(journeyMarker.test(html))html=html.replace(journeyMarker,()=>journeyScript);
+ else html=html.replace('/* UI_APPEARANCE_START */',()=>journeyScript+'\n/* UI_APPEARANCE_START */');
  const galleryScript=(await readFile(new URL('design-system/wall-gallery.js',root),'utf8')).trim();
  const galleryMarker=/\/\* WALL_GALLERY_START \*\/[\s\S]*?\/\* WALL_GALLERY_END \*\//;
  if(galleryMarker.test(html))html=html.replace(galleryMarker,()=>galleryScript);

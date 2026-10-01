@@ -69,9 +69,9 @@ function wallRouteWrap(context,text,width){
   }
   if(line)lines.push(line);return lines;
 }
-function wallRouteCanvasLayout(context,view,font,width){
+function wallRouteCanvasLayout(context,view,font,width,minimum=12){
   if(!view)return null;
-  const size=Math.max(12,Math.round(font*.88));context.font=uiCanvasFont(size,300);
+  const size=Math.max(minimum,Math.round(font*.88));context.font=uiCanvasFont(size,300);
   const maxWidth=Math.max(1,width),codes=wallRouteWrap(context,view.codes,maxWidth),names=wallRouteWrap(context,view.names,maxWidth);
   return {size,codes,names,lineHeight:Math.ceil(size*1.22),width:Math.max(...codes.concat(names).map(text=>context.measureText(text).width)),count:Math.max(codes.length,names.length)};
 }
