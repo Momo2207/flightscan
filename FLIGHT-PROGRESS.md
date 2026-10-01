@@ -1,6 +1,6 @@
 # Flight progress and shared aircraft information
 
-App release **2026-10-01.vercel.26**. Relay build 11 remains unchanged. Upload the full extracted project, including `design-system/` and `scripts/`, then redeploy. Close old Flightscan tabs once during the storage upgrade and refresh the production page.
+App release **2026-10-01.vercel.27**. Relay build 11 remains unchanged. Upload the full extracted project, including `design-system/` and `scripts/`, then redeploy. If upgrading from build 24 or earlier, close old Flightscan tabs once for the storage upgrade. Refresh the production page after redeployment.
 
 ## Display contract
 
@@ -10,11 +10,13 @@ App release **2026-10-01.vercel.26**. Relay build 11 remains unchanged. Upload t
 | Web results | Callsign + airline, route, type, registration, altitude, groundspeed | Optional vertical rate and position age; Callsign A–Z default |
 | Web Follow | Compact Follow controls, map and common inspector | No redundant one-row results table |
 | Wall Area / Fleet | Airline, callsign, rotating route, model/registration, optional route estimates, altitude/groundspeed | Estimates may be disabled; compact screens hide them first |
-| Wall Follow | Airline, callsign, rotating route, model/registration, distance covered/time airborne, altitude/groundspeed, distance to destination/estimated flight time | All six metrics shown by default, including compact layouts; route estimates can be disabled in Settings |
+| Wall Follow | Airline, callsign, rotating route, model/registration, distance from departure/time airborne, altitude/groundspeed, distance to destination/estimated flight time | All six metrics shown by default, including compact layouts; route estimates can be disabled in Settings |
 | Wall 24-hour journal | Airline, callsign and latest saved route, model/registration, First / Last / Sightings | One row per physical ICAO aircraft, repeated visits counted; no live metrics for departed aircraft |
 | Aircraft only | Category silhouette, static identity, rotating altitude/speed/model/route | Optional followed-target progress pages; no map, large details panel or clock |
 
 Centre distance and bearing are removed from visible tables, cards, tooltips and technical aircraft details. Geographic distance calculations remain for search coverage, route validation and internal prioritization. Old saved Nearest-first sort preferences migrate to Callsign A–Z. Missing airline/model/registration/route rows collapse. Required metric slots say Not available. Zero groundspeed and reported ground state remain valid values.
+
+The primary distance field in web, Wall Follow and optional aircraft-only progress pages is **Distance from departure**: direct great-circle distance from the matching route origin to the currently displayed position. It uses the same delayed/held position as the wall marker and is independent of recording gaps. Unknown origin coordinates show Not available without substituting the partial track total.
 
 Shared aircraft units and time zone are editable from Appearance or Wall Settings. Existing wall unit/time-zone preferences migrate without affecting geographic range units. Aviation uses ft / kt / NM / ft/min; Metric uses m / km/h / km / m/s. Live altitude rounds to 100 ft or 10 m; speed and travel distance use whole units; elapsed time uses whole minutes. Routes remain thin orange. Web locations are static, wall route aliases rotate every eight seconds.
 
@@ -26,7 +28,7 @@ Ground followed by two fresh airborne reports confirms a takeoff. The timing int
 
 Position gaps beyond 120 seconds break the distance sum without bridging missing travel. Departure time can remain known while distance coverage becomes partial. Duplicate/late reports add nothing. Impossible jumps are rejected using the same 650 m/s plus 1 km tolerance as wall playback.
 
-| Evidence | Distance label | Time label |
+| Evidence | Internal recorded-track label | Visible time label |
 | --- | --- | --- |
 | Observed takeoff with continuous accepted airborne segments | Distance covered | Time airborne |
 | Observed takeoff followed by a reception gap | Observed distance | Time airborne |
@@ -34,9 +36,9 @@ Position gaps beyond 120 seconds break the distance sum without bridging missing
 | First position with no distance segment | Not available value | Time observed, 0 min |
 | No matching flight/identity/position evidence | Not available value | Not available value |
 
-Web metrics use the accepted observation timestamp. Wall metrics use the displayed interpolation timestamp; held icons use their last real observation. Counters never advance from the computer clock while a signal is held. The same flight and scene time produce the same figures in DOM and canvas.
+The track labels above remain internal; they no longer supply the primary distance displayed on cards. Web metrics use the accepted observation timestamp. Wall metrics use the displayed interpolation timestamp; held icons use their last real observation. Counters never advance from the computer clock while a signal is held. The same flight and scene time produce the same figures in DOM and canvas.
 
-The existing live relay cannot supply full past flight history. This release adds no history account or credentials. Area/Fleet retain airport-to-airport distance. Follow adds great-circle distance from the displayed position to the destination airport and estimated total flight time using the existing nominal cruise model. These remain separate from travelled distance and actual airborne time. Missing inputs hide only the affected route figure; losing/changing a route clears the old figures. Explicit Off preferences remain respected; legacy All aircraft cards preferences migrate to On. Technical coverage explanations remain in About.
+The existing live relay cannot supply full past flight history. This release adds no history account or credentials. Area/Fleet retain airport-to-airport distance. Follow adds great-circle distance from the displayed position to the destination airport and estimated total flight time using the existing nominal cruise model. These remain separate from the stored flown track and actual airborne time. Missing inputs hide only the affected route figure; losing/changing a route clears the old figures. Explicit Off preferences remain respected; legacy All aircraft cards preferences migrate to On. Technical coverage explanations remain in About.
 
 ## Persistence
 

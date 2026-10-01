@@ -45,6 +45,18 @@ test('destination distance uses the supplied displayed position and works withou
  assert.equal(Journey.remaining(route.to,route).distanceKm,0);assert.equal(Journey.distance({distanceKm:0},true),'0');
  assert.equal(Journey.distance(near,false),String(Math.round(near.distanceKm/1.852)));
 });
+test('departure distance measures origin to displayed position without requiring a destination or flight history',()=>{
+ const origin=route.from;
+ assert.equal(Journey.fromDeparture(origin,{from:origin}).distanceKm,0);
+ const near=Journey.fromDeparture({lat:50.033,lon:8.6},route),far=Journey.fromDeparture({lat:49.5,lon:5.5},{from:origin});
+ assert.ok(near.distanceKm<3);assert.ok(far.distanceKm>220&&far.distanceKm<240);
+ assert.equal(Journey.fromDeparture(route.to,route).distanceKm,Journey.estimate({},route,'wide').distanceKm);
+});
+test('departure distance rejects invalid origins and takes the short path across the date line',()=>{
+ for(const from of [null,{}, {lat:'50',lon:8}, {lat:91,lon:8}, {lat:50,lon:181}])assert.equal(Journey.fromDeparture(route.to,{from}),null);
+ assert.equal(Journey.fromDeparture(null,route),null);assert.equal(Journey.fromDeparture(route.to,null),null);
+ assert.ok(Journey.fromDeparture({lat:0,lon:-179},{from:{lat:0,lon:179}}).distanceKm<223);
+});
 test('missing and malformed destination or aircraft positions never fabricate remaining distance',()=>{
  for(const aircraft of [null,{}, {lat:null,lon:0}, {lat:'50',lon:8}, {lat:91,lon:8}, {lat:50,lon:Infinity}])assert.equal(Journey.remaining(aircraft,route),null);
  for(const to of [null,{}, {lat:50,lon:181}, {lat:50,lon:NaN}])assert.equal(Journey.remaining(route.from,{to}),null);

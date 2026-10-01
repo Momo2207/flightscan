@@ -1,8 +1,8 @@
 {
-  "build": "2026-10-01.vercel.26",
+  "build": "2026-10-01.vercel.27",
   "relayBuild": "2026-09-30.vercel.11",
   "unitTests": {
-    "passed": 240,
+    "passed": 244,
     "failed": 0
   },
   "frontendIntegrationTests": {
@@ -40,7 +40,8 @@
       ]
     ],
     "runtimeErrors": 0,
-    "followRouteMetrics": "Destination distance uses the delayed displayed position; estimated total flight time appears alongside observed progress and altitude/speed at all six sizes, in Midnight and Sunset. Long rotating location names fit without overlaps."
+    "followRouteMetrics": "Distance from departure, airborne time, altitude/speed, distance to destination and estimated total flight time fit all six sizes. Delayed scene, both themes, long rotating locations and persistence verified.",
+    "departureDistance": "Primary distance uses the matching route origin and displayed position in web cards, Wall Follow and optional aircraft-only progress pages. Independent of partial recorded track totals; delayed DOM/canvas values agree. Missing origins do not fall back to observed track distance."
   },
   "relaySha256": "95ecd4cf05bbdfe39d60ae8c77dbd1b76510a1d798b7b9d43614b95960027018",
   "productionDeployment": "Not performed; updated files supplied for redeployment."

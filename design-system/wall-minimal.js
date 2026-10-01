@@ -15,7 +15,7 @@ function wallAircraftInfo(a,metric=false,route=null){
   const labels=WallRoutePresentation.labels(route);
   if(labels){add('route-codes',labels.codes,true);if(labels.names!==labels.codes)add('route-names',labels.names,true)}
   if(wallSettings.progressPages&&wallMode()==='follow'&&a.hex===wallHex()){
-    const progress=AircraftInfo.progress(flightProgress.forAircraft(a,aircraftSceneTime(a,true)),metric);
+    const progress=AircraftInfo.progress(flightProgress.forAircraft(a,aircraftSceneTime(a,true)),metric,a,route);
     if(progress.distance.value!=='Not available')add('flight-distance',progress.distance.label+' '+progress.distance.value+' '+progress.distance.unit);
     if(progress.time.value!=='Not available')add('flight-time',progress.time.label+' '+progress.time.value);
   }

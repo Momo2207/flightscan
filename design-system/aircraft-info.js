@@ -7,11 +7,14 @@ class AircraftInfo {
   static altitude(a,metric=false){if(a.alt_baro==='ground')return {value:'Ground',unit:''};const value=Number.isFinite(a.alt_baro)?a.alt_baro:a.alt_geom;return this.format(Number.isFinite(value)?value*(metric?.3048:1):null,metric?'m':'ft',metric?10:100)}
   static speed(a,metric=false){return this.format(Number.isFinite(a.gs)?a.gs*(metric?1.852:1):null,metric?'km/h':'kt')}
   static vertical(a,metric=false){const v=a.baro_rate??a.geom_rate;return this.format(Number.isFinite(v)?v*(metric?.00508:1):null,metric?'m/s':'ft/min',metric?.1:1)}
-  static progress(p,metric=false){return {distance:{...this.format(Number.isFinite(p?.distanceKm)?p.distanceKm/(metric?1:1.852):null,metric?'km':'NM'),label:p?.distanceLabel||'Observed distance'},time:{value:p?this.duration(p.elapsedMinutes):'Not available',unit:'',label:p?.timeLabel||'Time observed'}}}
+  static progress(p,metric=false,aircraft=null,route=null){
+    const departure=WallJourney.fromDeparture(aircraft,route);
+    return {distance:{...this.format(departure?departure.distanceKm/(metric?1:1.852):null,metric?'km':'NM'),label:'Distance from departure'},time:{value:p?this.duration(p.elapsedMinutes):'Not available',unit:'',label:p?.timeLabel||'Time observed'}};
+  }
   static duration(minutes){if(!Number.isFinite(minutes))return 'Not available';const m=Math.floor(Math.max(0,minutes)),h=Math.floor(m/60);return h?h+' h'+(m%60?' '+m%60+' min':''):m+' min'}
   static snapshot(a,options={}){
     const metric=options.units==='metric',operator=airlineFor(a),type=typeFor(a),identity=this.identity(a),route=options.route===undefined?routeFor(a):options.route;
-    return {aircraft:a,identity,airline:operator,model:type.code||String(a.desc||'').trim()?type.name:'',registration:a.r||'',route,routeCodes:route?routeCodes(route):'',routeNames:route?routeTitle(route):'',altitude:this.altitude(a,metric),speed:this.speed(a,metric),vertical:this.vertical(a,metric),progress:this.progress(flightProgress.forAircraft(a,options.sceneTime??a.positionTime),metric),journey:WallJourney.estimate(a,route,aircraftSymbolFor(a).key)};
+    return {aircraft:a,identity,airline:operator,model:type.code||String(a.desc||'').trim()?type.name:'',registration:a.r||'',route,routeCodes:route?routeCodes(route):'',routeNames:route?routeTitle(route):'',altitude:this.altitude(a,metric),speed:this.speed(a,metric),vertical:this.vertical(a,metric),progress:this.progress(flightProgress.forAircraft(a,options.sceneTime??a.positionTime),metric,a,route),journey:WallJourney.estimate(a,route,aircraftSymbolFor(a).key)};
   }
 }
 const AIRCRAFT_PREF_KEY='flightscan-aircraft-preferences-v1';

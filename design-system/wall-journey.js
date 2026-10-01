@@ -14,6 +14,10 @@ class WallJourney{
     const distanceKm=this.separation(aircraft,route?.to);
     return distanceKm===null?null:{distanceKm};
   }
+  static fromDeparture(aircraft,route){
+    const distanceKm=this.separation(route?.from,aircraft);
+    return distanceKm===null?null:{distanceKm};
+  }
   static estimate(aircraft,route,kind){
     const distanceKm=this.separation(route?.from,route?.to);
     if(distanceKm===null)return null;
