@@ -51,3 +51,10 @@ Implemented in app build `2026-10-01.vercel.20`. Verification passed 180 unit te
 - Render actual runway and taxiway paths with restrained solid strokes and supplied polygon outlines. Keep all other airport classes hidden.
 - Preserve Midnight/Sunset materials, aircraft prominence, existing requests/cache limits and map-free mode.
 - Verify runway references and path geometry using live Frankfurt map tiles, with decoding/style unit tests and browser checks.
+
+## Build 22: noses aligned with movement
+
+- Derive a separate display heading from the tangent of the same great-circle arc used for delayed positions. Keep reported track available for the normal tracker, details and exports.
+- Use the display heading in both wall map renderers and the aircraft-only direction vector. Handle missing reports, taxiing, turns, date-line crossings and endpoints without reversing the nose.
+- Ignore sub-five-metre jitter when choosing a movement angle; use reported heading for stopped positions and preserve the last display orientation during reception holds.
+- Verification: 192 unit tests and 73 frontend integration checks pass. Browser checks confirm all four travel directions, missing-heading movement, stopped positions, held orientation and vector alignment in both layouts and themes. No relay changes or additional network requests.

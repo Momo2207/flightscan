@@ -1,6 +1,6 @@
 # Flightscan design system
 
-Implemented in app build `2026-10-01.vercel.21`. The flight relay remains build 11.
+Implemented in app build `2026-10-01.vercel.22`. The flight relay remains build 11.
 
 ## Themes
 
@@ -41,7 +41,7 @@ Area, Fleet and Follow wall layouts use the same materials. A single compact loc
 
 The 24-hour layout keeps its map and upward-scrolling sightings list. Rows group airline, callsign, route and model, with compact first/last seen and repeat-sighting counts. There are no row dividers. The loop moves at 12 CSS pixels per second with broad edge fades; pause and manual-scroll controls remain available. Aircraft-only mode retains a plain background, silhouettes, altitude/callsign labels and heading vectors. Optional route labels remain configurable. Labels stay beside their aircraft even in dense traffic. Each label and icon paint as one group, sorted by observed altitude: higher aircraft appear above lower aircraft, with stable identifier ties. Previous adjacent placements are retained while the screen allows them.
 
-The Flight spectrum stays independent of UI accent colours. Its altitude/vertical-rate mapping, delayed timeline, smoothing and reception holds are unchanged. The featured map aircraft uses a soft radial halo instead of a hard selection ring. Incoming/outgoing focus weights share the card's 900 ms fade interval. Only the featured aircraft has a thin fading trail, made from recorded observations ending at the delayed playback clock. Its label changes with the selected aircraft and is removed on the next repaint. Log mode has no featured halo or label.
+The Flight spectrum stays independent of UI accent colours. Its altitude/vertical-rate mapping, delayed timeline, smoothing and reception holds are unchanged. Wall aircraft noses and short direction vectors follow the tangent of the displayed movement path. Stopped positions use the reported heading or the last usable orientation; reception holds freeze the nose with the position. The featured map aircraft uses a soft radial halo instead of a hard selection ring. Incoming/outgoing focus weights share the card's 900 ms fade interval. Only the featured aircraft has a thin fading trail, made from recorded observations ending at the delayed playback clock. Its label changes with the selected aircraft and is removed on the next repaint. Log mode has no featured halo or label.
 
 ## Gallery map and daylight
 

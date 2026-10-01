@@ -1,8 +1,8 @@
 # Flightscan on Vercel
 
-App build: **2026-10-01.vercel.21**. Relay build: **2026-09-30.vercel.11**.
+App build: **2026-10-01.vercel.22**. Relay build: **2026-09-30.vercel.11**.
 
-This update adds actual mapped runway and taxiway paths to the Gallery map. Runways are clearer than taxiways; the airport boundary, apron and gates are omitted from this overlay. The compact labels and journey figures from build 20 are retained. Update the complete extracted project and redeploy; no credentials or environment-variable changes are needed.
+This update makes wall aircraft noses and direction arrows follow the interpolated movement between observations, including taxiway turns. Stopped aircraft fall back to the reported heading; held positions retain their last displayed orientation. Gallery runway/taxiway paths, compact labels and journey figures remain included. Update the complete extracted project and redeploy; no credentials or environment-variable changes are needed.
 
 ## Updating your working installation
 
@@ -21,7 +21,7 @@ Upload the extracted files, not the ZIP itself, and preserve folder paths. If Gi
 
 If you set `CONFIG.apiBase` directly in your previous HTML, copy your **public Vercel production base URL** into the new `index.html` before uploading. A relay URL saved through Connection remains saved in the same browser and overrides that default. Opening the app on its public Vercel `.vercel.app` production address connects to that origin automatically.
 
-With automatic Git deployments enabled, Vercel deploys the commit. Wait until it is ready, then refresh the app with Ctrl+Shift+R (Cmd+Shift+R on macOS). About → Connection diagnostics should show app build `2026-10-01.vercel.21`. Open your public Vercel domain followed by `/api/relay?path=health`: the relay should show build `2026-09-30.vercel.11`, `routeLookupMethod: "individual-get"`, `capabilities.routeLookup: true` and `capabilities.registrationLookup: true`. Different app and relay build numbers are expected for this frontend-only update. Existing retry delays remain in effect until they expire. An OpenSky authentication error is separate from route lookup; routes use ADSB.lol and require no OpenSky credentials.
+With automatic Git deployments enabled, Vercel deploys the commit. Wait until it is ready, then refresh the app with Ctrl+Shift+R (Cmd+Shift+R on macOS). About → Connection diagnostics should show app build `2026-10-01.vercel.22`. Open your public Vercel domain followed by `/api/relay?path=health`: the relay should show build `2026-09-30.vercel.11`, `routeLookupMethod: "individual-get"`, `capabilities.routeLookup: true` and `capabilities.registrationLookup: true`. Different app and relay build numbers are expected for this frontend-only update. Existing retry delays remain in effect until they expire. An OpenSky authentication error is separate from route lookup; routes use ADSB.lol and require no OpenSky credentials.
 
 ## Flight spectrum colours
 
@@ -64,7 +64,7 @@ To receive daily files, open **Recording & daily exports**, choose **CSV** or **
 
 **Zoom:** under **Area / 24-hour zoom**, choose **Automatic · fit coverage width** or a zoom from 4 to 15. Follow has its own **Follow zoom** setting. Higher numbers show a closer view. While displaying, use **+ / −**, **Fit area** or **Reset zoom** in the controls. Regional zoom adjusts the camera; the 24-hour recording area remains fixed, and its collection scope is maintained; very wide views are limited to the feed’s supported coverage. Zoom changes preserve the existing sightings log and interpolation buffer. Newly exposed areas need fresh observations.
 
-**Aircraft only:** set **Wall layout → Aircraft only**, then apply. It works with Area, Airline & aircraft, Follow and the 24-hour log. It removes tiles, headers, panels, trails and the clock, leaving category icons with a callsign/altitude box and a short reported-direction arrow. Both Midnight and Sunset themes work. Controls hide after five seconds; touch, move the pointer or press a key to return them. Regional sightings keep recording in the background. Switch back to **Map & panels** to see the list or details again.
+**Aircraft only:** set **Wall layout → Aircraft only**, then apply. It works with Area, Airline & aircraft, Follow and the 24-hour log. It removes tiles, headers, panels, trails and the clock, leaving category icons with a callsign/altitude box and a short movement-direction arrow. Both Midnight and Sunset themes work. Controls hide after five seconds; touch, move the pointer or press a key to return them. Regional sightings keep recording in the background. Switch back to **Map & panels** to see the list or details again.
 
 The list loops upward automatically in Smooth mode. Hover or keyboard focus pauses it temporarily; the controls include **Pause scrolling** and up/down paging. Reduced motion uses manual paging. Portrait screens put the list below the map.
 

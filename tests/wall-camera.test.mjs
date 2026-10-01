@@ -37,6 +37,11 @@ test('held, ground, stationary and unknown-heading aircraft do not get movement 
  assert.match(f.label({held:true,alt_baro:10000,track:0}).altitude,/held$/);
  assert.equal(f.label({alt_baro:10000,track:0,gs:300}).arrow,true);
 });
+test('the short direction vector uses the same movement-derived heading as the wall icon',()=>{
+ assert.equal(f.label({track:null,displayTrack:90,alt_baro:10000,gs:400}).arrow,true);
+ assert.equal(f.label({track:180,displayTrack:90,alt_baro:'ground',gs:12}).arrow,false);
+ assert.equal(f.label({track:null,displayTrack:90,alt_baro:10000,gs:400,held:true}).arrow,false);
+});
 test('label boxes stay within portrait and landscape edges and find free alternatives',()=>{
  for(const [width,height]of [[1920,1080],[320,740],[1080,1920]]){
   for(const point of [{x:1,y:1},{x:width-1,y:height-1},{x:width-1,y:1},{x:1,y:height-1}]){

@@ -24,6 +24,52 @@ test('all tracks share a monotonic playback time, including a backwards clock ch
 test('heading takes the shortest path through north',()=>{
  const e=new Engine();e.ingest([observation(0,{track:350}),observation(30,{track:10})],now+30000);const [p]=e.sample(now+15000,now+105000);close(p.track,0);
 });
+test('display heading follows the actual arc even when reported headings point elsewhere',()=>{
+ const e=new Engine(),a=observation(0,{lat:50,lon:8,track:350}),b=observation(30,{lat:50,lon:8.02,track:10});
+ const p=e.interpolate(a,b,now+15000);close(p.track,0);close(p.displayTrack,90,.001);
+ for(const sec of [0,.001,15,29.999,30]){const q=e.interpolate(a,b,now+sec*1000);assert.ok(q.displayTrack>89.9&&q.displayTrack<90.1)}
+});
+test('north, south, east and west movement all point forward, including ground taxiing',()=>{
+ const e=new Engine(),a=observation(0,{lat:0,lon:0,track:123,alt_baro:'ground',gs:10});
+ for(const [lat,lon,heading]of [[.002,0,0],[-.002,0,180],[0,.002,90],[0,-.002,270]]){
+  const b=observation(30,{lat,lon,track:123,alt_baro:'ground',gs:10});close(e.interpolate(a,b,now+15000).displayTrack,heading);
+ }
+});
+test('display heading changes with the interpolated segment at an observed taxiway turn',()=>{
+ const e=new Engine();e.ingest([observation(0,{lat:50,lon:8,track:270,alt_baro:'ground'}),observation(30,{lat:50,lon:8.002,track:270,alt_baro:'ground'}),observation(60,{lat:50.002,lon:8.002,track:270,alt_baro:'ground'})],now+60000);
+ close(e.sample(now+15000,now+105000)[0].displayTrack,90,.01);close(e.sample(now+45000,now+135000)[0].displayTrack,0,.01);
+});
+test('date-line crossings preserve forward orientation in both directions',()=>{
+ const e=new Engine();for(const [from,to,heading]of [[179.99,-179.99,90],[-179.99,179.99,270]]){
+  const a=observation(0,{lat:0,lon:from,track:null}),b=observation(30,{lat:0,lon:to,track:null});
+  for(const sec of [0,10,20,30])close(e.interpolate(a,b,now+sec*1000).displayTrack,heading,.01);
+ }
+});
+test('display orientation is the local map tangent at high latitude, including arc endpoints',()=>{
+ const e=new Engine(),a=observation(0,{lat:75,lon:10,track:270}),b=observation(60,{lat:75.03,lon:10.6,track:270});
+ const mercator=p=>({x:p.lon*Math.PI/180,y:-Math.log(Math.tan(Math.PI/4+p.lat*Math.PI/360))});
+ for(const fraction of [0,.001,.499,.501,.999,1]){
+  const lo=Math.max(0,fraction-1e-5),hi=Math.min(1,fraction+1e-5),p=mercator(Engine.geographic(a,b,lo)),q=mercator(Engine.geographic(a,b,hi));
+  const direction=(Math.atan2(q.x-p.x,-(q.y-p.y))*180/Math.PI+360)%360;
+  close(e.interpolate(a,b,now+fraction*60000).displayTrack,direction,.01);
+ }
+});
+test('stationary and sub-five-metre jitter retain reported heading instead of invented motion',()=>{
+ const e=new Engine(),a=observation(0,{lat:50,lon:8,track:350});
+ for(const delta of [0,.00001]){const b=observation(30,{lat:50+delta,lon:8,track:10});close(e.interpolate(a,b,now+15000).displayTrack,0)}
+ assert.equal(e.interpolate({...a,track:null},observation(30,{lat:50,lon:8,track:null}),now+15000).displayTrack,null);
+});
+test('held aircraft freeze their displayed nose while preserving the endpoint report',()=>{
+ const e=new Engine();e.ingest([observation(0,{lat:50,lon:8,track:180}),observation(30,{lat:50,lon:8.02,track:270})],now+30000);
+ const moving=e.sample(now+15000,now+105000)[0],held=e.sample(now+35000,now+125000)[0];
+ assert.equal(held.held,true);assert.equal(held.track,270);close(held.displayTrack,moving.displayTrack);
+ close(e.sample(now+45000,now+135000)[0].displayTrack,moving.displayTrack);
+});
+test('movement supplies a missing display heading, and a later unknown stop keeps that nose',()=>{
+ const e=new Engine();e.ingest([observation(0,{lat:50,lon:8,track:null}),observation(30,{lat:50,lon:8.02,track:null}),observation(60,{lat:50,lon:8.02,track:null})],now+60000);
+ const moving=e.sample(now+15000,now+105000)[0];assert.equal(moving.track,null);close(moving.displayTrack,90,.01);
+ close(e.sample(now+45000,now+135000)[0].displayTrack,moving.displayTrack);
+});
 test('date line interpolation follows the short great-circle arc',()=>{
  const e=new Engine();e.ingest([observation(0,{lat:0,lon:179.9}),observation(60,{lat:0,lon:-179.9})],now+60000);const [p]=e.sample(now+30000,now+120000);close(Math.abs(p.lon),180);
 });
