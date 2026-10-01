@@ -7,20 +7,28 @@
 .aircraft-route small{font-size:10px;line-height:1.5;color:var(--muted)}.aircraft-route small a{color:inherit}
 .route-preferences{margin:15px 0}#routeDiagnostics{font-size:12px;line-height:1.5}
 .route-col .route-compact{display:block}.route-col small{display:block;color:var(--muted);font-size:10px;margin-top:2px}
-#wallRoute:empty{display:none}#wallRoute .aircraft-route{margin:9px 0 0;gap:3px}
-#wallRoute .aircraft-route strong{font-size:clamp(24px,2.4vw,54px);color:var(--w-text)}
-#wallRoute .aircraft-route>span{font-size:clamp(11px,.9vw,20px);color:var(--w-muted);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-#wallRoute .aircraft-route small{font-size:clamp(9px,.65vw,14px);color:var(--w-muted)}
-#wallCard[data-fit=tight] #wallRoute .aircraft-route{margin-top:4px;gap:2px}
-#wallCard[data-fit=tight] #wallRoute .aircraft-route>span{display:none}
-.wall-log-callsign{min-width:0;display:flex;flex-direction:column;gap:3px}.wall-log-callsign .route-compact{font-weight:700;font-size:clamp(13px,1.05vw,24px);color:var(--w-muted);overflow:hidden;text-overflow:ellipsis}
+#wallRoute:empty,.wall-route:empty{display:none}
+.wall-route{display:grid;min-width:0;color:var(--w-route);font-family:var(--font-ui);font-weight:300;letter-spacing:-.025em;line-height:1.2}
+.wall-route-line{grid-area:1/1;align-self:start;min-width:0;overflow-wrap:anywhere;opacity:0;transition:opacity 500ms ease;pointer-events:none}
+.wall-route[data-route-view=codes] .wall-route-codes,.wall-route[data-route-view=names] .wall-route-names{opacity:1}
+#wallRoute{margin:9px 0 0}
+#wallRoute .wall-route-codes{font-size:clamp(24px,2.4vw,54px)}
+#wallRoute .wall-route-names{font-size:clamp(18px,1.6vw,36px)}
+#wallCard[data-fit=tight] #wallRoute{margin-top:4px}
+.wall-log-callsign{min-width:0;display:flex;flex-direction:column;gap:3px}
+.wall-log-route .wall-route-codes{font-size:clamp(13px,1.05vw,24px)}
+.wall-log-route .wall-route-names{font-size:clamp(12px,.85vw,19px)}
 .wall-log-row.has-route .wall-log-info{gap:4px}.wall-log-row.has-route .wall-log-type,.wall-log-row.has-route .wall-log-airline{line-height:1.25}
 @media(orientation:portrait){.wall-flight-heading{grid-column:1;grid-row:2}}
 @media(max-width:760px){.route-column-toggle{display:none}}
-@media(max-height:800px) and (orientation:landscape){#wallRoute .aircraft-route{margin-top:5px}#wallRoute .aircraft-route>span{display:none}#wallRoute .aircraft-route strong{font-size:26px}}
-@media(max-width:580px){#wallRoute .aircraft-route{margin-top:6px}#wallRoute .aircraft-route strong{font-size:21px}#wallRoute .aircraft-route>span{font-size:10px;-webkit-line-clamp:1}.wall-log-callsign .route-compact{font-size:10px}.wall-log-row.has-route .wall-log-info{gap:4px}}
+@media(max-height:800px) and (orientation:landscape){#wallRoute{margin-top:5px}#wallRoute .wall-route-codes{font-size:26px}#wallRoute .wall-route-names{font-size:19px}}
+@media(max-width:580px){#wallRoute{margin-top:6px}#wallRoute .wall-route-codes{font-size:21px}#wallRoute .wall-route-names{font-size:18px}.wall-log-route .wall-route-codes{font-size:13px}.wall-log-route .wall-route-names{font-size:12px}.wall-log-row.has-route .wall-log-info{gap:4px}}
+@media(max-width:360px){#wallCard .wall-flight-heading{grid-column:1/-1}#wallCard .wall-plane-art{grid-row:1;height:32px;min-height:32px;max-height:32px}#wallCard[data-fit=compact] .wall-plane-art,#wallCard[data-fit=tight] .wall-plane-art{height:32px;min-height:32px}#wallCard[data-fit=tight]{gap:4px}}
 
-.aircraft-route{padding:16px 0 8px;gap:6px}.aircraft-route>span{font-size:12px}#wallRoute .aircraft-route{padding:0}.wall-log-callsign .route-compact{color:var(--w-accent);letter-spacing:-.025em}.wall-log-row.has-route .wall-log-info{gap:5px}@media(max-width:580px){.wall-log-callsign .route-compact{font-size:13px}.aircraft-route strong{font-size:34px}}
+.aircraft-route{padding:16px 0 8px;gap:6px}.aircraft-route>span{font-size:12px}.wall-log-row.has-route .wall-log-info{gap:5px}@media(max-width:580px){.aircraft-route strong{font-size:34px}}
+
+:root[data-motion=reduced] .wall-route-line{transition:none}
+@media(prefers-reduced-motion:reduce){.wall-route-line{transition:none}}
 
 /* Provider attribution lives in the persistent credits and About. */
 .aircraft-route small{display:none}

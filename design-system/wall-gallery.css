@@ -1,0 +1,108 @@
+/* A gallery composition: the map and travel card always have separate space. */
+#wallDisplay:not([data-layout=minimalist]){padding:clamp(18px,2.3vw,64px);gap:clamp(16px,1.8vw,42px);--gallery-night:0;--gallery-warm:0;background:var(--ambient),var(--w-bg)}
+#wallDisplay:before{content:'';position:absolute;inset:0;pointer-events:none;background:#020812;opacity:calc(var(--gallery-night,0)*.24);z-index:-1}
+#wallDisplay[data-theme=paper]:before{background:#805434;opacity:calc(var(--gallery-night,0)*.08)}
+#wallDisplay:after{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 15% 100%,#e5a36f40,transparent 65%);opacity:calc(var(--gallery-warm,0)*.4);z-index:-1}
+#wallDisplay .wall-top{align-items:center;justify-content:flex-start;gap:0;min-height:32px}
+#wallDisplay .wall-top>div:first-child{display:flex;align-items:center;min-width:0}
+#wallDisplay .wall-top h1{font-size:calc(clamp(20px,1.7vw,38px)*var(--w-scale));font-weight:500;letter-spacing:-.035em;line-height:1.1;margin:0;max-width:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#wallDisplay .wall-top .wall-eyebrow,#wallScope,#wallZoneLabel,.wall-time>span{display:none}
+#wallDisplay .wall-time{display:flex;align-items:center;text-align:left;gap:0;margin-left:14px}
+#wallDisplay .wall-time:before{content:'·';font-weight:300;color:var(--w-muted);margin-right:14px}
+#wallDisplay .wall-time time{font-size:calc(clamp(20px,1.7vw,38px)*var(--w-scale));font-weight:300;letter-spacing:-.025em;line-height:1.1}
+#wallDisplay .wall-body{grid-template-columns:minmax(0,1fr) clamp(280px,23vw,550px);gap:clamp(20px,2.2vw,55px)}
+#wallDisplay .wall-map{border:0;box-shadow:none;border-radius:clamp(20px,2vw,46px);background:var(--w-bg)}
+#wallDisplay .wall-map:after{box-shadow:inset 0 0 75px #02080e10}
+#wallDisplay .wall-compass{opacity:.5;font-size:10px;right:20px;top:18px}.wall-compass span{font-size:23px}
+#wallDisplay .wall-map-credit{right:12px;bottom:12px;max-width:calc(100% - 24px);border-radius:8px;background:var(--map-label);font-size:clamp(10px,.62vw,14px);padding:4px 7px;box-sizing:border-box}
+#wallDisplay .wall-map-credit a{color:var(--w-muted);text-decoration:none}
+#wallDisplay .wall-feature,#wallDisplay #wallLog{border-color:color-mix(in srgb,var(--glass-edge) 52%,transparent);box-shadow:0 14px 40px #0307120c,var(--inner-edge);padding:clamp(18px,1.6vw,36px);background:color-mix(in srgb,var(--glass) 82%,var(--w-bg));border-radius:clamp(24px,2vw,46px)}
+#wallDisplay .wall-feature:before,#wallDisplay #wallLog:before{background:radial-gradient(ellipse at 70% 105%,color-mix(in srgb,var(--glow) 9%,transparent),transparent 62%)}
+#wallDisplay .wall-feature-heading{border:0;padding:0 0 12px;opacity:.68}
+#wallDisplay #wallFeatureLabel{font-size:clamp(10px,.72vw,17px);font-weight:500;letter-spacing:.16em}
+#wallDisplay #wallFeaturePosition{font-size:clamp(10px,.7vw,16px);font-weight:300}
+#wallDisplay .wall-feature-foot{border:0;padding:0;margin:0;height:2px;flex:0 0 2px}
+#wallRotationLabel{display:none}#wallDisplay #wallCardProgress{top:0;background:var(--w-route);opacity:.45;max-width:100%}
+#wallDisplay .wall-bottom{font-size:clamp(10px,.67vw,15px);line-height:1.3;opacity:.75;align-items:center}
+#wallDisplay #wallCount{font-weight:300;color:var(--w-muted)}
+/* Fixed card regions prevent typography and route rotation moving the silhouette. */
+#wallDisplay #wallCard{display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:clamp(38px,5vh,94px) clamp(112px,15vh,288px) minmax(60px,1fr) clamp(72px,10vh,165px) clamp(74px,10vh,155px);gap:clamp(10px,1.4vh,24px);align-content:stretch;justify-content:initial}
+#wallDisplay #wallCard>*{min-width:0;min-height:0}
+#wallDisplay .wall-carrier{grid-column:1;grid-row:1;margin:0;gap:12px;align-self:center}
+#wallDisplay .wall-carrier .airline-badge{width:clamp(34px,3vw,62px);height:clamp(34px,3vw,62px);flex-basis:clamp(34px,3vw,62px);border-radius:50%;background:transparent;border-color:var(--w-line)}
+#wallDisplay[data-theme=paper] .wall-carrier .airline-badge img{filter:brightness(0);opacity:.72}
+#wallDisplay .wall-carrier strong{font-size:calc(clamp(17px,1.5vw,34px)*var(--w-scale));font-weight:500;line-height:1.2}
+#wallDisplay .wall-flight-heading{grid-column:1;grid-row:2;align-self:start}
+#wallDisplay .wall-callsign{font-size:calc(clamp(32px,3vw,68px)*var(--w-scale));font-weight:700;line-height:1.12}
+#wallDisplay #wallRoute{margin:10px 0 0;min-height:2.4em;line-height:1.2}
+#wallDisplay #wallRoute .wall-route-codes{font-size:clamp(25px,2.2vw,52px)}
+#wallDisplay #wallRoute .wall-route-names{font-size:clamp(18px,1.5vw,34px);font-weight:300}
+#wallDisplay .wall-plane-art{grid-column:1;grid-row:3;height:100%;max-height:none;min-height:0;opacity:.94;padding:clamp(5px,1vh,18px) 0;box-sizing:border-box;align-self:stretch}
+#wallDisplay .wall-identity{grid-column:1;grid-row:4;align-self:center}
+#wallDisplay .wall-type{font-size:calc(clamp(20px,1.65vw,38px)*var(--w-scale));font-weight:400;line-height:1.2}
+#wallDisplay .wall-registration{font-size:clamp(12px,.96vw,23px);font-weight:300;letter-spacing:.04em;margin-top:8px}
+#wallDisplay .wall-metrics{grid-column:1;grid-row:5;align-self:center;grid-template-columns:repeat(2,minmax(0,1fr));border:0;gap:14px;padding:0}
+#wallDisplay .wall-metrics small{font-size:calc(clamp(10px,.8vw,19px)*var(--w-scale));margin:0 0 5px;min-height:0}
+#wallDisplay .wall-metrics strong{font-size:calc(clamp(25px,2vw,46px)*var(--w-scale));font-weight:300;line-height:1.1}
+#wallDisplay .wall-metrics .wall-unit{font-size:clamp(10px,.8vw,18px);margin-left:5px}
+#wallDisplay .wall-secondary,#wallDisplay #wallObservation{display:none!important}
+#wallDisplay .wall-empty{grid-column:1/-1;grid-row:1/-1;align-self:center}.wall-card-in{animation:galleryCardIn .9s cubic-bezier(.4,0,.2,1) both}
+@keyframes galleryCardIn{from{opacity:0}to{opacity:1}}
+/* Journal: generous rows, soft edge fades, no repeated type code or row rules. */
+#wallDisplay[data-mode=log] .wall-body{grid-template-columns:minmax(0,1fr) clamp(310px,26vw,630px)}
+#wallDisplay .wall-log-heading{border:0;padding-bottom:16px}
+#wallDisplay .wall-log-heading h2{font-size:clamp(22px,1.9vw,44px);font-weight:500;letter-spacing:-.03em;margin:14px 0 8px}
+#wallDisplay .wall-log-heading .wall-eyebrow{font-size:clamp(10px,.72vw,17px);font-weight:500;letter-spacing:.13em;opacity:.7}
+#wallDisplay #wallLogCount{font-size:clamp(12px,.85vw,20px);font-weight:300;color:var(--w-muted)}
+#wallDisplay #wallLogViewport{--log-row-height:190px;margin:0;mask-image:linear-gradient(to bottom,transparent,#000 60px,#000 calc(100% - 60px),transparent);-webkit-mask-image:linear-gradient(to bottom,transparent,#000 60px,#000 calc(100% - 60px),transparent)}
+#wallDisplay[data-distance=far] #wallLogViewport{--log-row-height:210px}
+#wallDisplay .wall-log-row{border:0;gap:16px;align-items:center}
+#wallDisplay .wall-log-symbol{opacity:.85;flex-basis:42px;height:64px}
+#wallDisplay .wall-log-info,#wallDisplay .wall-log-row.has-route .wall-log-info{gap:7px}
+#wallDisplay .wall-log-airline{order:-1;font-size:clamp(13px,1.05vw,25px);font-weight:400;color:var(--w-muted)}
+#wallDisplay .wall-log-flight strong{font-size:clamp(22px,1.7vw,40px);font-weight:700}
+#wallDisplay .wall-log-flight>span{font-size:clamp(10px,.72vw,16px);font-weight:300;letter-spacing:.015em}
+#wallDisplay .wall-log-type{font-size:clamp(12px,.95vw,22px);line-height:1.3}
+#wallDisplay .wall-log-type b{display:none}
+#wallDisplay .wall-log-times{font-size:clamp(10px,.7vw,16px);font-weight:300;line-height:1.5}
+#wallDisplay .wall-log-foot{border:0;padding-top:14px;font-size:clamp(10px,.65vw,14px);opacity:.7}
+/* Surface changes follow daylight; icon colours and route orange are untouched. */
+#wallDisplay[data-atmosphere=solar] .wall-feature,#wallDisplay[data-atmosphere=solar] #wallLog{background:color-mix(in srgb,var(--glass) calc(86% - var(--gallery-night)*12%),var(--w-bg))}
+#wallDisplay[data-atmosphere=solar] .wall-feature:before,#wallDisplay[data-atmosphere=solar] #wallLog:before{background:radial-gradient(ellipse at 80% 100%,#efa365,transparent 72%);opacity:calc(var(--gallery-warm)*.055)}
+#wallDisplay[data-layout=minimalist]{background:var(--w-bg)}
+#wallDisplay[data-layout=minimalist]:before,#wallDisplay[data-layout=minimalist]:after{display:none}
+@media(min-width:2500px){#wallDisplay #wallLogViewport{--log-row-height:290px}#wallDisplay[data-distance=far] #wallLogViewport{--log-row-height:320px}#wallDisplay .wall-log-symbol{flex-basis:65px;height:100px}#wallDisplay .wall-log-info,#wallDisplay .wall-log-row.has-route .wall-log-info{gap:12px}}
+@media(orientation:portrait){
+ #wallDisplay .wall-body{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(140px,1fr) minmax(280px,.52fr);gap:clamp(16px,2vw,30px)}
+ #wallDisplay #wallCard{grid-template-columns:minmax(0,1fr) minmax(0,.85fr);grid-template-rows:clamp(36px,4vh,65px) minmax(90px,1fr) minmax(65px,.65fr);gap:12px 28px}
+ #wallDisplay .wall-carrier{grid-column:1;grid-row:1}#wallDisplay .wall-flight-heading{grid-column:1;grid-row:2}
+ #wallDisplay .wall-plane-art{grid-column:2;grid-row:1/3;padding:12px 8px;max-height:none}
+ #wallDisplay .wall-identity{grid-column:1;grid-row:3}#wallDisplay .wall-metrics{grid-column:2;grid-row:3}
+ #wallDisplay[data-mode=log] .wall-body{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(140px,1.1fr) minmax(330px,1fr)}
+ #wallDisplay .wall-log-heading h2{font-size:26px}#wallDisplay #wallLogViewport{--log-row-height:170px}
+}
+@media(max-height:800px) and (orientation:landscape){
+ #wallDisplay #wallCard{grid-template-rows:40px 108px minmax(48px,1fr) 72px 78px;gap:10px}
+ #wallDisplay .wall-feature-heading{padding-bottom:10px}#wallDisplay .wall-callsign{font-size:34px}#wallDisplay #wallRoute .wall-route-codes{font-size:28px}#wallDisplay #wallRoute .wall-route-names{font-size:20px}#wallDisplay .wall-type{font-size:23px}
+}
+@media(max-width:580px){
+ #wallDisplay:not([data-layout=minimalist]){padding:14px;gap:12px;overflow:hidden}
+ #wallDisplay .wall-top h1,#wallDisplay .wall-time time{font-size:20px}#wallDisplay .wall-top h1{max-width:calc(100vw - 115px)}
+ #wallDisplay .wall-time{margin-left:9px}#wallDisplay .wall-time:before{margin-right:9px}
+ #wallDisplay .wall-body{grid-template-rows:minmax(125px,1fr) minmax(280px,1.1fr);gap:12px}
+ #wallDisplay .wall-feature,#wallDisplay #wallLog{padding:16px;border-radius:24px}
+ #wallDisplay .wall-feature-heading{padding-bottom:8px}#wallDisplay #wallCard{grid-template-columns:minmax(0,1fr) minmax(55px,.38fr);grid-template-rows:30px 98px minmax(52px,1fr) 52px;gap:7px 12px}
+ #wallDisplay .wall-carrier{grid-column:1/-1;grid-row:1}#wallDisplay .wall-carrier strong{font-size:17px}#wallDisplay .wall-carrier .airline-badge{display:none}
+ #wallDisplay .wall-flight-heading{grid-column:1/-1;grid-row:2}#wallDisplay .wall-callsign{font-size:32px}
+ #wallDisplay #wallRoute{margin-top:7px}#wallDisplay #wallRoute .wall-route-codes{font-size:25px}#wallDisplay #wallRoute .wall-route-names{font-size:18px}
+ #wallDisplay .wall-plane-art{grid-column:2;grid-row:3;min-height:0;height:100%;max-height:none;padding:3px}
+ #wallDisplay .wall-identity{grid-column:1;grid-row:3}#wallDisplay .wall-type{font-size:18px}#wallDisplay .wall-registration{font-size:11px;margin-top:5px}
+ #wallDisplay .wall-metrics{grid-column:1/-1;grid-row:4;grid-template-columns:1fr 1fr}#wallDisplay .wall-metrics strong{font-size:24px}#wallDisplay .wall-metrics small{font-size:10px}
+ #wallDisplay .wall-bottom{font-size:10px;gap:6px}#wallDisplay .wall-bottom-status{gap:6px}
+ #wallDisplay[data-mode=log] .wall-body{grid-template-rows:minmax(130px,.75fr) minmax(330px,1fr);gap:14px}
+ #wallDisplay .wall-log-heading{padding-bottom:10px}#wallDisplay .wall-log-heading h2{font-size:22px;margin-top:10px}#wallDisplay #wallLogCount{font-size:11px}
+ #wallDisplay #wallLogViewport,#wallDisplay[data-distance=far] #wallLogViewport{--log-row-height:158px;mask-image:linear-gradient(to bottom,transparent,#000 34px,#000 calc(100% - 34px),transparent);-webkit-mask-image:linear-gradient(to bottom,transparent,#000 34px,#000 calc(100% - 34px),transparent)}
+ #wallDisplay .wall-log-info,#wallDisplay .wall-log-row.has-route .wall-log-info{gap:5px}#wallDisplay .wall-log-row{gap:10px}#wallDisplay .wall-log-symbol{flex-basis:30px;height:48px}
+ #wallDisplay .wall-log-flight strong{font-size:21px}#wallDisplay .wall-log-airline{font-size:13px}#wallDisplay .wall-log-type{font-size:12px}#wallDisplay .wall-log-times{font-size:10px}
+}
+@media(prefers-reduced-motion:reduce){.wall-card-in{animation:none}}

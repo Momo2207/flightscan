@@ -20,6 +20,7 @@ function uiStyledTile(item,theme){
   item.canvas=canvas;item.style=theme;return canvas;
 }
 function uiCanvasFont(size,weight=500){return weight+' '+size+'px "Flightscan Sans",system-ui,sans-serif'}
+function uiRouteAccent(theme){return (theme||(wallActive?wallSettings.theme:uiSettings.theme))==='paper'?'#9f4e23':'#ffb376'}
 function uiPersistAppearance(){try{localStorage.setItem(UI_KEY,JSON.stringify(uiSettings));return true}catch{return false}}
 function uiApplyAppearance(){
   const theme=wallActive?wallSettings.theme:uiSettings.theme,root=document.documentElement;

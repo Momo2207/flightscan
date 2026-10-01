@@ -1,12 +1,14 @@
 # Flightscan on Vercel
 
-App build: **2026-09-30.vercel.17**. Relay build: **2026-09-30.vercel.11**.
+App build: **2026-10-01.vercel.19**. Relay build: **2026-09-30.vercel.11**.
 
 ## Updating your working installation
 
-For this update, replace **`index.html`** in your existing GitHub repository. Build 17 brings the Midnight and Sunset design system to the tracker, settings and every wall mode: glass panels, warm/cool gradients, embedded sans-serif fonts, larger route codes and calmer filters. Open the **Midnight / Sunset** button in the header for Appearance. Wall Settings has its own theme selector, glass effects and background settings. Existing Night/Paper choices migrate automatically because their stored IDs are retained. Routes, delayed playback, aircraft colours, visits and daily CSV/Excel exports remain included.
+For this update, upload **all extracted files and folders** to your existing GitHub repository, preserving their paths, then redeploy Vercel. Build 19 implements all six wall-art improvements: a compact location/clock header, quiet vector cartography, a simpler travel card, a soft coordinated focus halo and recorded trail, a calmer 24-hour journal, and an optional daylight-following atmosphere. The implementation roadmap is included in `WALL-ART-PLAN.md`. Thin orange routes still alternate airport codes and full locations every eight seconds. Delayed playback, aircraft colours, visits and daily CSV/Excel exports remain included.
 
-The simplest update needs only the new HTML, including all fonts. To keep the editable design sources, upload all extracted files and folders. Vercel's build will assemble those styles automatically. Your relay remains build 11. If upgrading from app build 10 or earlier, also update `api/relay.js`. Keep existing environment variables and the public production relay URL.
+In **Wall Settings**, **Map style → Gallery** is the new default. **Street map** restores the previous cartography. **Atmosphere → Follow daylight** enables the sunset/night surface treatment; **Fixed appearance** keeps your chosen theme constant and is the default. These options are saved in this browser and included in setup links. No new account, API key, relay URL or environment variable is needed. Aircraft-only mode remains map-free.
+
+Vercel's build assembles the bundled design sources into the HTML. Upload `design-system/` and `scripts/` as well as `index.html`; otherwise an older build script or older styles may overwrite this update. For a GitHub Pages-only frontend with no build step, the compiled `index.html` still works on its own, with embedded fonts. Your relay remains build 11. Keep existing environment variables and the public production relay URL.
 
 | File | Purpose |
 | --- | --- |
@@ -17,7 +19,7 @@ Upload the extracted files, not the ZIP itself, and preserve folder paths. If Gi
 
 If you set `CONFIG.apiBase` directly in your previous HTML, copy your **public Vercel production base URL** into the new `index.html` before uploading. A relay URL saved through Connection remains saved in the same browser and overrides that default. Opening the app on its public Vercel `.vercel.app` production address connects to that origin automatically.
 
-With automatic Git deployments enabled, Vercel deploys the commit. Wait until it is ready, then refresh the app with Ctrl+Shift+R (Cmd+Shift+R on macOS). About → Connection diagnostics should show app build `2026-09-30.vercel.17`. Open your public Vercel domain followed by `/api/relay?path=health`: the relay should show build `2026-09-30.vercel.11`, `routeLookupMethod: "individual-get"`, `capabilities.routeLookup: true` and `capabilities.registrationLookup: true`. Different app and relay build numbers are expected for this frontend-only update. Existing retry delays remain in effect until they expire. An OpenSky authentication error is separate from route lookup; routes use ADSB.lol and require no OpenSky credentials.
+With automatic Git deployments enabled, Vercel deploys the commit. Wait until it is ready, then refresh the app with Ctrl+Shift+R (Cmd+Shift+R on macOS). About → Connection diagnostics should show app build `2026-10-01.vercel.19`. Open your public Vercel domain followed by `/api/relay?path=health`: the relay should show build `2026-09-30.vercel.11`, `routeLookupMethod: "individual-get"`, `capabilities.routeLookup: true` and `capabilities.registrationLookup: true`. Different app and relay build numbers are expected for this frontend-only update. Existing retry delays remain in effect until they expire. An OpenSky authentication error is separate from route lookup; routes use ADSB.lol and require no OpenSky credentials.
 
 ## Flight spectrum colours
 
@@ -25,15 +27,15 @@ Choose **Wall display → Settings → Aircraft colours → Flight spectrum**, t
 
 ## Flight routes
 
-Routes appear as airport codes, for example **FRA → LIS**, under the label **Route** or **Flight route**. Airport city/name details appear in the normal inspector and wall card where space permits. About explains that these are callsign-based inferences from ADSB.lol rather than confirmed flight plans. Tracker views and tooltips carry no uncertainty labels or approximation symbols. Missing, ambiguous, multi-leg or geographically implausible results stay hidden. No ETA, flight progress or destination arrival claim is added.
+Routes appear as airport codes, for example **FRA → LIS**, under the label **Route** or **Flight route**. The normal inspector also shows airport city/name details. Wall route displays alternate between codes and full locations every eight seconds, with a 500 ms crossfade. Reduced motion retains the automatic switch without the fade. City names are preferred, airport names are a fallback, and a missing location name retains its code. No name is guessed and no extra route requests are made. About explains that these are callsign-based inferences from ADSB.lol rather than confirmed flight plans. Missing, ambiguous, multi-leg or geographically implausible results stay hidden. No ETA, flight progress or destination arrival claim is added.
 
 | View | Route display |
 | --- | --- |
 | Normal aircraft details | Below the selected callsign, with airport names and source |
 | Desktop aircraft table | Optional **Show route column** checkbox; off initially |
-| Wall featured card / Follow | Compact codes and secondary airport names |
-| 24-hour sightings | Compact route saved with the observed callsign, when available |
-| Aircraft-only wall layout | Third label line with available routes; **Show routes in aircraft-only labels** is on by default and can be turned off |
+| Wall featured card / Follow | Thin orange route alternates codes and full locations every eight seconds |
+| 24-hour sightings | Same alternating orange presentation, using the route saved with the observed callsign |
+| Aircraft-only wall layout | Thin orange route below altitude, alternates codes/full locations and wraps without clipping; **Show routes in aircraft-only labels** can be turned off |
 
 Route lookups are on by default. **About → Look up likely routes** disables them; the optional table column is remembered separately. A route lookup sends the aircraft's public callsign and reported coordinates through the existing Vercel relay. See `DATA-SOURCES.md` for attribution and limitations. No additional credentials are needed for the currently public route endpoint.
 

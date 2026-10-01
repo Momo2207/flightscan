@@ -15,6 +15,10 @@ Licenses and upstream credits are in `LICENSES/`. The source repositories contai
 
 ## Display rules
 
+Build 19 adds [OpenFreeMap](https://openfreemap.org/) vector map data using the [OpenMapTiles schema](https://openmaptiles.org/docs/schema/), derived from OpenStreetMap. The visible attribution includes OpenFreeMap, © OpenMapTiles and © OpenStreetMap. Only visible tiles are requested; their browser HTTP cache is retained. OpenStreetMap raster tiles remain the fallback and selectable street-map source. Map requests go directly to the public map providers, independently of the flight relay. No geographic shapes are manufactured by the app.
+
+The optional daylight atmosphere uses the [NOAA solar-position equations](https://gml.noaa.gov/grad/solcalc/solareqns.PDF), calculated locally from time and the chosen display location. It is a decorative surface treatment, not an aviation or sunrise timing instrument, and makes no weather-service request.
+
 - Aircraft registration and type are shown only when the flight provider supplies them. OpenSky does not include these fields.
 - Symbol categories depend on the reported type and can be wrong when the feed or bundled reference data is wrong. Business/private and military designs do not establish ownership or current use. Callsigns, registrations and military flags alone never select a military silhouette. Unknown types use a neutral marker; aircraft without a reported heading use a dot on the map.
 - Wall follow lookup can resolve a callsign from recent received observations, then tracks its matched ICAO ID. It does not treat the callsign as a registration or a permanent aircraft identity.
