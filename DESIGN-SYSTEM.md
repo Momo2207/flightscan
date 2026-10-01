@@ -1,6 +1,6 @@
 # Flightscan design system
 
-Implemented in app build `2026-10-01.vercel.24`. The flight relay remains build 11.
+Implemented in app build `2026-10-01.vercel.25`. The flight relay remains build 11.
 
 ## Themes
 
@@ -22,8 +22,8 @@ Appearance follows the device's light preference on the first visit. An explicit
 
 The implementation bundles **Roboto**, exposed in CSS as `Flightscan Sans`, at six genuine weights: Thin 100, Light 300, Regular 400, Medium 500, Bold 700 and Black 900. These local font files replace the planned Inter dependency to keep the delivered HTML self-contained. The original font metadata and Apache 2.0 license are retained. No runtime font service is contacted.
 
-- Black: normal-tracker headings and route airport codes.
-- Bold: callsigns, airlines and active controls.
+- Black: normal-tracker page headings.
+- Bold: callsigns and active controls; Medium: airline names.
 - Medium: controls and compact aircraft labels.
 - Regular: descriptions and supporting information.
 - Light: large numeric metrics and wall routes (weight 300).
@@ -35,9 +35,9 @@ Small labels never use Thin. Numeric metrics use tabular figures. Map canvas lab
 
 Control glass uses restrained blur, soft shadows and a fine illuminated edge. Content glass is more opaque so text remains legible. Aircraft-only labels use compact, high-opacity surfaces with six-pixel corners and 11–16px text. Map labels use nine-pixel corners. Large panels use 26-pixel corners and controls use 12-pixel corners. Touch controls are at least 44 pixels high. The shared spacing rhythm uses 4, 8, 12, 16, 24, 32, 48 and 64 pixels.
 
-Midnight uses blue light on near-black surfaces. Sunset uses cream and peach glass over a warm beige background. The normal inspector retains bold route codes. Wall route codes and full locations use lighter orange typography, secondary to the callsign. The normal tracker collapses secondary filters; Explore fleet opens them automatically. Mobile retains the aircraft bottom sheet.
+Midnight uses blue light on near-black surfaces. Sunset uses cream and peach glass over a warm beige background. The normal inspector uses thin orange route codes with a static full-location line. Wall route codes and full locations use lighter orange typography, secondary to the callsign. The normal tracker collapses secondary filters; Explore fleet opens them automatically. Mobile retains the aircraft bottom sheet.
 
-Area, Fleet and Follow wall layouts use the same materials. A single compact location/clock line sits above a borderless rounded map and a slim, separately reserved glass sidebar. Coverage, filters, timezone and rotation descriptions stay in Settings. The card has stable regions for airline, callsign, orange route, model/registration, route distance and estimated flight time, and altitude/speed. Hex IDs, repeated type codes and the extra card metrics are removed from the wall composition; normal tracker details remain available.
+Area, Fleet and Follow wall layouts use the same materials. A single compact location/clock line sits above a borderless rounded map and a slim, separately reserved glass sidebar. Coverage, filters, timezone and rotation descriptions stay in Settings. The card has stable regions for airline, callsign, orange route, model/registration, flight progress in Follow, optional whole-route estimates in Area/Fleet, and altitude/speed. Hex IDs, repeated type codes and the extra card metrics are removed from the wall composition; normal tracker technical details remain in the collapsed inspector.
 
 The 24-hour layout keeps its map and upward-scrolling sightings list. Rows group airline, callsign, route and model, with compact first/last seen and repeat-sighting counts. There are no row dividers. The loop moves at 12 CSS pixels per second with broad edge fades; pause and manual-scroll controls remain available. Aircraft-only mode retains a plain background, silhouettes and heading vectors. Cards keep fixed callsigns and cycle available altitude, speed, type, route codes and full locations every eight seconds. Each card reserves the largest wrapped detail dimensions; only details crossfade, while Reduced motion swaps them directly. Route pages remain configurable and use thin orange text. Vectors stay outside all padded card rectangles, including overlaps. Labels stay beside their aircraft even in dense traffic. Each label and icon paint as one group, sorted by observed altitude: higher aircraft appear above lower aircraft, with stable identifier ties. Previous adjacent placements are retained while the screen allows them.
 

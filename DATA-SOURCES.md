@@ -78,3 +78,7 @@ The Gallery map decodes the `aeroway` layer already included in its OpenFreeMap 
 On 1 October 2026, the current OpenFreeMap dataset (planet version `20260927_080001_pt`) was verified with 28 real tiles around Frankfurt. The four distinct runway references were `18`, `07L/25R`, `07C/25C` and `07R/25L`. The viewport contained 12 clipped runway path fragments and 701 taxiway fragments. These are map features, not counts of separate physical runways or taxiways. Both themes and map-free mode were checked.
 
 Airport styling reuses existing tile requests, timeout/concurrency limits, cache bounds and attribution. It creates no provider or route requests and leaves aircraft playback, marker colours, journey estimates and sightings exports unchanged.
+
+## Build 25: observation-based flight progress
+
+No new provider, historical-flight subscription, authentication or API request is added. Flight progress is computed from the existing normalized position feed before display filtering. A cold start after departure has partial coverage. Old journal coordinates can anchor partial observation time; they contain no altitude/ground evidence and therefore cannot supply a takeoff or airborne distance. Confirmed takeoff timing has an interval between the last ground report and first airborne report; whole-minute Time airborne starts at the first airborne report after a second confirming airborne report. Route estimates remain a separate model.

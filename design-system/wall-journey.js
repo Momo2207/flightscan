@@ -29,7 +29,7 @@ class WallJourney{
 function wallJourneyUpdate(aircraft,route){
   const root=$('wallJourney');if(!root)return;
   const info=WallJourney.estimate(aircraft,route,aircraftSymbolFor(aircraft).key),metric=wallSettings.units==='metric';
-  root.hidden=!info;
+  root.hidden=!info||wallSettings.journeyDisplay==='off'||wallMode()==='follow'&&wallSettings.journeyDisplay!=='always';
   $('wallRouteDistance').textContent=WallJourney.distance(info,metric);
   $('wallRouteDistanceUnit').textContent=info?(metric?'km':'NM'):'';
   $('wallEstimatedTime').textContent=WallJourney.duration(info);

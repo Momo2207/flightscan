@@ -2,10 +2,11 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import vm from 'node:vm';
+const info=readFileSync(new URL('../design-system/aircraft-info.js',import.meta.url),'utf8').split('const AIRCRAFT_PREF_KEY')[0];
 const html=readFileSync(new URL('../index.html',import.meta.url),'utf8');
 const block=name=>'/* '+name+'_START:'+html.split('/* '+name+'_START:')[1].split('/* '+name+'_END */')[0];
 const helpers=html.split('\n').filter(l=>/^(const rad=|function (distance|project|unproject|containsBounds)\()/.test(l)).join('\n');
-const f=vm.runInNewContext('const num=v=>typeof v==="number"&&Number.isFinite(v);\n'+helpers+'\n'+['WALL_COVERAGE','WALL_CAMERA','WALL_MINIMALIST'].map(block).join('\n')+'\n({width:wallWidthAtZoom,coverage:wallCoverageFor,viewport:wallViewportGeometry,project,unproject,clean:wallCleanZoom,label:wallAircraftLabel,place:wallLabelBox,stack:wallAltitudeOrder,contains:containsBounds})');
+const f=vm.runInNewContext(info+'\nconst num=v=>typeof v==="number"&&Number.isFinite(v);\n'+helpers+'\n'+['WALL_COVERAGE','WALL_CAMERA','WALL_MINIMALIST'].map(block).join('\n')+'\n({width:wallWidthAtZoom,coverage:wallCoverageFor,viewport:wallViewportGeometry,project,unproject,clean:wallCleanZoom,label:wallAircraftLabel,place:wallLabelBox,stack:wallAltitudeOrder,contains:containsBounds})');
 for(const [lat,lon,w,h] of [[48.47,7.94,1920,1080],[50,8,3840,2160],[50,8,1080,1920],[0,179.9,1400,900],[75,20,1200,800]])test(`custom zoom preserves projected viewport at ${lat},${lon} ${w}x${h}`,()=>{
  for(const z of [9,10.5,13,15]){
   const r=f.coverage({lat,lon},f.width(lat,z,w),w,h,90);
@@ -36,7 +37,7 @@ test('observation rectangle uses the exact current Mercator camera and map dimen
 test('labels format reported callsign and barometric altitude with honest unknown states',()=>{
  const a={flight:' DLH123 ',alt_baro:35160,track:90,gs:400};
  assert.equal(f.label(a).callsign,'DLH123');assert.equal(f.label(a).altitude,'35,200 ft');assert.equal(f.label(a,true).altitude,'10,720 m');assert.equal(f.label(a).arrow,true);
- assert.equal(f.label({r:'D-ABCD'}).callsign,'No callsign');assert.equal(f.label({alt_baro:null}).altitude,'Altitude unknown');
+ assert.equal(f.label({r:'D-ABCD'}).callsign,'D-ABCD');assert.equal(f.label({alt_baro:null}).altitude,'Not available');
  assert.equal(f.label({alt_baro:0}).altitude,'0 ft');assert.equal(f.label({alt_baro:-120}).altitude,'-100 ft');
  assert.equal(f.label({alt_baro:'ground',track:90}).altitude,'Ground');
 });

@@ -2,20 +2,23 @@
 function wallMinimalist(){return wallSettings.layout==='minimalist'}
 function wallAircraftHeading(a){return num(a.displayTrack)?a.displayTrack:num(a.track)?a.track:null}
 function wallAircraftLabel(a,metric=false){
-  const callsign=typeof a.flight==='string'&&a.flight.trim()?a.flight.trim().slice(0,16):'No callsign';
-  const height=num(a.alt_baro)?a.alt_baro:num(a.alt_geom)?a.alt_geom:null;
-  let altitude=a.alt_baro==='ground'?'Ground':height!==null?Math.round(height*(metric ? .3048 : 1)/(metric?10:100))*(metric?10:100):null;
-  altitude=typeof altitude==='number'?altitude.toLocaleString('en-GB')+(metric?' m':' ft'):altitude||'Altitude unknown';
+  const callsign=AircraftInfo.identity(a).value;
+  const value=AircraftInfo.altitude(a,metric),altitude=value.value+(value.unit?' '+value.unit:'');
   return {callsign,altitude:altitude+(a.held?' · held':''),arrow:num(wallAircraftHeading(a))&&!a.held&&a.alt_baro!=='ground'&&(!num(a.gs)||a.gs>1)};
 }
 function wallAircraftInfo(a,metric=false,route=null){
   const entries=[],held=a.held?' · held':'',add=(id,text,accent=false)=>entries.push({id,text:text+held,accent});
   if(a.alt_baro==='ground'||num(a.alt_baro)||num(a.alt_geom))add('altitude',wallAircraftLabel({...a,held:false},metric).altitude);
-  if(num(a.gs)&&a.gs>=0)add('speed',Math.round(a.gs*(metric?1.852:1)).toLocaleString('en-GB')+(metric?' km/h':' kt'));
+  if(num(a.gs)&&a.gs>=0){const speed=AircraftInfo.speed(a,metric);add('speed',speed.value+' '+speed.unit)}
   const type=typeFor(a);
   if(type.code||(typeof a.desc==='string'&&a.desc.trim()))add('type',type.name.replace(/ · aircraft type$/,''));
   const labels=WallRoutePresentation.labels(route);
   if(labels){add('route-codes',labels.codes,true);if(labels.names!==labels.codes)add('route-names',labels.names,true)}
+  if(wallSettings.progressPages&&wallMode()==='follow'&&a.hex===wallHex()){
+    const progress=AircraftInfo.progress(flightProgress.forAircraft(a,aircraftSceneTime(a,true)),metric);
+    if(progress.distance.value!=='Not available')add('flight-distance',progress.distance.label+' '+progress.distance.value+' '+progress.distance.unit);
+    if(progress.time.value!=='Not available')add('flight-time',progress.time.label+' '+progress.time.value);
+  }
   if(!entries.length)entries.push({id:'unavailable',text:a.held?'Position held':'Details unavailable',accent:false});
   return entries;
 }

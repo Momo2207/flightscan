@@ -1,0 +1,44 @@
+/* One information hierarchy, sized for the context in which it is read. */
+.info-progress,.hero-metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.info-progress{margin:24px 0;padding:18px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.info-progress small,.hero-metrics small{display:block;font-weight:400;color:var(--muted);font-size:12px;margin-bottom:8px}
+.info-progress strong,.hero-metrics strong{font-size:clamp(24px,2vw,36px);font-weight:300;letter-spacing:-.035em;line-height:1.2;font-variant-numeric:tabular-nums}
+.info-progress .metric-unknown,.hero-metrics .metric-unknown{font-size:18px;letter-spacing:0}
+#details .carrier-title{font-size:18px;font-weight:500}#details .flight-identity strong{font-size:clamp(30px,3vw,44px);font-weight:700}
+#details .flight-identity{margin:18px 0 12px}#details .aircraft-name{font-size:18px;font-weight:400;margin:20px 0 6px}#details .aircraft-registration{color:var(--muted);font-size:13px;margin:0}
+#details .aircraft-route strong,.route-compact{font-weight:300;color:var(--route-accent,#ffb376)}
+[data-theme=paper] #details .aircraft-route strong,[data-theme=paper] .route-compact{color:#9f4e23}
+.flight-select strong,.flight-card-heading strong{font-weight:700}.flight-select small,.flight-card-heading small{font-weight:500}.flight-card-model{font-size:13px;color:var(--muted)}
+.flight-card-route{font-weight:300;color:var(--route-accent,#ffb376)}.flight-card{display:flex;flex-direction:column;align-items:stretch;gap:12px;text-align:left}
+.flight-card-metrics{grid-template-columns:1fr 1fr}.table-vertical-col,.table-freshness-col{display:none}.table-vertical .table-vertical-col,.table-freshness .table-freshness-col{display:table-cell}
+.result-preferences{display:flex;flex-wrap:wrap;gap:18px;margin:12px 0 18px}.result-preferences label{font-size:12px}.result-preferences input{flex:0 0 auto}
+body[data-app-mode=follow] .table-head,body[data-app-mode=follow] .result-preferences,body[data-app-mode=follow] .table-scroll,body[data-app-mode=follow] #flightCards,body[data-app-mode=follow] .mobile-selection-hint{display:none!important}
+.info-secondary{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0 22px}.info-secondary small{display:block;color:var(--muted);margin-bottom:7px}.info-secondary strong{font-weight:300;font-size:20px}
+.appearance-options input{width:100%;min-width:0;box-sizing:border-box}
+#wallDisplay #wallCard{grid-template-rows:auto minmax(125px,1.2fr) minmax(70px,.65fr) minmax(90px,.9fr) minmax(90px,.8fr);overflow:auto;scrollbar-width:thin}
+#wallDisplay .wall-carrier:empty,#wallDisplay .wall-identity:empty{display:none}
+#wallDisplay .wall-progress{grid-row:4;grid-column:1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;padding-top:18px;border-top:1px solid var(--w-line);align-self:center}
+#wallDisplay .wall-progress small{display:block;font-weight:400;color:var(--w-muted);font-size:calc(clamp(10px,.72vw,17px)*var(--w-scale));margin-bottom:9px}
+#wallDisplay .wall-progress strong{display:block;font-weight:300;font-variant-numeric:tabular-nums;letter-spacing:-.035em;font-size:calc(clamp(25px,2.15vw,49px)*var(--w-scale));line-height:1.18}
+#wallDisplay .wall-progress strong.metric-unknown{font-size:calc(clamp(16px,1.15vw,26px)*var(--w-scale));letter-spacing:0}
+#wallDisplay .wall-progress .wall-unit{font-size:clamp(11px,.8vw,20px)}
+#wallDisplay .wall-progress[hidden],#wallDisplay .wall-journey[hidden],#wallDisplay .wall-secondary[hidden]{display:none!important}
+#wallDisplay[data-mode=follow] .wall-journey{grid-row:6}#wallDisplay[data-mode=follow] .wall-metrics{grid-row:5}
+#wallDisplay:not([data-mode=follow]) .wall-metrics{grid-row:5}
+#wallDisplay .wall-registration{font-weight:300}#wallDisplay .wall-type{font-weight:400}
+#wallDisplay .wall-metrics strong.metric-unknown{font-size:clamp(16px,1.15vw,26px);letter-spacing:0}
+#wallDisplay .wall-log-airline{font-weight:500}#wallDisplay .wall-log-type:empty,#wallDisplay .wall-log-airline:empty{display:none}
+@media(orientation:portrait) and (min-width:581px){
+ #wallDisplay #wallCard{grid-template-columns:minmax(0,1fr) minmax(0,.85fr);grid-template-rows:auto minmax(85px,1fr) auto auto;overflow:auto}
+ #wallDisplay .wall-carrier{grid-column:1;grid-row:1}#wallDisplay .wall-flight-heading{grid-column:1;grid-row:2}#wallDisplay .wall-identity{grid-column:1;grid-row:3}
+ #wallDisplay .wall-progress,#wallDisplay .wall-journey{grid-column:2;grid-row:2;grid-template-columns:1fr;border:0;padding:0;gap:14px}
+ #wallDisplay .wall-metrics{grid-column:2;grid-row:3!important}#wallDisplay[data-mode=follow] .wall-journey{grid-column:1/-1;grid-row:4;grid-template-columns:1fr 1fr}
+}
+@media(max-height:800px) and (orientation:landscape){#wallDisplay #wallCard{grid-template-rows:auto minmax(90px,1fr) auto auto auto;gap:10px}#wallDisplay .wall-progress{padding-top:10px}#wallDisplay .wall-journey{display:none!important}}
+@media(max-width:580px){
+ #wallDisplay #wallCard{grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(82px,1fr) auto auto auto;gap:9px}
+ #wallDisplay .wall-progress{grid-column:1;grid-row:4;gap:12px;padding-top:8px}#wallDisplay .wall-progress small{font-size:10px;margin-bottom:4px}#wallDisplay .wall-progress strong{font-size:24px}#wallDisplay .wall-progress strong.metric-unknown{font-size:15px}
+ #wallDisplay .wall-metrics{grid-column:1;grid-row:5!important}#wallDisplay .wall-journey{display:none!important}
+ #details .hero-metrics,#details .info-progress{gap:18px}.info-progress strong{font-size:26px}.info-progress{margin:18px 0;padding:15px 0}
+}
+@media(max-height:520px) and (orientation:landscape){#wallDisplay .wall-feature{overflow:auto}#wallDisplay #wallCard{overflow:visible;flex:0 0 auto}}

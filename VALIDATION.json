@@ -1,0 +1,46 @@
+{
+  "build": "2026-10-01.vercel.25",
+  "relayBuild": "2026-09-30.vercel.11",
+  "unitTests": {
+    "passed": 236,
+    "failed": 0
+  },
+  "frontendIntegrationTests": {
+    "passed": 75,
+    "failed": 0
+  },
+  "browserChecks": {
+    "storageSchemaUpgrade": "Existing schema 1 to schema 2; visits, reports and explicit settings retained",
+    "flightProgress": "Full and partial records, 90-second delayed scene, optional canvas pages, duplicate reader-tab forwarding, reload and area-reset independence",
+    "wallRoutes": "Code/name rotation, long locations, both themes and 24-hour rows",
+    "layouts": [
+      [
+        1920,
+        1080
+      ],
+      [
+        1366,
+        768
+      ],
+      [
+        1080,
+        1920
+      ],
+      [
+        390,
+        844
+      ],
+      [
+        320,
+        740
+      ],
+      [
+        3840,
+        2160
+      ]
+    ],
+    "runtimeErrors": 0
+  },
+  "relaySha256": "95ecd4cf05bbdfe39d60ae8c77dbd1b76510a1d798b7b9d43614b95960027018",
+  "productionDeployment": "Not performed; updated files supplied for redeployment."
+}

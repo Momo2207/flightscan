@@ -100,7 +100,7 @@ test('vector cache stays bounded as the camera visits new tiles and queued offsc
  for(let x=0;x<220;x++){m.begin();m.request(9,x,2);m.end()}assert.ok(m.tiles.size<=160);assert.equal(m.queue.length,1);assert.equal(m.request(9,0,-1),null);m.clear();
 });
 test('gallery helpers are embedded before startup without flight requests or extra animation loops',async()=>{
- const html=await readFile(new URL('../index.html',import.meta.url),'utf8');assert.ok(html.includes(source.trim()));assert.ok(html.indexOf('/* WALL_GALLERY_START */')<html.indexOf('initializeModes();render();updateStatus();poll();wallInitialize()'));
+ const html=await readFile(new URL('../index.html',import.meta.url),'utf8');assert.ok(html.includes(source.trim()));assert.ok(html.indexOf('/* WALL_GALLERY_START */')<html.lastIndexOf('initializeModes();'));
  assert.match(html,/<\/html>\s*$/);for(const match of html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g))assert.doesNotThrow(()=>new vm.Script(match[1]));
  assert.doesNotMatch(source,/api\/relay|routesFetch|requestAnimationFrame|setInterval/);assert.match(html,/id="wallAtmosphere"/);assert.match(html,/id="wallCartography"/);
 });

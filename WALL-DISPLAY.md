@@ -1,6 +1,6 @@
 # Airspace Wall Display
 
-App release `2026-10-01.vercel.24`, with relay `2026-09-30.vercel.11`. Upload all extracted files and folders for this update, including `design-system/` and `scripts/`, then redeploy. The complete six-part wall-art roadmap is in `WALL-ART-PLAN.md`. Midnight and Sunset retain their glass materials, gradients and embedded fonts. Thin orange routes still alternate airport codes and full locations every eight seconds. The aircraft-only layout stays plain and uncluttered.
+App release `2026-10-01.vercel.25`, with relay `2026-09-30.vercel.11`. Upload all extracted files and folders for this update, including `design-system/` and `scripts/`, then redeploy. The complete six-part wall-art roadmap is in `WALL-ART-PLAN.md`. Midnight and Sunset retain their glass materials, gradients and embedded fonts. Thin orange routes still alternate airport codes and full locations every eight seconds. The aircraft-only layout stays plain and uncluttered.
 
 The new Gallery map style gives water and land cover more presence, with faint roads and a small set of town names. It uses actual OpenFreeMap/OpenMapTiles geographic data and retains map attribution and a raster fallback. Choose **Map style → Street map** to restore the previous map treatment. **Atmosphere → Follow daylight** gently warms surfaces near sunset and lowers their luminance at night; **Fixed appearance** keeps your chosen theme constant and is the default. The calculation is local to your chosen display location. It does not change aircraft spectrum colours, orange routes, normal tracker preferences or the screen's hardware brightness.
 
@@ -200,3 +200,13 @@ Route checks cover bounded batches, fixed upstream URLs, independent rate limits
 Build 11 also tests the observed empty HTTP 201 response, individual GET routing, the two-request concurrency cap and cancellation of remaining work on provider errors. The original POST failure was reproduced against the deployed relay and the individual endpoint returned live route data. These network checks supplement the controlled regression tests.
 
 Development verification also includes the existing UI/relay integration checks, new wall-settings/filter/schedule/wake-lock tests and browser layout checks from 320px to 4K, in landscape and portrait, using controlled fixture observations and map tiles. Synthetic tests are not a real 24-hour device test or a guarantee of live upstream availability. Before leaving the display unattended, verify its actual Vercel production URL, readability, fullscreen/wake behavior, power settings and an overnight run on the intended device.
+
+## Build 25: shared information and Follow progress
+
+Follow cards now place **Distance covered / Time airborne** in the band below the model and registration, above altitude and groundspeed. When departure was not observed, these become **Observed distance / Time observed**. The current relay supplies live observations; the app does not reconstruct an unseen departure from airport distance or cruise-speed estimates. See `FLIGHT-PROGRESS.md` for the evidence rules and storage bounds.
+
+The web inspector and all wall presentations use `design-system/aircraft-info.js` for identities, units and rounding. **Appearance → Aircraft measurements / Time zone** and the corresponding Wall Settings fields change the same global preferences. Existing saved wall units and time zone migrate automatically. Geographic coverage units remain separate.
+
+**Route estimates on cards** defaults to Area & Fleet. Choose All aircraft cards to add route distance and estimated total time below Follow's main metrics, or Off to hide estimates. Compact/short screens drop these secondary figures first. **Flight progress in aircraft-only Follow labels** adds two optional pages for the followed target; it is off by default. Standard altitude/speed/type/route cycling and vector clearance are preserved.
+
+The journal still uses one row per physical aircraft with the latest saved route and First / Last / Sightings, without live metrics for departed aircraft. Area resets and daily exports remain separate from flight progress.

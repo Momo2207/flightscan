@@ -2,13 +2,14 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import vm from 'node:vm';
 import {readFileSync} from 'node:fs';
+const info=readFileSync(new URL('../design-system/aircraft-info.js',import.meta.url),'utf8').split('const AIRCRAFT_PREF_KEY')[0];
 const html=readFileSync(new URL('../index.html',import.meta.url),'utf8');
 const source='/* WALL_MINIMALIST_START:'+html.split('/* WALL_MINIMALIST_START:')[1].split('/* WALL_MINIMALIST_END */')[0]+'/* WALL_MINIMALIST_END */';
 const editable=readFileSync(new URL('../design-system/wall-minimal.js',import.meta.url),'utf8');
 const routes=readFileSync(new URL('../design-system/wall-routes.js',import.meta.url),'utf8');
 function boot(reduced=false){
- const c=vm.createContext({Date,num:v=>typeof v==='number'&&Number.isFinite(v),wallReduced:()=>reduced,uiCanvasFont:(size,weight)=>weight+' '+size+'px sans-serif',typeFor:a=>({code:a.t||'',name:a.desc||(a.t==='A320'?'Airbus A320-200':a.t? a.t+' · aircraft type':'Aircraft type unavailable')})});
- vm.runInContext(routes+'\n'+source+'\nthis.Model=WallInfoPresentation;',c);return c;
+ const c=vm.createContext({Date,wallSettings:{progressPages:false},num:v=>typeof v==='number'&&Number.isFinite(v),wallReduced:()=>reduced,uiCanvasFont:(size,weight)=>weight+' '+size+'px sans-serif',typeFor:a=>({code:a.t||'',name:a.desc||(a.t==='A320'?'Airbus A320-200':a.t? a.t+' · aircraft type':'Aircraft type unavailable')})});
+ vm.runInContext(info+'\n'+routes+'\n'+source+'\nthis.Model=WallInfoPresentation;',c);return c;
 }
 const plane={hex:'3c1234',flight:'DLH123',alt_baro:35160,gs:430,t:'A320'};
 const route={from:{code:'FRA',city:'Frankfurt'},to:{code:'LIS',city:'Lisbon'}};

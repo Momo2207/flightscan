@@ -66,6 +66,6 @@ test('canvas fades between aliases but reduced motion swaps immediately without 
  }
 });
 test('compiled HTML includes the editable route presentation before startup and no extra polling',()=>{
- assert.ok(html.includes(source.trim()));assert.ok(html.indexOf('/* WALL_ROUTE_PRESENTATION_START */')<html.indexOf('initializeModes();render();updateStatus();poll();wallInitialize()'));
+ assert.ok(html.includes(source.trim()));assert.ok(html.indexOf('/* WALL_ROUTE_PRESENTATION_START */')<html.lastIndexOf('initializeModes();'));
  assert.doesNotMatch(source,/\b(?:fetch|setTimeout|setInterval|requestAnimationFrame)\s*\(/);assert.match(style,/font-weight:300/);assert.match(style,/prefers-reduced-motion/);
 });
