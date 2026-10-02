@@ -1,48 +1,59 @@
 {
-  "build": "2026-10-01.vercel.27",
+  "build": "2026-10-02.vercel.28",
   "relayBuild": "2026-09-30.vercel.11",
   "unitTests": {
     "passed": 244,
     "failed": 0
   },
-  "frontendIntegrationTests": {
-    "passed": 75,
-    "failed": 0
-  },
-  "browserChecks": {
-    "storageSchemaUpgrade": "Existing schema 1 to schema 2; visits, reports and explicit settings retained",
-    "flightProgress": "Full and partial records, 90-second delayed scene, optional canvas pages, duplicate reader-tab forwarding, reload and area-reset independence",
-    "wallRoutes": "This release: rotating codes/full locations and long aliases in Follow, both themes. Previous release: dedicated 24-hour row cycling browser validation; current frontend integration and route presentation unit tests pass.",
-    "layouts": [
+  "targetedBrowserChecks": {
+    "configurations": 11,
+    "themes": [
+      "Midnight",
+      "Sunset"
+    ],
+    "viewports": [
       [
-        1920,
-        1080
-      ],
-      [
-        1366,
-        768
+        390,
+        844
       ],
       [
         1080,
         1920
       ],
       [
-        390,
-        844
+        1440,
+        1000
       ],
       [
-        320,
-        740
+        1920,
+        1080
       ],
       [
         3840,
         2160
       ]
     ],
-    "runtimeErrors": 0,
-    "followRouteMetrics": "Distance from departure, airborne time, altitude/speed, distance to destination and estimated total flight time fit all six sizes. Delayed scene, both themes, long rotating locations and persistence verified.",
-    "departureDistance": "Primary distance uses the matching route origin and displayed position in web cards, Wall Follow and optional aircraft-only progress pages. Independent of partial recorded track totals; delayed DOM/canvas values agree. Missing origins do not fall back to observed track distance."
+    "materials": [
+      "Regular glass",
+      "Clear glass",
+      "Frosted content material"
+    ],
+    "checks": [
+      "backdrop blur/saturation active",
+      "pointer-local highlight on pointer-capable desktop",
+      "Reduced effects removes backdrop filtering",
+      "no horizontal overflow",
+      "Wall regular/clear glass active",
+      "zero page runtime errors"
+    ],
+    "failed": 0
+  },
+  "previousFunctionalRegression": {
+    "build": "2026-10-01.vercel.27",
+    "frontendIntegrationTestsPassed": 75,
+    "note": "Build 28 changes design materials only; relay and flight/data logic are unchanged."
   },
   "relaySha256": "95ecd4cf05bbdfe39d60ae8c77dbd1b76510a1d798b7b9d43614b95960027018",
+  "relayUnchanged": true,
   "productionDeployment": "Not performed; updated files supplied for redeployment."
 }

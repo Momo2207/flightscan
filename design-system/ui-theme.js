@@ -46,6 +46,20 @@ window.addEventListener('storage',event=>{
   if(event.key!==UI_KEY)return;
   try{Object.assign(uiSettings,event.newValue?uiCleanAppearance(JSON.parse(event.newValue)):uiLoadAppearance());uiApplyAppearance()}catch{}
 });
+
+// Pointer-local edge lighting gives full glass a subtle physical response without moving layout.
+const UI_GLASS_SELECTOR='.toolbar,#details,dialog,.wall-feature,#wallLog,.mode-switch,.map-badge,.map-tools button,.map-legend,.map-credit,#tileNote,.wall-map-tag,.wall-map-credit,.wall-map-failure,#wallControls,.flight-card';
+document.addEventListener?.('pointermove',event=>{
+  if(uiSettings.effects==='reduced'||event.pointerType==='touch')return;
+  const glass=event.target.closest?.(UI_GLASS_SELECTOR);if(!glass)return;
+  const rect=glass.getBoundingClientRect();if(!rect.width||!rect.height)return;
+  glass.style.setProperty('--glass-x',Math.max(0,Math.min(100,(event.clientX-rect.left)/rect.width*100)).toFixed(1)+'%');
+  glass.style.setProperty('--glass-y',Math.max(0,Math.min(100,(event.clientY-rect.top)/rect.height*100)).toFixed(1)+'%');
+},{passive:true});
+document.addEventListener?.('pointerout',event=>{
+  const glass=event.target.closest?.(UI_GLASS_SELECTOR);if(!glass||glass.contains(event.relatedTarget))return;
+  glass.style.removeProperty('--glass-x');glass.style.removeProperty('--glass-y');
+},{passive:true});
 // Font arrival changes canvas text measurements as well as the DOM layout.
 document.fonts?.ready?.then(()=>{if(wallActive){wall.lastCard='';wall.lastSecond=-1;wallUpdate(Date.now());wallResize();wallPaint()}else{resize();draw()}});
 uiApplyAppearance();

@@ -1,6 +1,6 @@
 # Flightscan on Vercel
 
-App build: **2026-10-01.vercel.27**. Relay build: **2026-09-30.vercel.11**.
+App build: **2026-10-02.vercel.28**. Relay build: **2026-09-30.vercel.11**.
 
 The 24-hour observation rectangle now matches the visible map by default, including zoom, resize and layout changes. Settings can retain a fixed area instead. Recorded-area histories remain available, and **Reset sightings for this area** clears only the selected area while preserving completed reports. Enabled daily exports restart from the reset time. Aircraft-only cards, smooth movement, gallery runway/taxiway paths and journey figures remain included. Update the complete extracted project and redeploy; no credentials or environment-variable changes are needed.
 
@@ -21,7 +21,7 @@ Upload the extracted files, not the ZIP itself, and preserve folder paths. If Gi
 
 If you set `CONFIG.apiBase` directly in your previous HTML, copy your **public Vercel production base URL** into the new `index.html` before uploading. A relay URL saved through Connection remains saved in the same browser and overrides that default. Opening the app on its public Vercel `.vercel.app` production address connects to that origin automatically.
 
-With automatic Git deployments enabled, Vercel deploys the commit. Wait until it is ready, then refresh the app with Ctrl+Shift+R (Cmd+Shift+R on macOS). About → Connection diagnostics should show app build `2026-10-01.vercel.27`. Open your public Vercel domain followed by `/api/relay?path=health`: the relay should show build `2026-09-30.vercel.11`, `routeLookupMethod: "individual-get"`, `capabilities.routeLookup: true` and `capabilities.registrationLookup: true`. Different app and relay build numbers are expected for this frontend-only update. Existing retry delays remain in effect until they expire. An OpenSky authentication error is separate from route lookup; routes use ADSB.lol and require no OpenSky credentials.
+With automatic Git deployments enabled, Vercel deploys the commit. Wait until it is ready, then refresh the app with Ctrl+Shift+R (Cmd+Shift+R on macOS). About → Connection diagnostics should show app build `2026-10-02.vercel.28`. Open your public Vercel domain followed by `/api/relay?path=health`: the relay should show build `2026-09-30.vercel.11`, `routeLookupMethod: "individual-get"`, `capabilities.routeLookup: true` and `capabilities.registrationLookup: true`. Different app and relay build numbers are expected for this frontend-only update. Existing retry delays remain in effect until they expire. An OpenSky authentication error is separate from route lookup; routes use ADSB.lol and require no OpenSky credentials.
 
 ## Flight spectrum colours
 
@@ -294,3 +294,7 @@ The relay tests make no live provider requests and need no secrets. The build ge
 This update adds local flight progress and unified web/wall aircraft information. No relay credentials or provider changes are required. Upload the full extracted project, including the new `design-system/aircraft-info.js`, `aircraft-info.css` and `flight-progress.js`, then redeploy. Close other older Flightscan tabs once and refresh so the browser can upgrade local storage. Existing sightings, daily reports and settings are preserved.
 
 Follow now shows Distance covered and Time airborne when departure was observed, or Observed distance and Time observed for partial records. Appearance and Wall Settings share aircraft units and time zone. The default sort is Callsign A–Z; centre-distance information is removed. `FLIGHT-PROGRESS.md` contains the view matrix, evidence rules and persistence details.
+
+## Build 28 update
+
+This is a frontend-only visual update. Upload all extracted files, including the new `design-system/liquid-glass.css`, then redeploy. The relay remains build 11 and no environment variables change. Existing Midnight/Sunset, Reduced effects and background preferences continue to work.

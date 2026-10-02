@@ -1,6 +1,6 @@
 # Airspace Wall Display
 
-App release `2026-10-01.vercel.27`, with relay `2026-09-30.vercel.11`. Upload all extracted files and folders for this update, including `design-system/` and `scripts/`, then redeploy. The complete six-part wall-art roadmap is in `WALL-ART-PLAN.md`. Midnight and Sunset retain their glass materials, gradients and embedded fonts. Thin orange routes still alternate airport codes and full locations every eight seconds. The aircraft-only layout stays plain and uncluttered.
+App release `2026-10-02.vercel.28`, with relay `2026-09-30.vercel.11`. Upload all extracted files and folders for this update, including `design-system/` and `scripts/`, then redeploy. The complete six-part wall-art roadmap is in `WALL-ART-PLAN.md`. Midnight and Sunset retain their glass materials, gradients and embedded fonts. Thin orange routes still alternate airport codes and full locations every eight seconds. The aircraft-only layout stays plain and uncluttered.
 
 The new Gallery map style gives water and land cover more presence, with faint roads and a small set of town names. It uses actual OpenFreeMap/OpenMapTiles geographic data and retains map attribution and a raster fallback. Choose **Map style → Street map** to restore the previous map treatment. **Atmosphere → Follow daylight** gently warms surfaces near sunset and lowers their luminance at night; **Fixed appearance** keeps your chosen theme constant and is the default. The calculation is local to your chosen display location. It does not change aircraft spectrum colours, orange routes, normal tracker preferences or the screen's hardware brightness.
 
@@ -212,3 +212,7 @@ The web inspector and all wall presentations use `design-system/aircraft-info.js
 **Route estimates on cards** defaults to Area & Fleet. Choose All aircraft cards to add route distance and estimated total time below Follow's main metrics, or Off to hide estimates. Compact/short screens drop these secondary figures first. **Flight progress in aircraft-only Follow labels** adds two optional pages for the followed target; it is off by default. Standard altitude/speed/type/route cycling and vector clearance are preserved.
 
 The journal still uses one row per physical aircraft with the latest saved route and First / Last / Sightings, without live metrics for departed aircraft. Area resets and daily exports remain separate from flight progress.
+
+## Build 28: deeper glass
+
+Wall cards and the 24-hour journal now use Regular glass with substantially more background transmission, stronger frost, an asymmetric specular rim and theme-coloured ambient spill. The floating wall control strip and map overlays use Clear glass. The aircraft-only artwork mode remains visually plain. Reduced effects removes transparency and blur. No flight, map, route or relay behavior changes in this build.

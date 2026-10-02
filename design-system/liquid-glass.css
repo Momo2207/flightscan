@@ -1,0 +1,193 @@
+/* Build 28: physically lighter Liquid Glass hierarchy.
+   Clear = compact floating controls; Regular = readable floating panels;
+   Frost = content surfaces that should feel material without glass-on-glass. */
+:root,#wallDisplay{
+  --glass-regular-fill:rgba(10,21,36,.38);
+  --glass-clear-fill:rgba(8,18,31,.18);
+  --glass-frost-fill:rgba(10,20,34,.60);
+  --glass-input-fill:rgba(18,35,57,.46);
+  --glass-input-hover:rgba(35,66,99,.60);
+  --glass-rim:rgba(220,242,255,.24);
+  --glass-rim-hot:rgba(236,249,255,.42);
+  --glass-specular:rgba(255,255,255,.24);
+  --glass-specular-soft:rgba(193,228,255,.11);
+  --glass-bottom:rgba(69,104,146,.14);
+  --glass-shadow-color:rgba(0,0,0,.34);
+  --glass-shadow-soft:rgba(0,0,0,.17);
+  --glass-tint:rgba(66,162,255,.07);
+  --glass-filter-regular:blur(32px) saturate(155%) brightness(1.06) contrast(1.03);
+  --glass-filter-clear:blur(22px) saturate(170%) brightness(1.08) contrast(1.02);
+  --glass-filter-frost:blur(26px) saturate(135%) brightness(1.03);
+  --glass-shadow:0 22px 64px var(--glass-shadow-color),0 5px 18px var(--glass-shadow-soft);
+  --glass-inner:inset 0 1px 0 var(--glass-specular),inset 1px 0 0 var(--glass-specular-soft),inset -1px 0 0 rgba(62,100,145,.08),inset 0 -1px 0 var(--glass-bottom);
+  --glass-x:50%;--glass-y:0%;
+}
+:root[data-theme=paper],#wallDisplay[data-theme=paper]{
+  --glass-regular-fill:rgba(255,248,239,.46);
+  --glass-clear-fill:rgba(255,250,244,.26);
+  --glass-frost-fill:rgba(255,247,237,.66);
+  --glass-input-fill:rgba(255,252,247,.48);
+  --glass-input-hover:rgba(255,246,236,.68);
+  --glass-rim:rgba(255,255,255,.76);
+  --glass-rim-hot:rgba(255,255,255,.96);
+  --glass-specular:rgba(255,255,255,.94);
+  --glass-specular-soft:rgba(255,255,255,.52);
+  --glass-bottom:rgba(142,90,53,.13);
+  --glass-shadow-color:rgba(106,63,26,.17);
+  --glass-shadow-soft:rgba(106,63,26,.09);
+  --glass-tint:rgba(232,139,99,.09);
+  --glass-filter-regular:blur(32px) saturate(145%) brightness(1.04) contrast(1.01);
+  --glass-filter-clear:blur(22px) saturate(155%) brightness(1.05);
+  --glass-filter-frost:blur(26px) saturate(125%) brightness(1.02);
+}
+
+/* A richer content field makes transparency perceptible without turning the UI into decoration. */
+body:not(.wall-active){position:relative;isolation:isolate}
+body:not(.wall-active):before{
+  content:'';position:fixed;inset:-18vmax;z-index:-1;pointer-events:none;opacity:.72;
+  background:
+    radial-gradient(circle at 14% 16%,color-mix(in srgb,var(--glow) 26%,transparent) 0 8%,transparent 31%),
+    radial-gradient(circle at 84% 12%,color-mix(in srgb,var(--cyan) 15%,transparent) 0 5%,transparent 27%),
+    radial-gradient(circle at 68% 88%,color-mix(in srgb,var(--glow-soft) 10%,transparent) 0 8%,transparent 34%);
+  filter:blur(34px);transform:translateZ(0)
+}
+#wallDisplay:before{
+  content:'';position:absolute;inset:0;pointer-events:none;z-index:-1;opacity:.92;
+  background:
+    radial-gradient(ellipse at 92% 26%,color-mix(in srgb,var(--glow) 28%,transparent),transparent 37%),
+    radial-gradient(ellipse at 86% 72%,color-mix(in srgb,var(--w-route) 13%,transparent),transparent 35%),
+    radial-gradient(ellipse at 18% 6%,color-mix(in srgb,var(--glow-soft) 9%,transparent),transparent 28%);
+  filter:blur(24px)
+}
+
+/* REGULAR GLASS: sidebars, dialogs and text-heavy floating surfaces. */
+.toolbar,#details,dialog,.wall-feature,#wallLog,.browse-filters,.follow-panel,#results{
+  background:
+    radial-gradient(circle at var(--glass-x) var(--glass-y),rgba(255,255,255,.095),transparent 29%),
+    linear-gradient(145deg,var(--glass-specular-soft),transparent 24%),
+    linear-gradient(325deg,var(--glass-tint),transparent 42%),
+    var(--glass-regular-fill)!important;
+  border:1px solid var(--glass-rim)!important;
+  box-shadow:var(--glass-shadow),var(--glass-inner)!important;
+  backdrop-filter:var(--glass-filter-regular)!important;
+  -webkit-backdrop-filter:var(--glass-filter-regular)!important;
+}
+
+/* CLEAR GLASS: compact controls floating directly above map/content. */
+.mode-switch,.statusbar,.map-badge,.map-tools button,.map-search,.map-legend,.map-credit,#tileNote,.wall-map-tag,.wall-map-credit,.wall-map-failure,#wallControls,.top-actions button,.connection-actions button{
+  background:
+    radial-gradient(circle at var(--glass-x) var(--glass-y),rgba(255,255,255,.13),transparent 34%),
+    linear-gradient(145deg,var(--glass-specular-soft),transparent 28%),
+    var(--glass-clear-fill)!important;
+  border-color:var(--glass-rim)!important;
+  box-shadow:0 12px 34px var(--glass-shadow-soft),var(--glass-inner)!important;
+  backdrop-filter:var(--glass-filter-clear)!important;
+  -webkit-backdrop-filter:var(--glass-filter-clear)!important;
+}
+
+/* Standard frosted material for content. This intentionally isn't another clear glass layer. */
+.table-scroll,.flight-card,.connection-notice,.scope-strip,.last-known-notice{
+  background:
+    linear-gradient(145deg,rgba(255,255,255,.035),transparent 26%),
+    var(--glass-frost-fill)!important;
+  border-color:color-mix(in srgb,var(--glass-rim) 68%,transparent)!important;
+  box-shadow:var(--glass-inner)!important;
+  backdrop-filter:var(--glass-filter-frost)!important;
+  -webkit-backdrop-filter:var(--glass-filter-frost)!important;
+}
+
+/* Nested elements use tint/fill, never a second backdrop-filter layer. */
+.toolbar button,.toolbar input,.toolbar select,.browse-filters button,.browse-filters input,.browse-filters select,
+.follow-panel button,.follow-panel input,.mode-switch button,#wallControls button,dialog button,dialog input,dialog select,.top-actions button{
+  background:var(--glass-input-fill);
+  border-color:color-mix(in srgb,var(--glass-rim) 72%,var(--control-line));
+  box-shadow:inset 0 1px 0 color-mix(in srgb,var(--glass-specular) 55%,transparent),0 1px 0 rgba(0,0,0,.05);
+  backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+}
+.toolbar button:hover,.browse-filters button:hover,.follow-panel button:hover,.mode-switch button:hover,#wallControls button:hover,dialog button:hover,.top-actions button:hover{
+  background:var(--glass-input-hover);border-color:var(--glass-rim-hot);
+  box-shadow:inset 0 1px 0 var(--glass-specular),0 0 22px color-mix(in srgb,var(--accent) 12%,transparent)
+}
+.primary,.mode-switch button[aria-pressed=true]{
+  background:color-mix(in srgb,var(--accent) 88%,rgba(255,255,255,.08))!important;
+  border-color:color-mix(in srgb,var(--accent) 76%,var(--glass-rim-hot))!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.32),0 7px 24px color-mix(in srgb,var(--accent) 20%,transparent)!important
+}
+
+/* The main frame should disappear visually; floating materials establish hierarchy. */
+.workspace{border-color:color-mix(in srgb,var(--glass-rim) 60%,transparent);box-shadow:0 20px 68px var(--glass-shadow-soft);background:transparent}
+aside{background:transparent!important}
+#details{border-left:1px solid var(--glass-rim)!important}
+.statusbar{border-bottom-color:color-mix(in srgb,var(--glass-rim) 62%,transparent)!important}
+.table-scroll table{background:transparent}.table-scroll th{background:color-mix(in srgb,var(--glass-frost-fill) 68%,transparent)}
+.table-scroll tr.active{background:color-mix(in srgb,var(--accent) 7%,transparent)}
+
+/* Clear glass overlays on maps need stronger local dimming rather than opacity everywhere. */
+.map-badge,.map-tools button,.map-search,.map-legend,.map-credit,#tileNote,.wall-map-tag,.wall-map-credit,.wall-map-failure{
+  text-shadow:0 1px 9px color-mix(in srgb,var(--bg) 42%,transparent)
+}
+.map-badge:after,.mode-switch:after,#wallControls:after{
+  content:'';position:absolute;inset:1px;border-radius:inherit;pointer-events:none;
+  background:linear-gradient(115deg,rgba(255,255,255,.10),transparent 27%,transparent 72%,rgba(255,255,255,.035));
+  mix-blend-mode:screen;opacity:.8
+}
+.mode-switch,#wallControls{position:relative;overflow:hidden}
+.mode-switch>* ,#wallControls>*{position:relative;z-index:1}
+
+/* Wall display: make the sidebar read as a thick piece of floating glass, not an opaque card. */
+.wall-feature,#wallLog{
+  background:
+    radial-gradient(ellipse at 92% 8%,color-mix(in srgb,var(--glow) 11%,transparent),transparent 36%),
+    radial-gradient(ellipse at 12% 100%,color-mix(in srgb,var(--w-route) 6%,transparent),transparent 32%),
+    linear-gradient(145deg,var(--glass-specular-soft),transparent 23%),
+    var(--glass-regular-fill)!important;
+  border-color:var(--glass-rim)!important;
+  box-shadow:0 26px 74px var(--glass-shadow-color),var(--glass-inner)!important;
+  backdrop-filter:var(--glass-filter-regular)!important;-webkit-backdrop-filter:var(--glass-filter-regular)!important;
+}
+.wall-feature:before,#wallLog:before{
+  background:radial-gradient(ellipse at 86% 108%,color-mix(in srgb,var(--glow) 12%,transparent),transparent 58%)!important;
+  opacity:.9
+}
+.wall-feature:after,#wallLog:after{
+  left:4%;right:4%;height:1px;bottom:auto;top:0;
+  background:linear-gradient(90deg,transparent,var(--glass-rim-hot),transparent)!important;opacity:.72
+}
+.wall-feature-heading,.wall-metrics,.wall-progress,.wall-journey,.wall-feature-foot,.wall-log-heading,.wall-log-foot{
+  border-color:color-mix(in srgb,var(--glass-rim) 48%,transparent)!important
+}
+#wallControls{background:var(--glass-clear-fill)!important;border-color:var(--glass-rim)!important;box-shadow:0 18px 46px var(--glass-shadow-color),var(--glass-inner)!important}
+#wallDisplay[data-layout=minimalist]:before{display:none}
+#wallDisplay[data-layout=minimalist] #wallControls{background:color-mix(in srgb,var(--w-bg) 82%,transparent)!important}
+
+/* Search results and popovers retain enough material thickness for text. */
+#results button{background:transparent!important;border-color:color-mix(in srgb,var(--glass-rim) 38%,transparent)}
+#results button:hover{background:color-mix(in srgb,var(--accent) 8%,transparent)!important}
+dialog::backdrop{background:color-mix(in srgb,var(--bg) 46%,transparent);backdrop-filter:blur(10px) saturate(120%);-webkit-backdrop-filter:blur(10px) saturate(120%)}
+
+/* A faint edge-light response provides the dynamic optical cue without moving content. */
+@media(hover:hover) and (pointer:fine){
+  .toolbar,#details,dialog,.wall-feature,#wallLog,.mode-switch,.map-badge,.map-tools button,.map-legend,.map-credit,#tileNote,.wall-map-tag,.wall-map-credit,.wall-map-failure,#wallControls,.flight-card{
+    transition:border-color 180ms ease,box-shadow 220ms ease,background-color 220ms ease
+  }
+  .toolbar:hover,#details:hover,.wall-feature:hover,#wallLog:hover,.mode-switch:hover,.map-badge:hover,.map-tools button:hover,#wallControls:hover,.flight-card:hover{
+    border-color:var(--glass-rim-hot)!important
+  }
+}
+
+/* Accessibility and performance variants stay truly solid. */
+:root[data-effects=reduced],#wallDisplay[data-effects=reduced]{
+  --glass-regular-fill:var(--panel);--glass-clear-fill:var(--panel);--glass-frost-fill:var(--panel);
+  --glass-filter-regular:none;--glass-filter-clear:none;--glass-filter-frost:none
+}
+:root[data-effects=reduced] body:before,:root[data-effects=reduced] #wallDisplay:before{display:none}
+:root[data-effects=reduced] .toolbar,:root[data-effects=reduced] #details,:root[data-effects=reduced] dialog,
+:root[data-effects=reduced] .wall-feature,:root[data-effects=reduced] #wallLog,:root[data-effects=reduced] .mode-switch,
+:root[data-effects=reduced] .map-badge,:root[data-effects=reduced] .map-tools button,:root[data-effects=reduced] .map-legend,:root[data-effects=reduced] .map-credit,:root[data-effects=reduced] #tileNote,:root[data-effects=reduced] .wall-map-tag,:root[data-effects=reduced] .wall-map-credit,:root[data-effects=reduced] .wall-map-failure,:root[data-effects=reduced] #wallControls{
+  backdrop-filter:none!important;-webkit-backdrop-filter:none!important;background:var(--panel)!important
+}
+@media(prefers-reduced-transparency:reduce){
+  .toolbar,#details,dialog,.wall-feature,#wallLog,.mode-switch,.map-badge,.map-tools button,.map-legend,.map-credit,#tileNote,.wall-map-tag,.wall-map-credit,.wall-map-failure,#wallControls,.table-scroll,.flight-card{
+    backdrop-filter:none!important;-webkit-backdrop-filter:none!important;background:var(--panel)!important
+  }
+}

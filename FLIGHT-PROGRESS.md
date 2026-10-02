@@ -1,6 +1,6 @@
 # Flight progress and shared aircraft information
 
-App release **2026-10-01.vercel.27**. Relay build 11 remains unchanged. Upload the full extracted project, including `design-system/` and `scripts/`, then redeploy. If upgrading from build 24 or earlier, close old Flightscan tabs once for the storage upgrade. Refresh the production page after redeployment.
+App release **2026-10-02.vercel.28**. Relay build 11 remains unchanged. Upload the full extracted project, including `design-system/` and `scripts/`, then redeploy. If upgrading from build 24 or earlier, close old Flightscan tabs once for the storage upgrade. Refresh the production page after redeployment.
 
 ## Display contract
 

@@ -1,0 +1,130 @@
+{
+  "build": "2026-10-02.vercel.28",
+  "results": [
+    {
+      "theme": "night",
+      "viewport": [
+        390,
+        844
+      ],
+      "toolbarFilter": "blur(32px) saturate(1.55) brightness(1.06) contrast(1.03)",
+      "clearFilter": "blur(22px) saturate(1.7) brightness(1.08) contrast(1.02)",
+      "frostFilter": "blur(26px) saturate(1.35) brightness(1.03)",
+      "pointerReactive": false,
+      "errors": 0
+    },
+    {
+      "theme": "night",
+      "viewport": [
+        1080,
+        1920
+      ],
+      "toolbarFilter": "blur(32px) saturate(1.55) brightness(1.06) contrast(1.03)",
+      "clearFilter": "blur(22px) saturate(1.7) brightness(1.08) contrast(1.02)",
+      "frostFilter": "blur(26px) saturate(1.35) brightness(1.03)",
+      "pointerReactive": false,
+      "errors": 0
+    },
+    {
+      "theme": "night",
+      "viewport": [
+        1440,
+        1000
+      ],
+      "toolbarFilter": "blur(32px) saturate(1.55) brightness(1.06) contrast(1.03)",
+      "clearFilter": "blur(22px) saturate(1.7) brightness(1.08) contrast(1.02)",
+      "frostFilter": "blur(26px) saturate(1.35) brightness(1.03)",
+      "pointerReactive": true,
+      "errors": 0
+    },
+    {
+      "theme": "night",
+      "viewport": [
+        1920,
+        1080
+      ],
+      "toolbarFilter": "blur(32px) saturate(1.55) brightness(1.06) contrast(1.03)",
+      "clearFilter": "blur(22px) saturate(1.7) brightness(1.08) contrast(1.02)",
+      "frostFilter": "blur(26px) saturate(1.35) brightness(1.03)",
+      "pointerReactive": false,
+      "errors": 0
+    },
+    {
+      "theme": "night",
+      "viewport": [
+        3840,
+        2160
+      ],
+      "toolbarFilter": "blur(32px) saturate(1.55) brightness(1.06) contrast(1.03)",
+      "clearFilter": "blur(22px) saturate(1.7) brightness(1.08) contrast(1.02)",
+      "frostFilter": "blur(26px) saturate(1.35) brightness(1.03)",
+      "pointerReactive": false,
+      "errors": 0
+    },
+    {
+      "theme": "paper",
+      "viewport": [
+        390,
+        844
+      ],
+      "toolbarFilter": "blur(32px) saturate(1.45) brightness(1.04) contrast(1.01)",
+      "clearFilter": "blur(22px) saturate(1.55) brightness(1.05)",
+      "frostFilter": "blur(26px) saturate(1.25) brightness(1.02)",
+      "pointerReactive": false,
+      "errors": 0
+    },
+    {
+      "theme": "paper",
+      "viewport": [
+        1080,
+        1920
+      ],
+      "toolbarFilter": "blur(32px) saturate(1.45) brightness(1.04) contrast(1.01)",
+      "clearFilter": "blur(22px) saturate(1.55) brightness(1.05)",
+      "frostFilter": "blur(26px) saturate(1.25) brightness(1.02)",
+      "pointerReactive": false,
+      "errors": 0
+    },
+    {
+      "theme": "paper",
+      "viewport": [
+        1440,
+        1000
+      ],
+      "toolbarFilter": "blur(32px) saturate(1.45) brightness(1.04) contrast(1.01)",
+      "clearFilter": "blur(22px) saturate(1.55) brightness(1.05)",
+      "frostFilter": "blur(26px) saturate(1.25) brightness(1.02)",
+      "pointerReactive": true,
+      "errors": 0
+    },
+    {
+      "theme": "paper",
+      "viewport": [
+        1920,
+        1080
+      ],
+      "toolbarFilter": "blur(32px) saturate(1.45) brightness(1.04) contrast(1.01)",
+      "clearFilter": "blur(22px) saturate(1.55) brightness(1.05)",
+      "frostFilter": "blur(26px) saturate(1.25) brightness(1.02)",
+      "pointerReactive": false,
+      "errors": 0
+    },
+    {
+      "theme": "paper",
+      "viewport": [
+        3840,
+        2160
+      ],
+      "toolbarFilter": "blur(32px) saturate(1.45) brightness(1.04) contrast(1.01)",
+      "clearFilter": "blur(22px) saturate(1.55) brightness(1.05)",
+      "frostFilter": "blur(26px) saturate(1.25) brightness(1.02)",
+      "pointerReactive": false,
+      "errors": 0
+    },
+    {
+      "wallRegularFilter": "blur(32px) saturate(1.55) brightness(1.06) contrast(1.03)",
+      "wallClearFilter": "blur(22px) saturate(1.7) brightness(1.08) contrast(1.02)",
+      "errors": 0
+    }
+  ]
+}

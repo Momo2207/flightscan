@@ -1,6 +1,6 @@
 # Flightscan design system
 
-Implemented in app build `2026-10-01.vercel.27`. The flight relay remains build 11.
+Implemented in app build `2026-10-02.vercel.28`. The flight relay remains build 11.
 
 ## Themes
 
@@ -85,3 +85,17 @@ Device reduced-motion preferences and the wall's explicit Reduced motion setting
 Verification passes 211 included unit tests and 75 frontend integration checks. The new real-IndexedDB browser check covers automatic map matching, zoom and portrait resize, fixed-area opt-out, overlapping recorded-position history, per-area reset, read-only tab synchronization, persisted reset cutoffs, fresh post-reset visits, report preservation and reload recovery. Chromium checks cover 320×740, 390×844, 1366×768, 1920×1080, 1080×1920 and 3840×2160 in both themes. They check font loading, settings widths, no page overflow, unclipped wall cards and sightings rows, aircraft-only labels, Follow zoom and preference persistence. Focused checks cover route cycling, typography, reduced motion, steady card geometry, saved gallery/daylight options, map failure fallback, journal pacing and unchanged route/aircraft colours through twilight. The renderer was also verified against 20 real current OpenFreeMap tiles around Offenburg in both themes.
 
 Browser checks use controlled feed and map fixtures. They do not certify availability of live third-party flight providers or performance on a physical display. The relay, API limits and authentication settings are unchanged.
+
+## Build 28: Liquid Glass material hierarchy
+
+Build 28 replaces the previous high-opacity glass fills with a layered material system inspired by current platform glass guidance. The implementation is deliberately semantic rather than applying one translucent background everywhere.
+
+- **Clear glass** is used for compact floating controls over visual content: map controls, badges, mode switchers, the wall control strip and small map/status overlays. It uses lower-opacity tint, 22 px backdrop blur, higher saturation and a bright inner rim.
+- **Regular glass** is used for text-heavy floating surfaces: the aircraft inspector, dialogs, wall aircraft cards, the 24-hour journal, filters and the main toolbar. It uses a slightly denser tint, 32 px blur and stronger shadow separation.
+- **Frosted material** is used for content surfaces such as result tables, mobile aircraft cards and notices. This keeps the data layer readable and prevents glass-on-glass stacking. Nested inputs and buttons use translucent fills without another backdrop filter.
+
+The material uses four optical cues: visible background transmission, backdrop blur/saturation, asymmetric specular edge light, and soft shadow/tint spill from the surrounding theme. Midnight uses cool blue spill; Sunset uses warm peach/amber spill. Pointer-capable devices move a very subtle highlight toward the pointer inside a glass surface; touch, reduced effects and reduced-transparency modes do not use this response.
+
+`design-system/liquid-glass.css` owns these materials and loads last in the design build so component geometry stays independent of material styling. `ui-tokens.css` keeps compatibility variables for older components. `ui-theme.js` owns the optional pointer-local highlight only; it does not change layout or flight data.
+
+**Accessibility / fallback:** Reduced effects switches glass to solid panel materials and disables backdrop filtering. `prefers-reduced-transparency` receives the same solid fallback. Browsers without backdrop-filter continue to use the existing solid fallback from `ui-tokens.css`. Aircraft-only wall mode keeps its intentionally plain presentation; the control strip remains restrained rather than becoming a decorative glass layer.
