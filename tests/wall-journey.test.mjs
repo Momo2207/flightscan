@@ -7,11 +7,11 @@ const Journey=vm.runInNewContext(source+'\nWallJourney');
 const route={from:{lat:50.033,lon:8.57},to:{lat:38.775,lon:-9.135}};
 test('airport distance is a whole-route great-circle distance, independent of aircraft position',()=>{
  const value=Journey.estimate({t:'A320',lat:50.03,lon:8.57},route,'narrow');
- assert.ok(value.distanceKm>1850&&value.distanceKm<1900);assert.equal(value.durationMinutes,155);
+ assert.ok(value.distanceKm>1850&&value.distanceKm<1900);assert.equal(value.durationMinutes,170);
  assert.equal(Journey.estimate({t:'A320',lat:39,lon:-9},route,'narrow').distanceKm,value.distanceKm);
 });
 test('ground, slow approach and held telemetry cannot turn the duration into a taxi-speed estimate',()=>{
- for(const state of [{alt_baro:'ground',gs:0},{gs:11},{gs:450},{held:true,gs:20}])assert.equal(Journey.estimate({t:'A320',...state},route,'narrow').durationMinutes,155);
+ for(const state of [{alt_baro:'ground',gs:0},{gs:11},{gs:450},{held:true,gs:20}])assert.equal(Journey.estimate({t:'A320',...state},route,'narrow').durationMinutes,170);
 });
 test('malformed, missing or identical airport coordinates produce no journey figures',()=>{
  for(const bad of [null,{}, {...route,from:{lat:null,lon:8}}, {...route,to:{lat:'38',lon:-9}}, {...route,to:{lat:91,lon:0}}, {...route,to:{lat:20,lon:181}}, {...route,to:{lat:NaN,lon:0}}, {...route,to:route.from}])assert.equal(Journey.estimate({},bad,'narrow'),null);
@@ -29,7 +29,7 @@ test('known jet classes get rounded estimates and unmodelled categories get dist
  for(const kind of ['generic','light','helicopter','military','transport','glider','turboprop','toString','__proto__']){
   const info=Journey.estimate({},route,kind);assert.ok(info.distanceKm>0);assert.equal(info.durationMinutes,null);assert.equal(Journey.duration(info),'');
  }
- assert.equal(Journey.estimate({t:' b738 '},route,'narrow').speedKt,460);
+ assert.equal(Journey.estimate({t:' b738 '},route,'narrow').speedKt,420);
 });
 test('distance respects aviation and metric units without excessive precision',()=>{
  const info=Journey.estimate({t:'A320'},route,'narrow');assert.equal(Journey.distance(info,true),'1,870');assert.equal(Journey.distance(info,false),'1,010');
@@ -70,7 +70,7 @@ test('Follow restores both route metrics by default, retains full-flight estimat
  const update=vm.runInNewContext(source+'\nwallJourneyUpdate',env);
  const a={t:'A320',lat:38.8,lon:-9.1,gs:0};update(a,route);
  assert.equal(node('wallJourney').hidden,false);assert.equal(node('wallJourneyTime').hidden,false);assert.equal(node('wallJourneyDistance').hidden,false);
- assert.equal(node('wallRouteDistanceLabel').textContent,'Distance to destination');assert.equal(node('wallRouteDistance').textContent,Journey.distance(Journey.remaining(a,route),true));assert.equal(node('wallEstimatedTime').textContent,'2 h 35 m');
+ assert.equal(node('wallRouteDistanceLabel').textContent,'Distance to destination');assert.equal(node('wallRouteDistance').textContent,Journey.distance(Journey.remaining(a,route),true));assert.equal(node('wallEstimatedTime').textContent,'2 h 50 m');
  env.wallSettings.units='aviation';update(a,route);assert.equal(node('wallRouteDistanceUnit').textContent,'NM');
  update(a,null);assert.equal(node('wallJourney').hidden,true);assert.equal(node('wallRouteDistance').textContent,'');assert.equal(node('wallEstimatedTime').textContent,'');assert.equal(node('wallRouteDistanceUnit').textContent,'');
  update(a,route);env.wallSettings.journeyDisplay='off';update(a,route);assert.equal(node('wallJourney').hidden,true);
@@ -82,4 +82,15 @@ test('Follow independently hides unavailable destination distance or an unmodell
  update({lat:38.8,lon:-9.1},route);assert.equal(node('wallJourney').hidden,false);assert.equal(node('wallJourneyTime').hidden,true);assert.equal(node('wallJourneyDistance').hidden,false);assert.equal(node('wallJourney').dataset.single,'true');
  env.aircraftSymbolFor=()=>({key:'narrow'});update({},route);assert.equal(node('wallJourney').hidden,false);assert.equal(node('wallJourneyTime').hidden,false);assert.equal(node('wallJourneyDistance').hidden,true);
  env.wallMode=()=> 'area';update({lat:38.8,lon:-9.1},route);assert.equal(node('wallRouteDistanceLabel').textContent,'Distance to destination');assert.equal(node('wallRouteDistance').textContent,Journey.distance(Journey.remaining({lat:38.8,lon:-9.1},route),true));
+});
+
+test('long-haul widebody estimates remain plausible and never shrink with aircraft position',()=>{
+ const long={from:{lat:50.033,lon:8.57},to:{lat:18.567,lon:-68.363}},a={t:'A332',lat:49,lon:5};
+ const total=Journey.estimate(a,long,'wide');assert.ok(total.distanceKm>7400&&total.distanceKm<7800);assert.ok(total.durationMinutes>=530&&total.durationMinutes<=555);
+ const nearDestination={...a,lat:20,lon:-65};assert.equal(Journey.estimate(nearDestination,long,'wide').durationMinutes,total.durationMinutes);
+});
+test('route progress is bounded and reconstructed airborne time respects observed lower bound',()=>{
+ const a={lat:44,lon:0},p=Journey.progress(a,route);assert.ok(p.ratio>0&&p.ratio<1);
+ const estimated=Journey.airborneMinutes(a,route,'narrow',{elapsedMinutes:31,takeoff:null});assert.ok(estimated>=31);
+ assert.equal(Journey.airborneMinutes(a,route,'narrow',{elapsedMinutes:73,takeoff:1}),73);
 });

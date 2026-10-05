@@ -230,3 +230,8 @@ The wall display now follows the approved map-first concept rather than scaling 
 ## Build 31: Area journey card
 
 Area mode uses a compact journey-card hierarchy: live identity, aircraft/model/operator, route, distance from departure and observed/airborne time, distance to destination and estimated remaining flight time, altitude and groundspeed, followed by an origin-to-destination progress bar. The progress percentage is the direct great-circle distance from the reported origin to the displayed aircraft position divided by the origin-to-destination great-circle distance, clamped to 0–100%. It is a geographic progress indicator, not flown-track completion. The aircraft photo/illustration is intentionally omitted.
+
+
+## Build 32: Area flight-time model
+
+Area cards never expose “Time observed”. **Time airborne** uses the observed takeoff clock when Flightscan saw departure; otherwise it is reconstructed from route progress and the distance/class flight model, with already-observed time as a lower bound. **Estimated flight time** is always the estimated total airborne duration for the complete origin-to-destination route. It no longer shrinks as the aircraft approaches its destination. Route progress is a separate bounded geometric value. Short-, medium- and long-haul sectors use different effective airborne speeds and climb/descent allowances; current groundspeed is intentionally not used for the total-duration estimate.

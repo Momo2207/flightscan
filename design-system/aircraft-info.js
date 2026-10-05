@@ -8,8 +8,9 @@ class AircraftInfo {
   static speed(a,metric=false){return this.format(Number.isFinite(a.gs)?a.gs*(metric?1.852:1):null,metric?'km/h':'kt')}
   static vertical(a,metric=false){const v=a.baro_rate??a.geom_rate;return this.format(Number.isFinite(v)?v*(metric?.00508:1):null,metric?'m/s':'ft/min',metric?.1:1)}
   static progress(p,metric=false,aircraft=null,route=null){
-    const departure=WallJourney.fromDeparture(aircraft,route);
-    return {distance:{...this.format(departure?departure.distanceKm/(metric?1:1.852):null,metric?'km':'NM'),label:'Distance from departure'},time:{value:p?this.duration(p.elapsedMinutes):'Not available',unit:'',label:p?.timeLabel||'Time observed'}};
+    const departure=WallJourney.fromDeparture(aircraft,route),kind=aircraft&&typeof aircraftSymbolFor==='function'?aircraftSymbolFor(aircraft).key:'jet';
+    const airborne=aircraft&&route?WallJourney.airborneMinutes(aircraft,route,kind,p):(Number.isFinite(p?.takeoff)?p.elapsedMinutes:null);
+    return {distance:{...this.format(departure?departure.distanceKm/(metric?1:1.852):null,metric?'km':'NM'),label:'Distance from departure'},time:{value:Number.isFinite(airborne)?this.duration(airborne):'Not available',unit:'',label:'Time airborne'}};
   }
   static duration(minutes){if(!Number.isFinite(minutes))return 'Not available';const m=Math.floor(Math.max(0,minutes)),h=Math.floor(m/60);return h?h+' h'+(m%60?' '+m%60+' min':''):m+' min'}
   static snapshot(a,options={}){

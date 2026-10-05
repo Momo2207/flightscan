@@ -1,8 +1,8 @@
 {
-  "build": "2026-10-05.vercel.30",
+  "build": "2026-10-05.vercel.32",
   "relayBuild": "2026-09-30.vercel.11",
   "unitTests": {
-    "passed": 249,
+    "passed": 252,
     "failed": 0
   },
   "targetedBrowserChecks": {
@@ -84,5 +84,11 @@
       "bottomGapPx": 20
     }
   },
-  "wallLayoutRuntimeErrors": 0
+  "wallLayoutRuntimeErrors": 0,
+  "flightTimeModel": {
+    "timeAirborneLabel": "always",
+    "partialTakeoff": "route-progress reconstruction with observed lower bound",
+    "estimatedFlightTime": "total route airborne duration; does not shrink with progress",
+    "currentGroundspeedUsed": false
+  }
 }

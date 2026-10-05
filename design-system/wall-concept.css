@@ -299,3 +299,16 @@
 #wallDisplay[data-profile=compact10][data-mode=area] .wall-area-route-bar-head{gap:5px}
 #wallDisplay[data-profile=compact10][data-mode=area] .wall-area-route-bar-head b{font-size:8px}
 #wallDisplay[data-profile=compact10][data-mode=area] .wall-area-route-bar-foot{font-size:6px;padding-top:2px}
+
+/* Build 32: aviation-instrument typography for Area telemetry. */
+#wallDisplay[data-mode=area]:not([data-layout=minimalist]) .wall-progress small,
+#wallDisplay[data-mode=area]:not([data-layout=minimalist]) .wall-journey small,
+#wallDisplay[data-mode=area]:not([data-layout=minimalist]) .wall-metrics small{
+ text-transform:uppercase;letter-spacing:.085em;font-weight:600;opacity:.76
+}
+#wallDisplay[data-mode=area]:not([data-layout=minimalist]) .wall-progress strong,
+#wallDisplay[data-mode=area]:not([data-layout=minimalist]) .wall-journey strong,
+#wallDisplay[data-mode=area]:not([data-layout=minimalist]) .wall-metrics strong{font-variant-numeric:tabular-nums lining-nums}
+#wallDisplay[data-mode=area] .wall-area-route-bar-foot{text-transform:uppercase;letter-spacing:.07em}
+#wallDisplay[data-mode=area] .wall-area-route-track{height:3px;background:color-mix(in srgb,var(--w-muted) 24%,transparent)}
+#wallDisplay[data-mode=area] .wall-area-route-track i{background:linear-gradient(90deg,var(--lime),var(--w-route));box-shadow:0 0 12px color-mix(in srgb,var(--lime) 32%,transparent)}
