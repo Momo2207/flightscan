@@ -41,15 +41,16 @@ class WallJourney{
 }
 function wallJourneyUpdate(aircraft,route){
   const root=$('wallJourney');if(!root)return;
-  const info=WallJourney.estimate(aircraft,route,aircraftSymbolFor(aircraft).key),metric=wallSettings.units==='metric',follow=wallMode()==='follow';
-  const distance=follow?WallJourney.remaining(aircraft,route):info;
-  root.hidden=(!distance&&!info?.durationMinutes)||wallSettings.journeyDisplay==='off';
+  const info=WallJourney.estimate(aircraft,route,aircraftSymbolFor(aircraft).key),metric=wallSettings.units==='metric',mode=wallMode(),follow=mode==='follow',area=mode==='area';
+  const remaining=(follow||area)?WallJourney.remaining(aircraft,route):null,distance=(follow||area)?remaining:info;
+  const remainingDuration=area&&remaining&&info?.durationMinutes&&info?.distanceKm?{durationMinutes:Math.max(5,Math.round((info.durationMinutes*remaining.distanceKm/info.distanceKm)/5)*5)}:info;
+  root.hidden=(!distance&&!remainingDuration?.durationMinutes)||wallSettings.journeyDisplay==='off';
   $('wallJourneyDistance').hidden=!distance;
-  $('wallRouteDistanceLabel').textContent=follow?'Distance to destination':'Route distance';
+  $('wallRouteDistanceLabel').textContent=(follow||area)?'Distance to destination':'Route distance';
   $('wallRouteDistance').textContent=WallJourney.distance(distance,metric);
   $('wallRouteDistanceUnit').textContent=distance?(metric?'km':'NM'):'';
-  $('wallEstimatedTime').textContent=WallJourney.duration(info);
-  $('wallJourneyTime').hidden=!info?.durationMinutes;
+  $('wallEstimatedTime').textContent=WallJourney.duration(remainingDuration);
+  $('wallJourneyTime').hidden=!remainingDuration?.durationMinutes;
   root.dataset.single=String(!distance||!info?.durationMinutes);
 }
 /* WALL_JOURNEY_END */

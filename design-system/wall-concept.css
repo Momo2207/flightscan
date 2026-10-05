@@ -202,3 +202,100 @@
  #wallDisplay:not([data-profile=compact10]):not([data-layout=minimalist]) .wall-body{grid-template-columns:minmax(0,1fr) clamp(360px,27vw,520px)}
  #wallDisplay:not([data-profile=compact10]):not([data-layout=minimalist]) #wallControls{left:36.5vw}
 }
+
+/* Build 31: Area card follows the compact journey-card composition. */
+#wallDisplay .wall-area-status,#wallDisplay .wall-area-route-progress{display:none}
+#wallDisplay[data-mode=area]:not([data-layout=minimalist]) .wall-feature-heading{display:none}
+#wallDisplay[data-mode=area]:not([data-layout=minimalist]) .wall-feature{padding:clamp(14px,1.25vw,24px)}
+#wallDisplay[data-mode=area]:not([data-layout=minimalist]) #wallCard{
+ display:grid;grid-template-columns:1fr 1fr;
+ grid-template-rows:auto auto auto auto auto auto minmax(42px,1fr);
+ gap:0;align-content:stretch;overflow:hidden;
+}
+#wallDisplay[data-mode=area]:not([data-layout=minimalist]) .wall-area-status{
+ display:flex;grid-column:1/-1;grid-row:1;align-items:center;gap:6px;padding-bottom:8px;
+ font-size:clamp(15px,1.15vw,22px);line-height:1;font-weight:700;
+}
+#wallDisplay[data-mode=area] .wall-live-dot,#wallDisplay[data-mode=area] .wall-live-label i{
+ display:block;width:7px;height:7px;border-radius:50%;background:var(--lime);box-shadow:0 0 12px color-mix(in srgb,var(--lime) 65%,transparent)
+}
+#wallDisplay[data-mode=area] .wall-live-label{margin-left:auto;display:flex;align-items:center;gap:5px;color:var(--lime);font-size:clamp(8px,.58vw,11px);font-weight:700;letter-spacing:.08em}
+#wallDisplay[data-mode=area] .wall-live-label i{width:5px;height:5px}
+#wallDisplay[data-mode=area]:not([data-layout=minimalist]) .wall-flight-heading{
+ grid-column:1/-1;grid-row:2;align-self:start;padding:0 0 9px;border-bottom:1px solid var(--w-line)
+}
+#wallDisplay[data-mode=area]:not([data-layout=minimalist]) .wall-callsign{display:none}
+#wallDisplay[data-mode=area]:not([data-layout=minimalist]) #wallRoute{margin:0;min-height:0}
+#wallDisplay[data-mode=area]:not([data-layout=minimalist]) #wallRoute .wall-route-codes{font-size:clamp(14px,1.05vw,20px);font-weight:300;color:var(--w-route)}
+#wallDisplay[data-mode=area]:not([data-layout=minimalist]) #wallRoute .wall-route-names{font-size:clamp(12px,.9vw,17px);font-weight:300;color:var(--w-route)}
+#wallDisplay[data-mode=area]:not([data-layout=minimalist]) .wall-identity{
+ grid-column:1;grid-row:3;align-self:center;padding:10px 8px 10px 0;border-bottom:1px solid var(--w-line)
+}
+#wallDisplay[data-mode=area]:not([data-layout=minimalist]) .wall-type{font-size:clamp(14px,1.15vw,21px);font-weight:400;line-height:1.15}
+#wallDisplay[data-mode=area]:not([data-layout=minimalist]) .wall-registration{font-size:clamp(9px,.65vw,12px);margin-top:3px}
+#wallDisplay[data-mode=area]:not([data-layout=minimalist]) .wall-carrier{
+ grid-column:2;grid-row:3;align-self:center;margin:0;padding:10px 0 10px 8px;border-bottom:1px solid var(--w-line);gap:7px
+}
+#wallDisplay[data-mode=area]:not([data-layout=minimalist]) .wall-carrier .airline-badge{width:28px;height:28px;flex-basis:28px}
+#wallDisplay[data-mode=area]:not([data-layout=minimalist]) .wall-carrier .airline-badge img{width:18px;height:18px}
+#wallDisplay[data-mode=area]:not([data-layout=minimalist]) .wall-carrier strong{font-size:clamp(11px,.82vw,15px);font-weight:400;line-height:1.15}
+#wallDisplay[data-mode=area]:not([data-layout=minimalist]) .wall-progress,
+#wallDisplay[data-mode=area]:not([data-layout=minimalist]) .wall-journey,
+#wallDisplay[data-mode=area]:not([data-layout=minimalist]) .wall-metrics{
+ grid-column:1/-1;display:grid!important;grid-template-columns:1fr 1fr;gap:0;padding:0;border:0;align-self:stretch
+}
+#wallDisplay[data-mode=area]:not([data-layout=minimalist]) .wall-progress{grid-row:4}
+#wallDisplay[data-mode=area]:not([data-layout=minimalist]) .wall-journey{grid-row:5}
+#wallDisplay[data-mode=area]:not([data-layout=minimalist]) .wall-metrics{grid-row:6!important}
+#wallDisplay[data-mode=area]:not([data-layout=minimalist]) .wall-progress>div,
+#wallDisplay[data-mode=area]:not([data-layout=minimalist]) .wall-journey>div,
+#wallDisplay[data-mode=area]:not([data-layout=minimalist]) .wall-metrics>div{
+ min-width:0;padding:10px 8px 10px 0;border-bottom:1px solid var(--w-line)
+}
+#wallDisplay[data-mode=area]:not([data-layout=minimalist]) .wall-progress>div:nth-child(2),
+#wallDisplay[data-mode=area]:not([data-layout=minimalist]) .wall-journey>div:nth-child(2),
+#wallDisplay[data-mode=area]:not([data-layout=minimalist]) .wall-metrics>div:nth-child(2){padding-left:10px;padding-right:0;border-left:1px solid var(--w-line)}
+#wallDisplay[data-mode=area]:not([data-layout=minimalist]) .wall-progress small,
+#wallDisplay[data-mode=area]:not([data-layout=minimalist]) .wall-journey small,
+#wallDisplay[data-mode=area]:not([data-layout=minimalist]) .wall-metrics small{font-size:clamp(8px,.62vw,11px);margin:0 0 5px;line-height:1.2;font-weight:400}
+#wallDisplay[data-mode=area]:not([data-layout=minimalist]) .wall-progress strong,
+#wallDisplay[data-mode=area]:not([data-layout=minimalist]) .wall-journey strong,
+#wallDisplay[data-mode=area]:not([data-layout=minimalist]) .wall-metrics strong{font-size:clamp(20px,1.75vw,32px);font-weight:300;line-height:1;letter-spacing:-.035em}
+#wallDisplay[data-mode=area]:not([data-layout=minimalist]) .wall-progress .wall-unit,
+#wallDisplay[data-mode=area]:not([data-layout=minimalist]) .wall-journey .wall-unit,
+#wallDisplay[data-mode=area]:not([data-layout=minimalist]) .wall-metrics .wall-unit{font-size:8px;margin-left:3px}
+#wallDisplay[data-mode=area]:not([data-layout=minimalist]) .wall-area-route-progress{
+ display:flex;grid-column:1/-1;grid-row:7;align-self:end;flex-direction:column;justify-content:end;padding-top:12px;min-height:38px
+}
+#wallDisplay[data-mode=area] .wall-area-route-bar-head{display:grid;grid-template-columns:auto minmax(35px,1fr) auto;align-items:center;gap:8px}
+#wallDisplay[data-mode=area] .wall-area-route-bar-head b{font-size:clamp(9px,.7vw,12px);font-weight:700;letter-spacing:.04em}
+#wallDisplay[data-mode=area] .wall-area-route-track{height:4px;border-radius:99px;background:color-mix(in srgb,var(--w-muted) 35%,transparent);overflow:hidden}
+#wallDisplay[data-mode=area] .wall-area-route-track i{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--w-route),color-mix(in srgb,var(--w-route) 70%,#7bd7ff));box-shadow:0 0 8px color-mix(in srgb,var(--w-route) 45%,transparent)}
+#wallDisplay[data-mode=area] .wall-area-route-bar-foot{display:flex;justify-content:space-between;padding:4px 24px 0;font-size:clamp(7px,.52vw,9px);color:var(--w-muted);font-weight:300}
+#wallDisplay[data-mode=area] .wall-area-route-bar-foot span:first-child{font-weight:500;color:var(--w-text)}
+
+/* 10-inch Area card: preserve the reference hierarchy without shrinking it into illegibility. */
+#wallDisplay[data-profile=compact10][data-mode=area]:not([data-layout=minimalist]) .wall-feature{padding:9px 10px}
+#wallDisplay[data-profile=compact10][data-mode=area]:not([data-layout=minimalist]) .wall-area-status{font-size:13px;padding-bottom:5px}
+#wallDisplay[data-profile=compact10][data-mode=area]:not([data-layout=minimalist]) .wall-flight-heading{padding-bottom:5px}
+#wallDisplay[data-profile=compact10][data-mode=area]:not([data-layout=minimalist]) #wallRoute .wall-route-codes{font-size:12px}
+#wallDisplay[data-profile=compact10][data-mode=area]:not([data-layout=minimalist]) #wallRoute .wall-route-names{font-size:10px}
+#wallDisplay[data-profile=compact10][data-mode=area]:not([data-layout=minimalist]) .wall-identity,
+#wallDisplay[data-profile=compact10][data-mode=area]:not([data-layout=minimalist]) .wall-carrier{padding-top:6px;padding-bottom:6px}
+#wallDisplay[data-profile=compact10][data-mode=area]:not([data-layout=minimalist]) .wall-type{font-size:12px}
+#wallDisplay[data-profile=compact10][data-mode=area]:not([data-layout=minimalist]) .wall-registration{font-size:8px}
+#wallDisplay[data-profile=compact10][data-mode=area]:not([data-layout=minimalist]) .wall-carrier .airline-badge{display:none}
+#wallDisplay[data-profile=compact10][data-mode=area]:not([data-layout=minimalist]) .wall-carrier strong{font-size:10px}
+#wallDisplay[data-profile=compact10][data-mode=area]:not([data-layout=minimalist]) .wall-progress>div,
+#wallDisplay[data-profile=compact10][data-mode=area]:not([data-layout=minimalist]) .wall-journey>div,
+#wallDisplay[data-profile=compact10][data-mode=area]:not([data-layout=minimalist]) .wall-metrics>div{padding-top:7px;padding-bottom:7px}
+#wallDisplay[data-profile=compact10][data-mode=area]:not([data-layout=minimalist]) .wall-progress small,
+#wallDisplay[data-profile=compact10][data-mode=area]:not([data-layout=minimalist]) .wall-journey small,
+#wallDisplay[data-profile=compact10][data-mode=area]:not([data-layout=minimalist]) .wall-metrics small{font-size:7px;margin-bottom:2px}
+#wallDisplay[data-profile=compact10][data-mode=area]:not([data-layout=minimalist]) .wall-progress strong,
+#wallDisplay[data-profile=compact10][data-mode=area]:not([data-layout=minimalist]) .wall-journey strong,
+#wallDisplay[data-profile=compact10][data-mode=area]:not([data-layout=minimalist]) .wall-metrics strong{font-size:16px}
+#wallDisplay[data-profile=compact10][data-mode=area]:not([data-layout=minimalist]) .wall-area-route-progress{padding-top:7px;min-height:30px}
+#wallDisplay[data-profile=compact10][data-mode=area] .wall-area-route-bar-head{gap:5px}
+#wallDisplay[data-profile=compact10][data-mode=area] .wall-area-route-bar-head b{font-size:8px}
+#wallDisplay[data-profile=compact10][data-mode=area] .wall-area-route-bar-foot{font-size:6px;padding-top:2px}

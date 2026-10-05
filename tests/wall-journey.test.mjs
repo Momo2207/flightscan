@@ -81,5 +81,5 @@ test('Follow independently hides unavailable destination distance or an unmodell
  const update=vm.runInNewContext(source+'\nwallJourneyUpdate',env);
  update({lat:38.8,lon:-9.1},route);assert.equal(node('wallJourney').hidden,false);assert.equal(node('wallJourneyTime').hidden,true);assert.equal(node('wallJourneyDistance').hidden,false);assert.equal(node('wallJourney').dataset.single,'true');
  env.aircraftSymbolFor=()=>({key:'narrow'});update({},route);assert.equal(node('wallJourney').hidden,false);assert.equal(node('wallJourneyTime').hidden,false);assert.equal(node('wallJourneyDistance').hidden,true);
- env.wallMode=()=> 'area';update({lat:38.8,lon:-9.1},route);assert.equal(node('wallRouteDistanceLabel').textContent,'Route distance');assert.equal(node('wallRouteDistance').textContent,'1,870');
+ env.wallMode=()=> 'area';update({lat:38.8,lon:-9.1},route);assert.equal(node('wallRouteDistanceLabel').textContent,'Distance to destination');assert.equal(node('wallRouteDistance').textContent,Journey.distance(Journey.remaining({lat:38.8,lon:-9.1},route),true));
 });

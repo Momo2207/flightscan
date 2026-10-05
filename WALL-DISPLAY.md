@@ -226,3 +226,7 @@ Wall Settings now includes **Display scaling** with Auto, Compact 10-inch, and F
 ## Build 30: full-canvas wall composition
 
 The wall display now follows the approved map-first concept rather than scaling the desktop shell. Atlas modes use a slim status rail followed by a map and aircraft rail that fill the remaining viewport height. The bottom status row is removed from the composition; controls float over the map and no longer participate in grid layout. Compact 10-inch geometry is tuned independently at 1024×600, 1280×800 and 1366×768. The Follow rail keeps route, aircraft identity, distance from departure, time airborne, altitude, groundspeed, distance to destination and estimated flight time visible without the former decorative aircraft silhouette. Full-size displays use the same geometry with a wider information rail and small gallery edge.
+
+## Build 31: Area journey card
+
+Area mode uses a compact journey-card hierarchy: live identity, aircraft/model/operator, route, distance from departure and observed/airborne time, distance to destination and estimated remaining flight time, altitude and groundspeed, followed by an origin-to-destination progress bar. The progress percentage is the direct great-circle distance from the reported origin to the displayed aircraft position divided by the origin-to-destination great-circle distance, clamped to 0–100%. It is a geographic progress indicator, not flown-track completion. The aircraft photo/illustration is intentionally omitted.
