@@ -1,8 +1,8 @@
 {
-  "build": "2026-10-02.vercel.28",
+  "build": "2026-10-05.vercel.29",
   "relayBuild": "2026-09-30.vercel.11",
   "unitTests": {
-    "passed": 244,
+    "passed": 246,
     "failed": 0
   },
   "targetedBrowserChecks": {
@@ -55,5 +55,11 @@
   },
   "relaySha256": "95ecd4cf05bbdfe39d60ae8c77dbd1b76510a1d798b7b9d43614b95960027018",
   "relayUnchanged": true,
-  "productionDeployment": "Not performed; updated files supplied for redeployment."
+  "productionDeployment": "Not performed; updated files supplied for redeployment.",
+  "wall10Inch": {
+    "autoProfile": "landscape viewport <= 1400 \u00d7 850 CSS px",
+    "manualProfile": "Compact 10-inch override for high-DPI panels",
+    "shortTier": "landscape height <= 650 CSS px",
+    "behavior": "map-first compact spacing; bottom status hidden; compact controls/card/log; data and playback unchanged"
+  }
 }

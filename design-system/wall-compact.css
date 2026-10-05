@@ -1,0 +1,84 @@
+/* Build 29: a physical-display profile for 10-inch wall pieces.
+   Auto targets common landscape panel viewports; Compact can be forced for HiDPI 10-inch screens. */
+#wallDisplay[data-profile=compact10]:not([data-layout=minimalist]){
+  --w-scale:.88;
+  padding:12px 14px 10px;
+  gap:9px;
+  grid-template-rows:34px minmax(0,1fr);
+  font-size:13px;
+}
+#wallDisplay[data-profile=compact10] .wall-bottom{display:none}
+#wallDisplay[data-profile=compact10] .wall-top{min-height:34px;height:34px}
+#wallDisplay[data-profile=compact10] .wall-top h1,
+#wallDisplay[data-profile=compact10] .wall-time time{font-size:22px;line-height:1}
+#wallDisplay[data-profile=compact10] .wall-time{margin-left:10px}
+#wallDisplay[data-profile=compact10] .wall-time:before{margin-right:10px}
+#wallDisplay[data-profile=compact10] .wall-body{grid-template-columns:minmax(0,1fr) clamp(260px,29vw,330px);gap:12px}
+#wallDisplay[data-profile=compact10] .wall-map{border-radius:24px}
+#wallDisplay[data-profile=compact10] .wall-compass{right:12px;top:10px;font-size:8px}
+#wallDisplay[data-profile=compact10] .wall-compass span{font-size:18px}
+#wallDisplay[data-profile=compact10] .wall-map-credit{right:8px;bottom:8px;font-size:8px;padding:3px 5px}
+#wallDisplay[data-profile=compact10] .wall-feature,
+#wallDisplay[data-profile=compact10] #wallLog{padding:14px;border-radius:24px}
+#wallDisplay[data-profile=compact10] .wall-feature-heading{padding-bottom:7px}
+#wallDisplay[data-profile=compact10] #wallFeatureLabel,
+#wallDisplay[data-profile=compact10] #wallFeaturePosition{font-size:9px}
+#wallDisplay[data-profile=compact10] #wallCard{grid-template-rows:32px 92px 54px minmax(54px,1fr) 60px;gap:6px;overflow:hidden}
+#wallDisplay[data-profile=compact10] .wall-carrier{gap:8px}
+#wallDisplay[data-profile=compact10] .wall-carrier .airline-badge{width:30px;height:30px;flex-basis:30px}
+#wallDisplay[data-profile=compact10] .wall-carrier .airline-badge img{width:20px;height:20px}
+#wallDisplay[data-profile=compact10] .wall-carrier strong{font-size:17px}
+#wallDisplay[data-profile=compact10] .wall-callsign{font-size:32px}
+#wallDisplay[data-profile=compact10] #wallRoute{margin-top:5px;min-height:2em}
+#wallDisplay[data-profile=compact10] #wallRoute .wall-route-codes{font-size:22px}
+#wallDisplay[data-profile=compact10] #wallRoute .wall-route-names{font-size:15px;line-height:1.15}
+#wallDisplay[data-profile=compact10] .wall-type{font-size:18px}
+#wallDisplay[data-profile=compact10] .wall-registration{font-size:10px;margin-top:3px}
+#wallDisplay[data-profile=compact10] .wall-progress,
+#wallDisplay[data-profile=compact10] .wall-journey{gap:8px;padding-top:7px}
+#wallDisplay[data-profile=compact10] .wall-progress small,
+#wallDisplay[data-profile=compact10] .wall-journey small,
+#wallDisplay[data-profile=compact10] .wall-metrics small{font-size:9px;margin-bottom:2px;line-height:1.25}
+#wallDisplay[data-profile=compact10] .wall-progress strong,
+#wallDisplay[data-profile=compact10] .wall-journey strong,
+#wallDisplay[data-profile=compact10] .wall-metrics strong{font-size:22px;line-height:1.05}
+#wallDisplay[data-profile=compact10] .wall-progress .wall-unit,
+#wallDisplay[data-profile=compact10] .wall-journey .wall-unit,
+#wallDisplay[data-profile=compact10] .wall-metrics .wall-unit{font-size:9px;margin-left:3px}
+#wallDisplay[data-profile=compact10] .wall-metrics{gap:8px}
+#wallDisplay[data-profile=compact10][data-mode=follow] #wallCard{grid-template-rows:32px 86px 50px 58px 54px 58px;gap:5px}
+#wallDisplay[data-profile=compact10][data-mode=follow] .wall-progress,
+#wallDisplay[data-profile=compact10][data-mode=follow] .wall-journey{padding-top:6px}
+#wallDisplay[data-profile=compact10] #wallControls{bottom:14px;padding:7px;gap:5px;border-radius:17px;max-width:calc(100vw - 28px)}
+#wallDisplay[data-profile=compact10] #wallControls button{min-height:34px;padding:6px 9px;border-radius:9px;font-size:10px}
+#wallDisplay[data-profile=compact10] #wallWakeStatus,
+#wallDisplay[data-profile=compact10] #wallControlMeta{font-size:8px;line-height:1.2}
+#wallDisplay[data-profile=compact10][data-mode=log] .wall-body{grid-template-columns:minmax(0,1fr) clamp(280px,31vw,350px);gap:12px}
+#wallDisplay[data-profile=compact10] .wall-log-heading{padding-bottom:7px}
+#wallDisplay[data-profile=compact10] .wall-log-heading h2{font-size:20px;margin:6px 0 4px}
+#wallDisplay[data-profile=compact10] #wallLogViewport,
+#wallDisplay[data-profile=compact10][data-distance=far] #wallLogViewport{--log-row-height:116px;mask-image:linear-gradient(to bottom,transparent,#000 24px,#000 calc(100% - 24px),transparent);-webkit-mask-image:linear-gradient(to bottom,transparent,#000 24px,#000 calc(100% - 24px),transparent)}
+#wallDisplay[data-profile=compact10] .wall-log-row{gap:8px}
+#wallDisplay[data-profile=compact10] .wall-log-symbol{flex-basis:28px;height:42px}
+#wallDisplay[data-profile=compact10] .wall-log-flight strong{font-size:18px}
+#wallDisplay[data-profile=compact10] .wall-log-airline,#wallDisplay[data-profile=compact10] .wall-log-type{font-size:11px}
+#wallDisplay[data-profile=compact10] .wall-log-times{font-size:9px}
+#wallDisplay[data-profile=compact10] .wall-log-foot{font-size:8px;padding-top:5px}
+/* Very short 1024×600-class panels: preserve map first, then tighten secondary card copy. */
+@media(max-height:650px) and (orientation:landscape){
+ #wallDisplay[data-profile=compact10]:not([data-layout=minimalist]){padding:9px 11px 8px;gap:7px;grid-template-rows:29px minmax(0,1fr)}
+ #wallDisplay[data-profile=compact10] .wall-top{height:29px;min-height:29px}
+ #wallDisplay[data-profile=compact10] .wall-top h1,#wallDisplay[data-profile=compact10] .wall-time time{font-size:18px}
+ #wallDisplay[data-profile=compact10] .wall-body{grid-template-columns:minmax(0,1fr) clamp(238px,29vw,286px);gap:9px}
+ #wallDisplay[data-profile=compact10] .wall-feature,#wallDisplay[data-profile=compact10] #wallLog{padding:11px;border-radius:20px}
+ #wallDisplay[data-profile=compact10] #wallCard{grid-template-rows:28px 78px 44px minmax(46px,1fr) 50px;gap:4px}
+ #wallDisplay[data-profile=compact10][data-mode=follow] #wallCard{grid-template-rows:28px 72px 42px 49px 45px 49px;gap:3px}
+ #wallDisplay[data-profile=compact10] .wall-carrier .airline-badge{display:none}
+ #wallDisplay[data-profile=compact10] .wall-carrier strong{font-size:14px}
+ #wallDisplay[data-profile=compact10] .wall-callsign{font-size:27px}
+ #wallDisplay[data-profile=compact10] #wallRoute .wall-route-codes{font-size:18px}
+ #wallDisplay[data-profile=compact10] #wallRoute .wall-route-names{font-size:12px}
+ #wallDisplay[data-profile=compact10] .wall-type{font-size:15px}
+ #wallDisplay[data-profile=compact10] .wall-progress strong,#wallDisplay[data-profile=compact10] .wall-journey strong,#wallDisplay[data-profile=compact10] .wall-metrics strong{font-size:18px}
+ #wallDisplay[data-profile=compact10] #wallControls{bottom:9px}
+}

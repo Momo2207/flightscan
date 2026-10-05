@@ -1,6 +1,6 @@
 # Flightscan design system
 
-Implemented in app build `2026-10-02.vercel.28`. The flight relay remains build 11.
+Implemented in app build `2026-10-05.vercel.29`. The flight relay remains build 11.
 
 ## Themes
 
@@ -99,3 +99,8 @@ The material uses four optical cues: visible background transmission, backdrop b
 `design-system/liquid-glass.css` owns these materials and loads last in the design build so component geometry stays independent of material styling. `ui-tokens.css` keeps compatibility variables for older components. `ui-theme.js` owns the optional pointer-local highlight only; it does not change layout or flight data.
 
 **Accessibility / fallback:** Reduced effects switches glass to solid panel materials and disables backdrop filtering. `prefers-reduced-transparency` receives the same solid fallback. Browsers without backdrop-filter continue to use the existing solid fallback from `ui-tokens.css`. Aircraft-only wall mode keeps its intentionally plain presentation; the control strip remains restrained rather than becoming a decorative glass layer.
+
+
+## 10-inch wall profile
+
+`design-system/wall-compact.css` is the physical-display adaptation layer. It only activates through `#wallDisplay[data-profile=compact10]`, so desktop and large wall compositions retain their existing proportions. The profile prioritizes map area and primary aircraft metrics, then compresses secondary typography and controls. Glass material tokens remain shared with Build 28.
