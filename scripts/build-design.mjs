@@ -2,7 +2,7 @@ import {readFile,writeFile} from 'node:fs/promises';
 const root=new URL('../',import.meta.url);
 export async function refreshDesign(){
  const index=new URL('index.html',root);let html=await readFile(index,'utf8');
- const files=['ui-tokens.css','ui-components.css','ui-modes.css','wall-display.css','aircraft-symbols.css','wall-log.css','wall-camera.css','routes.css','wall-colours.css','ui-wall.css','wall-gallery.css','aircraft-info.css','liquid-glass.css','wall-compact.css'];
+ const files=['ui-tokens.css','ui-components.css','ui-modes.css','wall-display.css','aircraft-symbols.css','wall-log.css','wall-camera.css','routes.css','wall-colours.css','ui-wall.css','wall-gallery.css','aircraft-info.css','liquid-glass.css','wall-compact.css','wall-concept.css'];
  const fonts=await Promise.all([100,300,400,500,700,900].map(async weight=>{
   const bytes=await readFile(new URL(`assets/fonts/FlightscanSans-${weight}.woff2`,root));
   return `@font-face{font-family:"Flightscan Sans";font-style:normal;font-weight:${weight};font-display:swap;src:url(data:font/woff2;base64,${bytes.toString('base64')}) format("woff2");}`;

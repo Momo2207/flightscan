@@ -1,0 +1,204 @@
+/* Build 30: wall-art composition based on the approved full-canvas concept.
+   Wall mode is a display surface, not a scaled desktop page. */
+#wallDisplay:not([data-layout=minimalist]){
+  --wall-edge:clamp(8px,1.05vw,20px);
+  --wall-gap:clamp(8px,.8vw,16px);
+  padding:var(--wall-edge);
+  gap:var(--wall-gap);
+  grid-template-rows:clamp(38px,4.2vh,52px) minmax(0,1fr);
+  overflow:hidden;
+}
+#wallDisplay:not([data-layout=minimalist]) .wall-bottom{display:none!important}
+#wallDisplay:not([data-layout=minimalist]) .wall-top{
+  min-height:0;height:auto;align-items:center;gap:16px;padding:0 4px;
+}
+#wallDisplay:not([data-layout=minimalist]) .wall-top>div:first-child{
+  display:flex;align-items:center;gap:12px;min-width:0;
+}
+#wallDisplay:not([data-layout=minimalist]) .wall-top .wall-eyebrow{
+  color:var(--w-text);font-size:clamp(11px,.78vw,15px);font-weight:900;letter-spacing:.055em;white-space:nowrap;
+}
+#wallDisplay:not([data-layout=minimalist]) .wall-top .wall-eyebrow span{display:none}
+#wallDisplay:not([data-layout=minimalist]) .wall-top .wall-eyebrow:after{
+  content:'  ●  LIVE';color:var(--lime);font-weight:700;font-size:.78em;letter-spacing:.04em;
+}
+#wallDisplay:not([data-layout=minimalist]) .wall-top h1{
+  font-size:clamp(13px,1.05vw,20px);font-weight:500;letter-spacing:-.02em;margin:0;max-width:36vw;
+  color:var(--w-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+#wallDisplay:not([data-layout=minimalist]) .wall-top p{display:none}
+#wallDisplay:not([data-layout=minimalist]) .wall-time{display:flex;align-items:baseline;gap:8px;margin-left:auto}
+#wallDisplay:not([data-layout=minimalist]) .wall-time time{font-size:clamp(20px,1.8vw,32px);font-weight:300;line-height:1}
+#wallDisplay:not([data-layout=minimalist]) .wall-time>span{font-size:clamp(9px,.7vw,12px)}
+#wallDisplay:not([data-layout=minimalist]) .wall-time small{display:none}
+#wallDisplay:not([data-layout=minimalist]) .wall-body{
+  min-height:0;height:100%;gap:var(--wall-gap);
+  grid-template-columns:minmax(0,1fr) clamp(300px,25vw,470px);
+  grid-template-rows:minmax(0,1fr);
+}
+#wallDisplay:not([data-layout=minimalist]) .wall-map{
+  height:100%;min-height:0;border-radius:clamp(18px,1.7vw,30px);
+}
+#wallDisplay:not([data-layout=minimalist]) .wall-feature,
+#wallDisplay:not([data-layout=minimalist]) #wallLog{
+  height:100%;min-height:0;box-sizing:border-box;border-radius:clamp(18px,1.7vw,30px);
+  padding:clamp(14px,1.35vw,26px);
+}
+#wallDisplay:not([data-layout=minimalist]) .wall-feature-heading{padding-bottom:clamp(7px,.75vh,12px)}
+#wallDisplay:not([data-layout=minimalist]) .wall-feature-foot{margin-top:8px;padding-top:8px;font-size:9px}
+#wallDisplay:not([data-layout=minimalist]) #wallControls{
+  left:calc((100% - clamp(300px,25vw,470px) - var(--wall-gap))/2);
+  bottom:calc(var(--wall-edge) + 10px);transform:translateX(-50%);
+  max-width:calc(75vw - 2 * var(--wall-edge));padding:7px 9px;gap:5px;border-radius:18px;
+}
+#wallDisplay:not([data-layout=minimalist]) #wallControls button{min-height:34px;padding:6px 10px;font-size:10px;border-radius:10px}
+#wallDisplay:not([data-layout=minimalist]) #wallWakeStatus,
+#wallDisplay:not([data-layout=minimalist]) #wallControlMeta{font-size:7px;line-height:1;flex-basis:100%}
+
+/* The aircraft card fills its rail. Empty spacer rows are forbidden. */
+#wallDisplay:not([data-layout=minimalist]) #wallCard{justify-content:stretch;align-content:stretch;overflow:hidden}
+#wallDisplay:not([data-layout=minimalist])[data-mode=follow] #wallCard{
+  display:grid;grid-template-columns:1fr 1fr;
+  grid-template-rows:auto auto auto minmax(44px,.72fr) auto auto;
+  gap:clamp(7px,1vh,14px) 12px;
+}
+#wallDisplay:not([data-layout=minimalist])[data-mode=follow] .wall-carrier{grid-column:1/-1;grid-row:1;margin:0}
+#wallDisplay:not([data-layout=minimalist])[data-mode=follow] .wall-flight-heading{grid-column:1/-1;grid-row:2}
+#wallDisplay:not([data-layout=minimalist])[data-mode=follow] .wall-identity{grid-column:1/-1;grid-row:3}
+#wallDisplay:not([data-layout=minimalist])[data-mode=follow] .wall-plane-art{display:none!important}
+#wallDisplay:not([data-layout=minimalist])[data-mode=follow] .wall-progress{grid-column:1/-1;grid-row:4;align-self:end}
+#wallDisplay:not([data-layout=minimalist])[data-mode=follow] .wall-metrics{grid-column:1/-1;grid-row:5!important}
+#wallDisplay:not([data-layout=minimalist])[data-mode=follow] .wall-journey{grid-column:1/-1;grid-row:6!important}
+#wallDisplay:not([data-layout=minimalist])[data-mode=follow] .wall-observation{display:none!important}
+#wallDisplay:not([data-layout=minimalist]) .wall-carrier strong{font-size:clamp(15px,1.35vw,25px)}
+#wallDisplay:not([data-layout=minimalist]) .wall-callsign{font-size:clamp(28px,3vw,54px);line-height:.98}
+#wallDisplay:not([data-layout=minimalist]) #wallRoute{margin-top:5px;min-height:0}
+#wallDisplay:not([data-layout=minimalist]) #wallRoute .wall-route-codes{font-size:clamp(17px,1.7vw,30px)}
+#wallDisplay:not([data-layout=minimalist]) #wallRoute .wall-route-names{font-size:clamp(12px,1vw,18px);line-height:1.15}
+#wallDisplay:not([data-layout=minimalist]) .wall-type{font-size:clamp(17px,1.5vw,28px)}
+#wallDisplay:not([data-layout=minimalist]) .wall-registration{font-size:clamp(10px,.8vw,14px)}
+#wallDisplay:not([data-layout=minimalist]) .wall-progress,
+#wallDisplay:not([data-layout=minimalist]) .wall-metrics,
+#wallDisplay:not([data-layout=minimalist]) .wall-journey{gap:8px 12px;padding-top:clamp(7px,.8vh,12px)}
+#wallDisplay:not([data-layout=minimalist]) .wall-progress small,
+#wallDisplay:not([data-layout=minimalist]) .wall-metrics small,
+#wallDisplay:not([data-layout=minimalist]) .wall-journey small{font-size:clamp(9px,.7vw,12px);margin-bottom:3px;line-height:1.2}
+#wallDisplay:not([data-layout=minimalist]) .wall-progress strong,
+#wallDisplay:not([data-layout=minimalist]) .wall-metrics strong,
+#wallDisplay:not([data-layout=minimalist]) .wall-journey strong{font-size:clamp(20px,2vw,36px);line-height:1}
+#wallDisplay:not([data-layout=minimalist]) .wall-progress .wall-unit,
+#wallDisplay:not([data-layout=minimalist]) .wall-metrics .wall-unit,
+#wallDisplay:not([data-layout=minimalist]) .wall-journey .wall-unit{font-size:9px;margin-left:3px}
+
+/* 10-inch landscape: reproduce the compact concept rather than scaling the desktop card. */
+#wallDisplay[data-profile=compact10]:not([data-layout=minimalist]){
+  --wall-edge:7px;--wall-gap:7px;--w-scale:1;
+  padding:var(--wall-edge);gap:var(--wall-gap);grid-template-rows:32px minmax(0,1fr);font-size:12px;
+}
+#wallDisplay[data-profile=compact10]:not([data-layout=minimalist]) .wall-top{height:32px;min-height:32px;padding:0 3px}
+#wallDisplay[data-profile=compact10]:not([data-layout=minimalist]) .wall-top .wall-eyebrow{font-size:10px}
+#wallDisplay[data-profile=compact10]:not([data-layout=minimalist]) .wall-top h1{font-size:11px;max-width:28vw}
+#wallDisplay[data-profile=compact10]:not([data-layout=minimalist]) .wall-time time{font-size:18px}
+#wallDisplay[data-profile=compact10]:not([data-layout=minimalist]) .wall-time>span{display:none}
+#wallDisplay[data-profile=compact10]:not([data-layout=minimalist]) .wall-body{grid-template-columns:minmax(0,1fr) clamp(245px,30vw,310px);gap:7px}
+#wallDisplay[data-profile=compact10]:not([data-layout=minimalist]) .wall-map,
+#wallDisplay[data-profile=compact10]:not([data-layout=minimalist]) .wall-feature,
+#wallDisplay[data-profile=compact10]:not([data-layout=minimalist]) #wallLog{border-radius:15px}
+#wallDisplay[data-profile=compact10]:not([data-layout=minimalist]) .wall-feature{padding:10px 11px}
+#wallDisplay[data-profile=compact10]:not([data-layout=minimalist]) .wall-feature-heading{padding-bottom:5px}
+#wallDisplay[data-profile=compact10]:not([data-layout=minimalist]) #wallFeatureLabel,
+#wallDisplay[data-profile=compact10]:not([data-layout=minimalist]) #wallFeaturePosition{font-size:7px}
+#wallDisplay[data-profile=compact10]:not([data-layout=minimalist])[data-mode=follow] #wallCard{
+  grid-template-rows:auto auto auto minmax(32px,.7fr) auto auto;gap:5px 8px;
+}
+#wallDisplay[data-profile=compact10]:not([data-layout=minimalist]) .wall-carrier{gap:6px}
+#wallDisplay[data-profile=compact10]:not([data-layout=minimalist]) .wall-carrier .airline-badge{width:24px;height:24px;flex-basis:24px}
+#wallDisplay[data-profile=compact10]:not([data-layout=minimalist]) .wall-carrier .airline-badge img{width:16px;height:16px}
+#wallDisplay[data-profile=compact10]:not([data-layout=minimalist]) .wall-carrier strong{font-size:13px}
+#wallDisplay[data-profile=compact10]:not([data-layout=minimalist]) .wall-callsign{font-size:25px}
+#wallDisplay[data-profile=compact10]:not([data-layout=minimalist]) #wallRoute{margin-top:2px}
+#wallDisplay[data-profile=compact10]:not([data-layout=minimalist]) #wallRoute .wall-route-codes{font-size:15px}
+#wallDisplay[data-profile=compact10]:not([data-layout=minimalist]) #wallRoute .wall-route-names{font-size:10px}
+#wallDisplay[data-profile=compact10]:not([data-layout=minimalist]) .wall-type{font-size:14px}
+#wallDisplay[data-profile=compact10]:not([data-layout=minimalist]) .wall-registration{font-size:8px;margin-top:1px}
+#wallDisplay[data-profile=compact10]:not([data-layout=minimalist]) .wall-progress,
+#wallDisplay[data-profile=compact10]:not([data-layout=minimalist]) .wall-metrics,
+#wallDisplay[data-profile=compact10]:not([data-layout=minimalist]) .wall-journey{gap:5px 8px;padding-top:5px}
+#wallDisplay[data-profile=compact10]:not([data-layout=minimalist]) .wall-progress small,
+#wallDisplay[data-profile=compact10]:not([data-layout=minimalist]) .wall-metrics small,
+#wallDisplay[data-profile=compact10]:not([data-layout=minimalist]) .wall-journey small{font-size:7.5px;margin-bottom:1px;min-height:0}
+#wallDisplay[data-profile=compact10]:not([data-layout=minimalist]) .wall-progress strong,
+#wallDisplay[data-profile=compact10]:not([data-layout=minimalist]) .wall-metrics strong,
+#wallDisplay[data-profile=compact10]:not([data-layout=minimalist]) .wall-journey strong{font-size:17px}
+#wallDisplay[data-profile=compact10]:not([data-layout=minimalist]) .wall-progress .wall-unit,
+#wallDisplay[data-profile=compact10]:not([data-layout=minimalist]) .wall-metrics .wall-unit,
+#wallDisplay[data-profile=compact10]:not([data-layout=minimalist]) .wall-journey .wall-unit{font-size:7px}
+#wallDisplay[data-profile=compact10]:not([data-layout=minimalist]) .wall-feature-foot{display:none}
+#wallDisplay[data-profile=compact10]:not([data-layout=minimalist]) .wall-compass{right:8px;top:7px;font-size:7px}
+#wallDisplay[data-profile=compact10]:not([data-layout=minimalist]) .wall-compass span{font-size:14px}
+#wallDisplay[data-profile=compact10]:not([data-layout=minimalist]) .wall-map-credit{font-size:6px;padding:2px 4px}
+#wallDisplay[data-profile=compact10]:not([data-layout=minimalist]) #wallControls{
+  left:calc((100% - clamp(245px,30vw,310px) - 7px)/2);bottom:12px;
+  max-width:calc(70vw - 20px);padding:5px 6px;gap:3px;border-radius:14px;
+}
+#wallDisplay[data-profile=compact10]:not([data-layout=minimalist]) #wallControls button{min-height:27px;padding:4px 7px;font-size:8px;border-radius:8px}
+#wallDisplay[data-profile=compact10]:not([data-layout=minimalist]) #wallWakeStatus,
+#wallDisplay[data-profile=compact10]:not([data-layout=minimalist]) #wallControlMeta{display:none}
+
+/* 1024×600: keep every primary metric, reduce labels before reducing map. */
+@media(max-height:650px) and (orientation:landscape){
+ #wallDisplay[data-profile=compact10]:not([data-layout=minimalist]){grid-template-rows:28px minmax(0,1fr);padding:5px;gap:5px;--wall-edge:5px;--wall-gap:5px}
+ #wallDisplay[data-profile=compact10]:not([data-layout=minimalist]) .wall-top{height:28px;min-height:28px}
+ #wallDisplay[data-profile=compact10]:not([data-layout=minimalist]) .wall-top h1{display:none}
+ #wallDisplay[data-profile=compact10]:not([data-layout=minimalist]) .wall-time time{font-size:16px}
+ #wallDisplay[data-profile=compact10]:not([data-layout=minimalist]) .wall-body{grid-template-columns:minmax(0,1fr) minmax(228px,28vw);gap:5px}
+ #wallDisplay[data-profile=compact10]:not([data-layout=minimalist]) .wall-feature{padding:8px 9px}
+ #wallDisplay[data-profile=compact10]:not([data-layout=minimalist])[data-mode=follow] #wallCard{gap:3px 6px;grid-template-rows:auto auto auto minmax(26px,.6fr) auto auto}
+ #wallDisplay[data-profile=compact10]:not([data-layout=minimalist]) .wall-carrier .airline-badge{display:none}
+ #wallDisplay[data-profile=compact10]:not([data-layout=minimalist]) .wall-carrier strong{font-size:11px}
+ #wallDisplay[data-profile=compact10]:not([data-layout=minimalist]) .wall-callsign{font-size:21px}
+ #wallDisplay[data-profile=compact10]:not([data-layout=minimalist]) #wallRoute .wall-route-codes{font-size:13px}
+ #wallDisplay[data-profile=compact10]:not([data-layout=minimalist]) #wallRoute .wall-route-names{font-size:8px}
+ #wallDisplay[data-profile=compact10]:not([data-layout=minimalist]) .wall-type{font-size:12px}
+ #wallDisplay[data-profile=compact10]:not([data-layout=minimalist]) .wall-progress small,
+ #wallDisplay[data-profile=compact10]:not([data-layout=minimalist]) .wall-metrics small,
+ #wallDisplay[data-profile=compact10]:not([data-layout=minimalist]) .wall-journey small{font-size:6.5px}
+ #wallDisplay[data-profile=compact10]:not([data-layout=minimalist]) .wall-progress strong,
+ #wallDisplay[data-profile=compact10]:not([data-layout=minimalist]) .wall-metrics strong,
+ #wallDisplay[data-profile=compact10]:not([data-layout=minimalist]) .wall-journey strong{font-size:14px}
+ #wallDisplay[data-profile=compact10]:not([data-layout=minimalist]) #wallControls{left:35vw;bottom:8px}
+}
+
+/* Log uses the same full-height rail geometry. */
+#wallDisplay[data-mode=log]:not([data-layout=minimalist]){grid-template-rows:clamp(38px,4.2vh,52px) minmax(0,1fr);padding:var(--wall-edge)}
+#wallDisplay[data-mode=log]:not([data-layout=minimalist]) .wall-top{display:flex}
+#wallDisplay[data-mode=log]:not([data-layout=minimalist]) .wall-feature{display:none}
+#wallDisplay[data-mode=log]:not([data-layout=minimalist]) .wall-body{grid-template-columns:minmax(0,1fr) clamp(320px,28vw,520px);gap:var(--wall-gap)}
+/* Liquid Glass must not pull the wall control dock back into grid flow. */
+#wallDisplay:not([data-layout=minimalist]) #wallControls{position:absolute!important;overflow:hidden}
+/* Screenshot refinement: make the concept rail readable and evenly composed. */
+#wallDisplay:not([data-layout=minimalist]) .wall-top .wall-eyebrow{display:block!important}
+#wallDisplay:not([data-layout=minimalist]) .wall-time:before{display:none!important;content:none!important}
+#wallDisplay:not([data-layout=minimalist])[data-mode=follow] #wallCard{
+  grid-template-rows:auto auto auto auto auto auto;align-content:space-between;
+}
+#wallDisplay[data-profile=compact10]:not([data-layout=minimalist]) .wall-body{
+  grid-template-columns:minmax(0,1fr) clamp(280px,32vw,360px);
+}
+#wallDisplay[data-profile=compact10]:not([data-layout=minimalist]) #wallControls{left:34vw}
+#wallDisplay[data-profile=compact10]:not([data-layout=minimalist]) .wall-progress strong,
+#wallDisplay[data-profile=compact10]:not([data-layout=minimalist]) .wall-metrics strong,
+#wallDisplay[data-profile=compact10]:not([data-layout=minimalist]) .wall-journey strong{font-size:18px}
+#wallDisplay[data-profile=compact10]:not([data-layout=minimalist]) .wall-progress small,
+#wallDisplay[data-profile=compact10]:not([data-layout=minimalist]) .wall-metrics small,
+#wallDisplay[data-profile=compact10]:not([data-layout=minimalist]) .wall-journey small{font-size:8px}
+@media(max-height:650px) and (orientation:landscape){
+ #wallDisplay[data-profile=compact10]:not([data-layout=minimalist]) .wall-body{grid-template-columns:minmax(0,1fr) clamp(270px,32vw,330px)}
+ #wallDisplay[data-profile=compact10]:not([data-layout=minimalist]) .wall-progress strong,
+ #wallDisplay[data-profile=compact10]:not([data-layout=minimalist]) .wall-metrics strong,
+ #wallDisplay[data-profile=compact10]:not([data-layout=minimalist]) .wall-journey strong{font-size:16px}
+}
+@media(min-width:1500px) and (min-height:850px){
+ #wallDisplay:not([data-profile=compact10]):not([data-layout=minimalist]) .wall-body{grid-template-columns:minmax(0,1fr) clamp(360px,27vw,520px)}
+ #wallDisplay:not([data-profile=compact10]):not([data-layout=minimalist]) #wallControls{left:36.5vw}
+}

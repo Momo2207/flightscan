@@ -1,6 +1,6 @@
 # Flightscan design system
 
-Implemented in app build `2026-10-05.vercel.29`. The flight relay remains build 11.
+Implemented in app build `2026-10-05.vercel.30`. The flight relay remains build 11.
 
 ## Themes
 
@@ -104,3 +104,8 @@ The material uses four optical cues: visible background transmission, backdrop b
 ## 10-inch wall profile
 
 `design-system/wall-compact.css` is the physical-display adaptation layer. It only activates through `#wallDisplay[data-profile=compact10]`, so desktop and large wall compositions retain their existing proportions. The profile prioritizes map area and primary aircraft metrics, then compresses secondary typography and controls. Glass material tokens remain shared with Build 28.
+
+
+## Build 30 wall geometry
+
+`design-system/wall-concept.css` is the final wall-layout layer and is compiled after `wall-compact.css`. It deliberately overrides the Liquid Glass control dock back to absolute positioning; a glass material must never create a grid row. The atlas shell has two rows only: a compact status rail and a `minmax(0,1fr)` content row. Map and information rail are both 100% of that content row. Compact 10-inch mode uses a 32% information rail and tighter type scales; 1024×600 has a dedicated short-height tier.

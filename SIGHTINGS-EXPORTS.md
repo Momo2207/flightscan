@@ -1,6 +1,6 @@
 # Sightings and daily exports
 
-App build `2026-10-05.vercel.29`. This update changes the frontend only; relay build 11 remains compatible.
+App build `2026-10-05.vercel.30`. This update changes the frontend only; relay build 11 remains compatible.
 
 ## Start recording
 

@@ -1,8 +1,8 @@
 {
-  "build": "2026-10-05.vercel.29",
+  "build": "2026-10-05.vercel.30",
   "relayBuild": "2026-09-30.vercel.11",
   "unitTests": {
-    "passed": 246,
+    "passed": 249,
     "failed": 0
   },
   "targetedBrowserChecks": {
@@ -61,5 +61,28 @@
     "manualProfile": "Compact 10-inch override for high-DPI panels",
     "shortTier": "landscape height <= 650 CSS px",
     "behavior": "map-first compact spacing; bottom status hidden; compact controls/card/log; data and playback unchanged"
-  }
+  },
+  "wallLayoutScreenshots": {
+    "1024x600": {
+      "map": "681x557",
+      "rail": "328x557",
+      "bottomGapPx": 5
+    },
+    "1280x800": {
+      "map": "899x747",
+      "rail": "360x747",
+      "bottomGapPx": 7
+    },
+    "1366x768": {
+      "map": "985x715",
+      "rail": "360x715",
+      "bottomGapPx": 7
+    },
+    "1920x1080": {
+      "map": "1346x979",
+      "rail": "518x979",
+      "bottomGapPx": 20
+    }
+  },
+  "wallLayoutRuntimeErrors": 0
 }

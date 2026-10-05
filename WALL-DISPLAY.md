@@ -1,6 +1,6 @@
 # Airspace Wall Display
 
-App release `2026-10-05.vercel.29`, with relay `2026-09-30.vercel.11`. Upload all extracted files and folders for this update, including `design-system/` and `scripts/`, then redeploy. The complete six-part wall-art roadmap is in `WALL-ART-PLAN.md`. Midnight and Sunset retain their glass materials, gradients and embedded fonts. Thin orange routes still alternate airport codes and full locations every eight seconds. The aircraft-only layout stays plain and uncluttered.
+App release `2026-10-05.vercel.30`, with relay `2026-09-30.vercel.11`. Upload all extracted files and folders for this update, including `design-system/` and `scripts/`, then redeploy. The complete six-part wall-art roadmap is in `WALL-ART-PLAN.md`. Midnight and Sunset retain their glass materials, gradients and embedded fonts. Thin orange routes still alternate airport codes and full locations every eight seconds. The aircraft-only layout stays plain and uncluttered.
 
 The new Gallery map style gives water and land cover more presence, with faint roads and a small set of town names. It uses actual OpenFreeMap/OpenMapTiles geographic data and retains map attribution and a raster fallback. Choose **Map style → Street map** to restore the previous map treatment. **Atmosphere → Follow daylight** gently warms surfaces near sunset and lowers their luminance at night; **Fixed appearance** keeps your chosen theme constant and is the default. The calculation is local to your chosen display location. It does not change aircraft spectrum colours, orange routes, normal tracker preferences or the screen's hardware brightness.
 
@@ -221,3 +221,8 @@ Wall cards and the 24-hour journal now use Regular glass with substantially more
 ## Build 29: 10-inch wall scaling
 
 Wall Settings now includes **Display scaling** with Auto, Compact 10-inch, and Full-size. Auto switches to the compact profile for common landscape wall-panel viewports up to 1400 × 850 CSS pixels. Compact 10-inch can be forced for high-DPI panels whose browser reports a larger desktop-like viewport. The compact profile keeps the map dominant, removes the nonessential bottom status strip, reduces card chrome and spacing, compacts the control dock, and has a second short-screen tier for 1024 × 600-class displays. It does not change aircraft data, playback, map coverage, routes, or Liquid Glass materials.
+
+
+## Build 30: full-canvas wall composition
+
+The wall display now follows the approved map-first concept rather than scaling the desktop shell. Atlas modes use a slim status rail followed by a map and aircraft rail that fill the remaining viewport height. The bottom status row is removed from the composition; controls float over the map and no longer participate in grid layout. Compact 10-inch geometry is tuned independently at 1024×600, 1280×800 and 1366×768. The Follow rail keeps route, aircraft identity, distance from departure, time airborne, altitude, groundspeed, distance to destination and estimated flight time visible without the former decorative aircraft silhouette. Full-size displays use the same geometry with a wider information rail and small gallery edge.
